@@ -1,2 +1,30 @@
 @import "tailwindcss";
 
+
+
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/fonts/Poppins-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Righteous';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/fonts/Righteous-Regular.woff2') format('woff2');
+}
+
+.righteous-font {
+  font-family: 'Righteous', cursive;
+}
+
+
+
+
+body {
+    background: #1E1E1E;
+    color: #FFFFFF;
+    font-family: 'Poppins', sans-serif;
+}
