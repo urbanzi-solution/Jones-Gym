@@ -1,9 +1,12 @@
-
+import DashboardGeneral from "@/components/Dashboard_general";
+import DashboardMembers from "@/components/Dashboard_members";
 
 export default function Dashboard() {
   return (
     <div>
-      <h1 className="text-3xl text-center">Dashboard</h1>
+      <DashboardGeneral />
+      <DashboardMembers />
+      
     </div>
   );
 }

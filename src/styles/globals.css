@@ -28,3 +28,51 @@ body {
     color: #FFFFFF;
     font-family: 'Poppins', sans-serif;
 }
+
+
+/* Base styles (mobile first) */
+.box {
+  margin: 20px;
+  padding: 20px;
+  border-radius: 4px;
+  background-color: #2B2E32;
+}
+
+/* Tablet (768px and up) */
+@media (min-width: 768px) {
+  .box {
+    margin: 24px;
+    padding: 24px;
+  }
+}
+
+/* Laptop (1024px and up) */
+@media (min-width: 1024px) {
+  .box {
+    margin: 32px;
+    padding: 32px;
+  }
+}
+
+/* Desktop (1280px and up) */
+@media (min-width: 1280px) {
+  .box {
+    margin: 40px;
+    padding: 40px;
+  }
+}
+
+
+@tailwind base;
+@tailwind utilities;
+
+@layer utilities {
+  .heading-2 {
+    @apply text-lg font-medium text-gray-900;
+    @apply md:text-2xl;
+    
+    @media (prefers-color-scheme: dark) {
+      @apply text-white;
+    }
+  }
+}
