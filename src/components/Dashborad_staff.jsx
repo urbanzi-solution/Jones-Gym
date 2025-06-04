@@ -1,8 +1,8 @@
-export default function DashboardMembers() {
+export default function DashboardStaff() {
     return (
         <div className="box">
             <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg md:text-2xl">Members</h2>
+                <h2 className="text-lg md:text-2xl">Staff</h2>
                 <a href="" className="text-sm text-blue-500 hover:underline">See all</a>
             </div>
 
