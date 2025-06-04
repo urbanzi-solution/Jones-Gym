@@ -32,7 +32,7 @@ body {
 
 /* Base styles (mobile first) */
 .box {
-  margin: 40px 20px;
+  margin:  20px;
   padding: 20px;
   border-radius: 4px;
   background-color: #2B2E32;
@@ -41,7 +41,7 @@ body {
 /* Tablet (768px and up) */
 @media (min-width: 768px) {
   .box {
-    margin: 42px 24px;
+    margin: 24px;
     padding: 24px;
   }
 }
@@ -49,7 +49,7 @@ body {
 /* Laptop (1024px and up) */
 @media (min-width: 1024px) {
   .box {
-    margin: 52px 32px;
+    margin:  32px;
     padding: 32px;
   }
 }

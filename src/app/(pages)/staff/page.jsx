@@ -1,7 +1,10 @@
+import Inpage_header from "@/components/Inpage_header"
+
 export default function Staff() {
   return (
     <div>
-      <h1 className="text-3xl text-center">Staff</h1>
+      <Inpage_header title='Staff List' />
     </div>
-  );
+  )
 }
+

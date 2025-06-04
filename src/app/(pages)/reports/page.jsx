@@ -1,7 +1,9 @@
-export default function Reports() {
+import Inpage_header from "@/components/Inpage_header"
+
+export default function page() {
   return (
     <div>
-      <h1 className="text-3xl text-center">Reports</h1>
+      <Inpage_header title='Reports' />
     </div>
-  );
+  )
 }
