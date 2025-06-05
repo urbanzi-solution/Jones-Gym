@@ -10,7 +10,7 @@ export default function Recent_transations() {
     <div className="box">
       <div className="flex justify-between items-center text-lg md:text-xl font-semibold lg:text-2xl">
         <h2 className="">Recent Transactions</h2>
-        <a href=""><FaArrowRight /></a>
+        <a href="/transations"><FaArrowRight /></a>
       </div>
 
       <div className="flex justify-between items-center bg-[#181818] px-4 py-2 rounded-lg my-5 md:px-8 md:py-4">

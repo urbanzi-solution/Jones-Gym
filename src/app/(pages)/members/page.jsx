@@ -8,7 +8,7 @@ export default function Members() {
     <div>
       <Inpage_header title='Members List' />
       <MemberSearchFilter />
-      <Memberlist_boxes />
+      <Memberlist_boxes className='z-0' />
       <Add_member value="Member" />
       <div className="h-20">
 
