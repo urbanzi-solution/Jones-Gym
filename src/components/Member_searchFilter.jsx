@@ -17,11 +17,13 @@ export default function MemberSearchFilter() {
   const handleActiveClick = () => {
     setActive(!active);
     setInactive(false);
+    console.log("active");
   };
 
   const handleInactiveClick = () => {
     setActive(false);
     setInactive(!inactive);
+    console.log("inactive");
   };
 
   const toggleFilters = () => {
