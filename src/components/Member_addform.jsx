@@ -107,6 +107,19 @@ export default function member_addpage() {
         />
       </div>
 
+      {/* WhatsApp Number */}
+      <div>
+        <label htmlFor="Trainer" className="block text-sm font-medium mb-1 text-gray-300">
+          Trainer Name
+        </label>
+        <input
+          type="data"
+          id="whatsapp"
+          placeholder="Trainer Name"
+          className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
+        />
+      </div>
+
       {/* Date of Birth */}
       <div>
         <label htmlFor="dob" className="block text-sm font-medium mb-1 text-gray-300">
