@@ -14,7 +14,7 @@ export default function Dashboardgreeting() {
   };
 
   return (
-    <div className="relative flex items-center justify-between px-5 my-10 sm:px-10">
+    <div className="relative flex items-center justify-between px-5 my-5 sm:px-10">
       <h1 className="text-2xl sm:text-4xl font-semibold">Good Morning,</h1>
       <button
         onClick={toggleOptions}
@@ -24,7 +24,7 @@ export default function Dashboardgreeting() {
         <FiPlusCircle className="size-6" />
       </button>
       {showOptions && (
-        <div className="absolute top-full left-0 right-0 z-100 bg-[#2B2E32] rounded-xl shadow-lg mt-2 p-4 md:p-8 text-center border">
+        <div className="absolute top-full left-0 right-0 z-100 bg-[#0a0a0a] rounded-xl shadow-lg mt-2 p-4 md:p-8 text-center border border-[#6e6e6e]">
           <div className="flex justify-between items-center mb-4 border-b pb-2">
             <h2 className="text-lg font-medium md:text-2xl">Add menu</h2>
             <GrClose

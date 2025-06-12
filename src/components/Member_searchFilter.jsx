@@ -88,7 +88,7 @@ export default function MemberSearchFilter() {
 
         {/* Expanded Filter Panel */}
         {showFilters && (
-          <div className="absolute top-full left-0 right-0 z-50 bg-[#000000] rounded-xl shadow-lg mt-2 p-4 text-center">
+          <div className="absolute top-full left-0 right-0 z-50 bg-[#0a0a0a] rounded-xl shadow-lg mt-2 p-4 text-center border border-[#6e6e6e] ">
             <div className="flex justify-between items-center mb-4 border-b pb-2">
               <h2 className="text-lg font-medium">Filter Members</h2>
               <GrClose 

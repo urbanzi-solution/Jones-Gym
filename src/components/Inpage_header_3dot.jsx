@@ -23,7 +23,7 @@ export default function Inpage_header({ title }) {  // Destructure props properl
         <button onClick={toggleOptions}><SlOptionsVertical className="text-[#ffffff]"/></button>
 
         {showOptions && (
-          <div className="absolute top-full right-2 z-50 bg-[#000000] rounded-xl shadow-lg p-4  md:p-8  text-center">
+          <div className="absolute top-full right-2 z-50 bg-[#0a0a0a] rounded-xl shadow-lg p-4  md:p-8  text-center md:w-1/2 border border-[#6e6e6e]">
 
             <div className="flex justify-between items-center mb-4 border-b pb-2">
                           <h2 className="text-lg font-medium md:text-2xl">Options</h2>
@@ -33,10 +33,12 @@ export default function Inpage_header({ title }) {  // Destructure props properl
                             size={28}
                           />
                         </div>
-            <ul className="space-y-2 flex flex-col p-3 text-lg md:text-xl">
-              <button className='text-left'>Edit Data</button>
-              <button className='text-left'>Blacklist</button>
-              <button className='text-left'>Add membership</button>
+            <ul className="space-y-2 flex flex-col p-3 text-sm md:text-xl text-center">
+              <button className=' bg-[#232024] p-3 rounded-2xl hover:border border-[#FFDD4A]'>Edit Data</button>
+              <button className=' bg-[#232024] p-3 rounded-2xl hover:border border-[#FFDD4A]'>Blacklist</button>
+              <button className=' bg-[#232024] p-3 rounded-2xl hover:border border-[#FFDD4A]'>Remarks</button>
+              <button className=' bg-[#232024] p-3 rounded-2xl hover:border border-[#FFDD4A]'>Add membership</button>
+              
             </ul>
           </div>
         )}
