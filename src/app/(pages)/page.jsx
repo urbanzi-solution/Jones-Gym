@@ -1,8 +1,9 @@
 import DashboardGeneral from "@/components/Dashboard_general";
 import DashboardMembers from "@/components/Dashboard_members";
 import DashboardStaff from "@/components/Dashborad_staff";
-import DashboardGymplan  from "@/components/Dashborad_gymplan";
 import Dashboardgreeting from "@/components/Dashboard_greeting";
+import DashboardPlan from "@/components/Dashboard_plan";
+
 
 export default function Dashboard() {
   return (
@@ -11,7 +12,7 @@ export default function Dashboard() {
       <DashboardGeneral />
       <DashboardMembers />
       <DashboardStaff />
-      <DashboardGymplan />
+      <DashboardPlan />
       <div className="h-20"></div>
     </div>
   );

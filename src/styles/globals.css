@@ -57,9 +57,10 @@ body {
 /* Desktop (1280px and up) */
 @media (min-width: 1280px) {
   .box {
-    margin: 60px 40px;
+    margin: 32px;
     padding: 40px;
   }
 }
+
 
 

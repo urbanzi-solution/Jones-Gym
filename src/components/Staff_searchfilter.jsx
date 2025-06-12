@@ -80,7 +80,7 @@ export default function staff_searchfilter() {
 
         {/* Expanded Filter Panel - Plans */}
         {showFilters && (
-          <div className="absolute top-full left-0 right-0 z-50 bg-[#000000] rounded-xl shadow-lg mt-2 p-4 md:p-8 text-center">
+          <div className="absolute top-full left-0 right-0 z-50 bg-[#000000] rounded-xl shadow-lg mt-2 p-4 md:p-8 text-center border border-[#2B2E32]">
             <div className="flex justify-between items-center mb-4 border-b pb-2">
               <h2 className="text-lg font-medium md:text-2xl">All Plans</h2>
               <GrClose
