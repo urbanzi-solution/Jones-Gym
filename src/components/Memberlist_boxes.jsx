@@ -16,11 +16,13 @@ export default async function Memberlist_boxes() {
                         <span className='flex flex-col gap-1 text-sm sm:text-xl lg:text-2xl'>
                             <h3 className='font-semibold'>{member.name || "Member name"}</h3>
                             <h4>{member.user_id || "member_id"}</h4>
-                            <p>{member.join_date || "01-01-2000"}</p>
+                            <p className='text-red-600'>{member.join_date || "01-01-2000"}</p>
+                            <p className='text-yellow-500 text-sm md:text-lg'>Note: Remarks</p>
                         </span>
+                        
                     </div>
                     <span className='flex flex-col gap-2 items-end justify-center text-[10px] sm:text-lg lg:text-xl'>
-                        <p className='bg-[#232024] px-2 py-1 rounded-4xl border-1 text-center'>
+                        <p className='bg-[#232024] px-2 py-1 rounded-4xl border-1 border-white text-center'>
                             {member.expiry_status || "Expiry in 32 Days"}
                         </p>
                         <p className='bg-[#232024] px-2 py-1 rounded-4xl border-1 text-center'>

@@ -14,7 +14,7 @@ export default function Staff_profile() {
         </div>
         <div className='flex flex-col text-center justify-center gap-4 md:gap-6 lg:gap-10'>
             <p className='bg-[#2B2E32] flex gap-2 justify-center items-center rounded-lg text-white font-semibold px-4 py-2 text-xl md:text-3xl md:py-4 lg:py-6'>PT Attendace<FaArrowRight/></p>
-            <p className="bg-[#2B2E32] flex gap-2 justify-center items-center rounded-lg text-[#FFDD4A] font-semibold px-4 py-2 text-xl md:text-3xl md:py-4 lg:py-6">Add Member</p>
+            
             <p className="bg-[#FFDD4A] px-4 py-2 font-semibold rounded-lg text-black border-2 md:py-4 lg:py-6 md:text-2xl">Staff Attandance</p>
 
         </div>

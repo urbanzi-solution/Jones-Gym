@@ -39,7 +39,7 @@ export default function Dashboardgreeting() {
             <Add_member value="Staff" Link="/staff-add" />
             <span className="bg-amber-600">
                 <Add_member value="Plan" Link="/plan-add" />
-                <View_section value="Plan" Link="/member-add" />
+                <View_section value="Plan" Link="/see-allplans" />
             </span>
             
           </ul>
