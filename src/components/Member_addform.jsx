@@ -21,19 +21,6 @@ export default function member_addpage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Left Column */}
           <div className="space-y-4">
-            {/* Full Name */}
-            <div>
-              <label htmlFor="fullName" className="block text-sm font-medium mb-1 text-gray-300">
-                Full Name *
-              </label>
-              <input
-                type="text"
-                id="fullName"
-                placeholder="Enter full name"
-                className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                required
-              />
-            </div>
 
             {/* Gym ID */}
             <div>
@@ -45,6 +32,20 @@ export default function member_addpage() {
                 id="gymID"
                 placeholder="Enter gym ID"
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
+                required
+              />
+            </div>
+
+            {/* Full Name */}
+            <div>
+              <label htmlFor="fullName" className="block text-sm font-medium mb-1 text-gray-300">
+                Full Name *
+              </label>
+              <input
+                type="text"
+                id="fullName"
+                placeholder="Enter full name"
+                className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 required
               />
             </div>
@@ -64,6 +65,18 @@ export default function member_addpage() {
                 <option value="female">Female</option>
                 <option value="other">Other</option>
               </select>
+            </div>
+
+            {/* Date of Birth */}
+            <div>
+              <label htmlFor="dob" className="block text-sm font-medium mb-1 text-gray-300">
+                Date of Birth
+              </label>
+              <input
+                type="date"
+                id="dob"
+                className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
+              />
             </div>
 
             {/* Location */}
@@ -110,28 +123,17 @@ export default function member_addpage() {
               />
             </div>
 
-            {/* Trainer Name */}
+            {/* Joining Date */}
             <div>
-              <label htmlFor="trainer" className="block text-sm font-medium mb-1 text-gray-300">
-                Trainer Name
+              <label htmlFor="joining_date" className="block text-sm font-medium mb-1 text-gray-300">
+                Joining Date *
               </label>
               <input
                 type="text"
-                id="trainer"
-                placeholder="Trainer Name"
-                className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
-              />
-            </div>
-
-            {/* Date of Birth */}
-            <div>
-              <label htmlFor="dob" className="block text-sm font-medium mb-1 text-gray-300">
-                Date of Birth
-              </label>
-              <input
-                type="date"
-                id="dob"
-                className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
+                id="joining_date"
+                placeholder="Enter joining date"
+                className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                required
               />
             </div>
 
