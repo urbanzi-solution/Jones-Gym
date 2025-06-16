@@ -12,6 +12,7 @@ const pool = new Pool({
     connectionTimeoutMillis: 2000 // Return an error after 2 seconds if no connection
 })
 
+
 // Generic query function
 export async function query(text, params) {
   const client = await pool.connect()

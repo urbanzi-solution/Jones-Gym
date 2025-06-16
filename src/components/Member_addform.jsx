@@ -1,42 +1,141 @@
 "use client";
-
-import { useState } from "react";
 import { GrClose } from "react-icons/gr";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import Addmembership from '@/components/Add-membership_form';
 
 export default function member_addpage() {
-  const router = useRouter();
   const [includeMembership, setIncludeMembership] = useState(false); // ✅ Step 1: state for checkbox
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    gym_id: "",
+    fullName: "",
+    gender: "",
+    dob: "",
+    location: "",
+    phone_no: "",
+    whatsapp_no: "",
+    join_date: "",
+    profilePicture: null,
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    const { id, value, files } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: files ? files[0] : value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError("");
+
+    // Basic validation
+    if (!/^\d{10}$/.test(formData.phone_no)) {
+      setError("Phone number must be 10 digits");
+      setIsSubmitting(false);
+      return;
+    }
+    if (!/^\d{10}$/.test(formData.whatsapp_no)) {
+      setError("WhatsApp number must be 10 digits");
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      const dataToSubmit = {
+        gym_id: formData.gym_id,
+        full_name: formData.fullName,
+        gender: formData.gender,
+        dob: formData.dob,
+        location: formData.location,
+        phone: formData.phone_no,
+        whatsapp: formData.whatsapp_no,
+        join_date: formData.join_date,
+      };
+
+      if (formData.profilePicture) {
+        console.warn("Profile picture selected but not uploaded (no storage configured)");
+        // Future: Add cloud storage upload (e.g., Cloudinary) and include URL
+        // const imageUrl = await uploadImage(formData.profilePicture);
+        // dataToSubmit.profile_picture = imageUrl;
+      }
+
+      const response = await fetch("/api/members", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToSubmit),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to submit form");
+      }
+
+      const result = await response.json();
+      console.log("Success:", result);
+      router.push("/members");
+      // Optional: Reset form after success
+      // setFormData({
+      //   fullName: "",
+      //   gym_id: "",
+      //   join_date: "",
+      //   gender: "",
+      //   location: "",
+      //   phone_no: "",
+      //   whatsapp_no: "",
+      //   dob: "",
+      //   profilePicture: null,
+      // });
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      setError(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="box">
       <div className="flex justify-between items-center text-xl pb-2 border-b md:text-2xl">
         <h2>Add Member</h2>
-        <GrClose className="cursor-pointer hover:scale-90 hover:bg-black" onClick={() => router.back()} />
+        <GrClose
+          className="cursor-pointer hover:scale-90 hover:bg-black"
+          onClick={() => router.back()}
+        />
       </div>
 
-      <form action="" className="mt-5">
-        {/* Grid layout for responsive columns */}
+      <form onSubmit={handleSubmit} className="mt-5">
+        {error && (
+          <div className="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">
+            Error: {error}
+          </div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Left Column */}
           <div className="space-y-4">
 
-            {/* Gym ID */}
             <div>
-              <label htmlFor="gymID" className="block text-sm font-medium mb-1 text-gray-300">
+              <label htmlFor="gym_id" className="block text-sm font-medium mb-1 text-gray-300">
                 Gym ID *
               </label>
               <input
                 type="text"
-                id="gymID"
-                placeholder="Enter gym ID"
-                className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
+                id="gym_id"
+                value={formData.gym_id}
+                onChange={handleChange}
+                placeholder="Enter Gym ID"
+                className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 required
               />
             </div>
 
-            {/* Full Name */}
             <div>
               <label htmlFor="fullName" className="block text-sm font-medium mb-1 text-gray-300">
                 Full Name *
@@ -44,19 +143,22 @@ export default function member_addpage() {
               <input
                 type="text"
                 id="fullName"
+                value={formData.fullName}
+                onChange={handleChange}
                 placeholder="Enter full name"
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 required
               />
             </div>
 
-            {/* Gender Dropdown */}
             <div>
               <label htmlFor="gender" className="block text-sm font-medium mb-1 text-gray-300">
                 Gender *
               </label>
               <select
                 id="gender"
+                value={formData.gender}
+                onChange={handleChange}
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] appearance-none"
                 required
               >
@@ -67,19 +169,20 @@ export default function member_addpage() {
               </select>
             </div>
 
-            {/* Date of Birth */}
             <div>
               <label htmlFor="dob" className="block text-sm font-medium mb-1 text-gray-300">
-                Date of Birth
+                Date of Birth *
               </label>
               <input
                 type="date"
                 id="dob"
-                className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
+                value={formData.dob}
+                onChange={handleChange}
+                className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                required
               />
             </div>
 
-            {/* Location */}
             <div>
               <label htmlFor="location" className="block text-sm font-medium mb-1 text-gray-300">
                 Location *
@@ -87,70 +190,91 @@ export default function member_addpage() {
               <input
                 type="text"
                 id="location"
-                placeholder="Enter location"
-                className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
-                required
-              />
-            </div>
-          </div>
-
-          {/* Right Column */}
-          <div className="space-y-4">
-            {/* Phone Number */}
-            <div>
-              <label htmlFor="phone" className="block text-sm font-medium mb-1 text-gray-300">
-                Phone Number *
-              </label>
-              <input
-                type="tel"
-                id="phone"
-                placeholder="Enter phone number"
-                className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
-                required
-              />
-            </div>
-
-            {/* WhatsApp Number */}
-            <div>
-              <label htmlFor="whatsapp" className="block text-sm font-medium mb-1 text-gray-300">
-                WhatsApp Number
-              </label>
-              <input
-                type="tel"
-                id="whatsapp"
-                placeholder="Enter WhatsApp number"
-                className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
-              />
-            </div>
-
-            {/* Joining Date */}
-            <div>
-              <label htmlFor="joining_date" className="block text-sm font-medium mb-1 text-gray-300">
-                Joining Date *
-              </label>
-              <input
-                type="text"
-                id="joining_date"
-                placeholder="Enter joining date"
+                value={formData.location}
+                onChange={handleChange}
+                placeholder="Enter the location"
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 required
               />
             </div>
 
-            {/* Profile Picture Upload */}
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="phone_no" className="block text-sm font-medium mb-1 text-gray-300">
+                Phone Number *
+              </label>
+              <input
+                type="text"
+                id="phone_no"
+                value={formData.phone_no}
+                onChange={handleChange}
+                placeholder="Enter the phone number"
+                className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="whatsapp_no" className="block text-sm font-medium mb-1 text-gray-300">
+                WhatsApp Number *
+              </label>
+              <input
+                type="text"
+                id="whatsapp_no"
+                value={formData.whatsapp_no}
+                onChange={handleChange}
+                placeholder="Enter the WhatsApp number"
+                className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="join_date" className="block text-sm font-medium mb-1 text-gray-300">
+                Joining Date *
+              </label>
+              <input
+                type="date"
+                id="join_date"
+                value={formData.join_date}
+                onChange={handleChange}
+                className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                required
+              />
+            </div>
+
+            {/* ✅ Profile pic */}
             <div>
               <label className="block text-sm font-medium mb-1 text-gray-300">
-                Profile Picture *
+                Profile Picture (Optional)
               </label>
               <div className="flex items-center justify-center w-full">
                 <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-[#3E3A3D] rounded-lg cursor-pointer bg-[#232024] hover:bg-[#2E2A2D]">
                   <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    <svg className="w-8 h-8 mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                    <svg
+                      className="w-8 h-8 mb-2 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                      ></path>
                     </svg>
                     <p className="text-sm text-gray-400">Click to upload image</p>
                   </div>
-                  <input required type="file" className="hidden" accept="image/*" />
+                  <input
+                    type="file"
+                    id="profilePicture"
+                    onChange={handleChange}
+                    className="hidden"
+                    accept="image/*"
+                  />
                 </label>
               </div>
             </div>
@@ -178,20 +302,22 @@ export default function member_addpage() {
           </div>
         )}
 
-        {/* Form Buttons */}
+        {/* ✅ Form Buttons */}
         <div className="flex justify-end gap-4 mt-8">
           <button
-            onClick={() => router.back()}
             type="button"
+            onClick={() => router.back()}
             className="px-6 py-2.5 border border-[#3E3A3D] rounded-lg text-gray-300 hover:bg-[#2E2A2D] transition-colors"
+            disabled={isSubmitting}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+            disabled={isSubmitting}
           >
-            Save
+            {isSubmitting ? "Saving..." : "Save"}
           </button>
         </div>
       </form>
