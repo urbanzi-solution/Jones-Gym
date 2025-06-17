@@ -30,6 +30,8 @@ VALUES
 ('USR010', 'Maria Garcia', 'Female', '1986-06-20', 'Mexico City, Mexico', '+525512345678', '+525512345678', '2020-10-30');
 ```
 
+### membership_plans table
+
 ```sql
 CREATE TABLE membership_plans (
   user_id VARCHAR(6),
@@ -50,21 +52,15 @@ CREATE TABLE trainers (
     name VARCHAR(30),
     gender VARCHAR(6),
     date_of_birth VARCHAR(10),
+    location VARCHAR(50),
     phone_no VARCHAR(15),
     whatsapp_number VARCHAR(15),
-    joining_date VARCHAR(10),
-    location VARCHAR(50),
-    pt_attendance VARCHAR(5)
+    joining_date VARCHAR(10)
 );
 ```
 
 ```sql
-INSERT INTO trainers (trainer_id, name, gender, date_of_birth, phone_no, whatsapp_number, joining_date, location, pt_attendance) VALUES
-('T00001', 'Rakesh Tiwari', 'Male', '1985-04-12', '+919345678901', '+919345678901', '2023-01-15', 'Mumbai, India', '95%'),
-('T00002', 'Suman Yadav', 'Female', '1990-06-20', '+918234567890', '+918234567890', '2023-03-10', 'Delhi, India', '92%'),
-('T00003', 'Vijay Chauhan', 'Male', '1988-09-05', '+917123456789', '+917123456789', '2023-05-25', 'Bangalore, India', '98%'),
-('T00004', 'Anita Bose', 'Female', '1992-11-18', '+916012345678', '+916012345678', '2023-07-30', 'Kolkata, India', '90%'),
-('T00005', 'Sameer Khan', 'Male', '1987-02-28', '+915901234567', '+915901234567', '2023-09-12', 'Hyderabad, India', '93%');
+
 ```
 
 ### transations table
