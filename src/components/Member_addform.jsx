@@ -1,25 +1,38 @@
+//D:\codes\Jones-Gym\src\components\Member_addform.jsx
+
 "use client";
 import { GrClose } from "react-icons/gr";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Addmembership from '@/components/Add-membership_form';
 
-export default function member_addpage() {
-  const [includeMembership, setIncludeMembership] = useState(false); // ✅ Step 1: state for checkbox
+
+export default function Member_addpage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    gym_id: "",
-    fullName: "",
-    gender: "",
-    dob: "",
-    location: "",
-    phone_no: "",
-    whatsapp_no: "",
-    join_date: "",
+    gym_id: '',
+    fullName: '',
+    gender: '',
+    dob: '',
+    location: '',
+    phone_no: '',
+    whatsapp_no: '',
+    join_date: '',
     profilePicture: null,
   });
+  const [includeMembership, setIncludeMembership] = useState(false);
+  const [plans, setPlans] = useState([
+    {
+      plan: '',
+      amount: '',
+      discount: '',
+      balance: 0,
+      trainer: '',
+      includeDays: false,
+      days: '',
+    },
+  ]);
+  const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { id, value, files } = e.target;
@@ -29,19 +42,67 @@ export default function member_addpage() {
     }));
   };
 
+  const handlePlanChange = (index, field, value) => {
+    setPlans((prevPlans) => {
+      const newPlans = [...prevPlans];
+      newPlans[index] = { ...newPlans[index], [field]: value };
+
+      if (field === 'amount' || field === 'discount') {
+        const amount = parseFloat(newPlans[index].amount) || 0;
+        const discount = parseFloat(newPlans[index].discount) || 0;
+        newPlans[index].balance = Math.max(0, amount - discount);
+      }
+
+      return newPlans;
+    });
+  };
+
+  const handleToggleDays = (index) => {
+    setPlans((prevPlans) => {
+      const newPlans = [...prevPlans];
+      newPlans[index] = {
+        ...newPlans[index],
+        includeDays: !newPlans[index].includeDays,
+        days: !newPlans[index].includeDays ? newPlans[index].days : '',
+      };
+      return newPlans;
+    });
+  };
+
+  const handleAddPlan = () => {
+    setPlans((prevPlans) => [
+      ...prevPlans,
+      {
+        plan: '',
+        amount: '',
+        discount: '',
+        balance: 0,
+        trainer: '',
+        includeDays: false,
+        days: '',
+      },
+    ]);
+  };
+
+  const handleRemovePlan = (index) => {
+    if (plans.length > 1) {
+      setPlans((prevPlans) => prevPlans.filter((_, i) => i !== index));
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setError("");
+    setError('');
 
     // Basic validation
     if (!/^\d{10}$/.test(formData.phone_no)) {
-      setError("Phone number must be 10 digits");
+      setError('Phone number must be 10 digits');
       setIsSubmitting(false);
       return;
     }
     if (!/^\d{10}$/.test(formData.whatsapp_no)) {
-      setError("WhatsApp number must be 10 digits");
+      setError('WhatsApp number must be 10 digits');
       setIsSubmitting(false);
       return;
     }
@@ -56,45 +117,34 @@ export default function member_addpage() {
         phone: formData.phone_no,
         whatsapp: formData.whatsapp_no,
         join_date: formData.join_date,
+        ...(includeMembership && { membership_plans: plans }),
       };
 
       if (formData.profilePicture) {
-        console.warn("Profile picture selected but not uploaded (no storage configured)");
+        console.warn('Profile picture selected but not uploaded (no storage configured)');
         // Future: Add cloud storage upload (e.g., Cloudinary) and include URL
         // const imageUrl = await uploadImage(formData.profilePicture);
         // dataToSubmit.profile_picture = imageUrl;
       }
 
-      const response = await fetch("/api/members", {
-        method: "POST",
+      const response = await fetch('/api/members', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(dataToSubmit),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to submit form");
+        throw new Error(errorData.error || 'Failed to submit form');
       }
 
       const result = await response.json();
-      console.log("Success:", result);
-      router.push("/members");
-      // Optional: Reset form after success
-      // setFormData({
-      //   fullName: "",
-      //   gym_id: "",
-      //   join_date: "",
-      //   gender: "",
-      //   location: "",
-      //   phone_no: "",
-      //   whatsapp_no: "",
-      //   dob: "",
-      //   profilePicture: null,
-      // });
+      console.log('Success:', result);
+      router.push('/members');
     } catch (error) {
-      console.error("Error submitting form:", error);
+      console.error('Error submitting form:', error);
       setError(error.message);
     } finally {
       setIsSubmitting(false);
@@ -120,7 +170,6 @@ export default function member_addpage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-4">
-
             <div>
               <label htmlFor="gym_id" className="block text-sm font-medium mb-1 text-gray-300">
                 Gym ID *
@@ -197,7 +246,6 @@ export default function member_addpage() {
                 required
               />
             </div>
-
           </div>
 
           <div className="space-y-4">
@@ -245,7 +293,6 @@ export default function member_addpage() {
               />
             </div>
 
-            {/* ✅ Profile pic */}
             <div>
               <label className="block text-sm font-medium mb-1 text-gray-300">
                 Profile Picture (Optional)
@@ -281,7 +328,6 @@ export default function member_addpage() {
           </div>
         </div>
 
-        {/* ✅ Add checkbox for Membership section toggle */}
         <div className="mt-6 flex items-center gap-3">
           <input
             type="checkbox"
@@ -295,14 +341,149 @@ export default function member_addpage() {
           </label>
         </div>
 
-        {/* ✅ Conditional rendering of Membership Plans Section */}
         {includeMembership && (
           <div className="mt-8 border-t border-[#6e6e6e] pt-4">
-            <Addmembership />
+            <h3 className="text-lg font-medium mb-4 text-gray-300">Membership Plans</h3>
+            
+            {plans.map((plan, index) => (
+              <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4 items-end">
+                <div>
+                  <label htmlFor={`plan-${index}`} className="block text-sm font-medium mb-1 text-gray-300">
+                    Plan
+                  </label>
+                  <select
+                    id={`plan-${index}`}
+                    value={plan.plan}
+                    onChange={(e) => handlePlanChange(index, 'plan', e.target.value)}
+                    className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] appearance-none"
+                  >
+                    <option value="">Select Plan</option>
+                    <option value="basic">Basic Membership</option>
+                    <option value="standard">Standard Membership</option>
+                    <option value="premium">Premium Membership</option>
+                    <option value="custom">Custom Plan</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label htmlFor={`amount-${index}`} className="block text-sm font-medium mb-1 text-gray-300">
+                    Amount (₹)
+                  </label>
+                  <input
+                    type="number"
+                    id={`amount-${index}`}
+                    value={plan.amount}
+                    onChange={(e) => handlePlanChange(index, 'amount', e.target.value)}
+                    placeholder="Amount"
+                    min="0"
+                    className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor={`discount-${index}`} className="block text-sm font-medium mb-1 text-gray-300">
+                    Discount (₹)
+                  </label>
+                  <input
+                    type="number"
+                    id={`discount-${index}`}
+                    value={plan.discount}
+                    onChange={(e) => handlePlanChange(index, 'discount', e.target.value)}
+                    placeholder="Discount"
+                    min="0"
+                    className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor={`balance-${index}`} className="block text-sm font-medium mb-1 text-gray-300">
+                    Balance (₹)
+                  </label>
+                  <input
+                    type="number"
+                    id={`balance-${index}`}
+                    value={plan.balance.toFixed(2)}
+                    readOnly
+                    className="p-4 w-full bg-[#2E2A2D] rounded-lg border border-[#3E3A3D] cursor-not-allowed"
+                  />
+                </div>
+
+                <div className="md:col-span-4">
+                  <label htmlFor={`trainer-${index}`} className="block text-sm font-medium mb-1 text-gray-300">
+                    Assigned Trainer
+                  </label>
+                  <select
+                    id={`trainer-${index}`}
+                    value={plan.trainer}
+                    onChange={(e) => handlePlanChange(index, 'trainer', e.target.value)}
+                    className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] appearance-none"
+                  >
+                    <option value="">Select Trainer</option>
+                    <option value="john">John Doe</option>
+                    <option value="jane">Jane Smith</option>
+                    <option value="mike">Mike Johnson</option>
+                    <option value="sarah">Sarah Williams</option>
+                  </select>
+                </div>
+
+                <div className="md:col-span-4 flex items-center gap-4">
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id={`include-days-${index}`}
+                      checked={plan.includeDays}
+                      onChange={() => handleToggleDays(index)}
+                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                    />
+                    <label htmlFor={`include-days-${index}`} className="ml-2 block text-sm text-gray-300">
+                      Include Days
+                    </label>
+                  </div>
+                  
+                  {plan.includeDays && (
+                    <div className="flex-1">
+                      <label htmlFor={`days-${index}`} className="block text-sm font-medium mb-1 text-gray-300">
+                        Days (optional)
+                      </label>
+                      <input
+                        type="number"
+                        id={`days-${index}`}
+                        value={plan.days}
+                        onChange={(e) => handlePlanChange(index, 'days', e.target.value)}
+                        placeholder="Number of days"
+                        min="1"
+                        className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {plans.length > 1 && (
+                  <div className="md:col-span-4 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => handleRemovePlan(index)}
+                      className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
+                    >
+                      Remove Plan
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+
+            <div className="flex justify-start mt-4">
+              <button
+                type="button"
+                onClick={handleAddPlan}
+                className="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              >
+                Add Another Plan
+              </button>
+            </div>
           </div>
         )}
 
-        {/* ✅ Form Buttons */}
         <div className="flex justify-end gap-4 mt-8">
           <button
             type="button"
