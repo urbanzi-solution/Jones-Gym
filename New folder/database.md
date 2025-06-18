@@ -63,6 +63,18 @@ CREATE TABLE trainers (
 
 ```
 
+### plans table
+
+```sql
+CREATE TABLE plans (
+    plan_name VARCHAR(30),
+    description VARCHAR(250),
+    amount INTEGER,
+    duration VARCHAR(10),
+    status VARCHAR(10)
+);
+```
+
 ### transations table
 
 ```sql
@@ -78,12 +90,4 @@ CREATE TABLE transations (
 );
 ```
 
-### plans table
 
-```sql
-CREATE TABLE plans (
-    plan_name VARCHAR(30),
-    amount VARCHAR(5),
-    duration VARCHAR(10)
-);
-```

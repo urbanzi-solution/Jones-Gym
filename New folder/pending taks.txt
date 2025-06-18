@@ -1,12 +1,19 @@
+
+add plan form
+> completed
+
+/see-allplans page
+> completed
+
+trainer list in the add members form
+> completed
+
+plan list in the add members add members
+> completed
+
 saving profile pic in add memmbers 
 
 saving profile pic in add staff
-
-add plan form
-
-trainer list in the add members form
-
-plan list in the add members add members
 
 staff attendance table arrangements
 

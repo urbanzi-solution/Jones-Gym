@@ -1,22 +1,72 @@
 "use client";
-
 import { GrClose } from "react-icons/gr";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function PlanAddPage() {
   const router = useRouter();
-  
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Collect form data
+    const formData = {
+      plan_name: e.target.planName.value,
+      description: e.target.description.value,
+      amount: parseInt(e.target.amount.value),
+      duration: e.target.duration.value,
+      status: e.target.status.value,
+    };
+
+    try {
+      const response = await fetch("/api/add_plans", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setSuccess("Plan added successfully!");
+        setError(null);
+        // Reset form
+        e.target.reset();
+        // Redirect to see-allplans page
+        router.push("/see-allplans");
+      } else {
+        setError(result.error || "Failed to add plan.");
+        setSuccess(null);
+        setIsSubmitting(false);
+      }
+    } catch (err) {
+      setError("An error occurred while adding the plan.");
+      setSuccess(null);
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="box">
       <div className="flex justify-between items-center text-xl pb-2 border-b md:text-2xl">
         <h2>Add Gym Plan</h2>
-        <GrClose 
-          className="cursor-pointer hover:scale-90 hover:bg-black" 
+        <GrClose
+          className="cursor-pointer hover:scale-90 hover:bg-black"
           onClick={() => router.back()}
         />
       </div>
-      
-      <form action="" className="mt-5">
+
+      <form onSubmit={handleSubmit} className="mt-5">
+        {/* Display success or error messages */}
+        {success && <div className="text-green-500 mb-4">{success}</div>}
+        {error && <div className="text-red-500 mb-4">{error}</div>}
+
         {/* Grid layout for responsive columns */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Left Column */}
@@ -29,6 +79,7 @@ export default function PlanAddPage() {
               <input
                 type="text"
                 id="planName"
+                name="planName"
                 placeholder="e.g., Premium Membership"
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 required
@@ -42,6 +93,7 @@ export default function PlanAddPage() {
               </label>
               <textarea
                 id="description"
+                name="description"
                 placeholder="Describe the plan features"
                 rows={3}
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
@@ -59,6 +111,7 @@ export default function PlanAddPage() {
               <input
                 type="number"
                 id="amount"
+                name="amount"
                 placeholder="Enter amount"
                 min="0"
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
@@ -74,6 +127,7 @@ export default function PlanAddPage() {
               <input
                 type="number"
                 id="duration"
+                name="duration"
                 placeholder="Enter duration in days"
                 min="1"
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
@@ -88,6 +142,7 @@ export default function PlanAddPage() {
               </label>
               <select
                 id="status"
+                name="status"
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] appearance-none"
                 required
               >
@@ -102,20 +157,21 @@ export default function PlanAddPage() {
         {/* Form Buttons */}
         <div className="flex justify-end gap-4 mt-8">
           <button
-            onClick={() => router.back()} 
+            onClick={() => router.back()}
             type="button"
             className="px-6 py-2.5 border border-[#3E3A3D] rounded-lg text-gray-300 hover:bg-[#2E2A2D] transition-colors"
           >
             Cancel
           </button>
-          <button 
+          <button
             type="submit"
-            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            disabled={isSubmitting}
+            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-blue-400 disabled:cursor-not-allowed"
           >
-            Save Plan
+            {isSubmitting ? "Saving..." : "Save Plan"}
           </button>
         </div>
       </form>
     </div>
-  )
+  );
 }

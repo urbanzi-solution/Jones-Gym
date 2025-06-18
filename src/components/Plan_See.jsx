@@ -1,33 +1,34 @@
 "use client";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaEdit } from "react-icons/fa";
 import { GrClose } from "react-icons/gr";
 
-const initialPlans = [
-  {
-    id: 1,
-    name: "Premium Membership",
-    description: "Unlimited access to all equipment and group classes.",
-    amount: 3000,
-    duration: 90,
-    status: "active",
-  },
-  {
-    id: 2,
-    name: "Standard Plan",
-    description: "Access to gym floor and basic equipment.",
-    amount: 1500,
-    duration: 30,
-    status: "inactive",
-  },
-];
-
 export default function PlanList() {
-  const [plans, setPlans] = useState(initialPlans);
+  const [plans, setPlans] = useState([]);
   const [activeTab, setActiveTab] = useState("active");
   const [editId, setEditId] = useState(null);
   const [editedPlan, setEditedPlan] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const response = await fetch('/api/fetch_plans');
+        if (!response.ok) {
+          throw new Error('Failed to fetch plans');
+        }
+        const data = await response.json();
+        setPlans(data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchPlans();
+  }, []);
 
   const handleStatusToggle = (id) => {
     const updated = plans.map((plan) =>
@@ -45,7 +46,7 @@ export default function PlanList() {
 
   const handleSave = () => {
     const updated = plans.map((plan) =>
-      plan.id === editedPlan.id ? editedPlan : plan
+      plan.id === editId ? editedPlan : plan
     );
     setPlans(updated);
     setEditId(null);
@@ -54,6 +55,9 @@ export default function PlanList() {
   const handleChange = (field, value) => {
     setEditedPlan({ ...editedPlan, [field]: value });
   };
+
+  if (loading) return <div>Loading plans...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="box">

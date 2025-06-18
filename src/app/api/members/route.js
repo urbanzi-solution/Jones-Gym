@@ -1,4 +1,7 @@
+// src\app\api\members\route.js
+
 import { getClient } from '@/lib/db';
+import { NextResponse } from 'next/server';
 
 export async function POST(request) {
   let client;
@@ -138,5 +141,39 @@ export async function POST(request) {
     if (client) {
       await client.release();
     }
+  }
+}
+
+export async function GET(request) {
+  const client = await getClient();
+  try {
+    // Fetch plan names from plans table
+    const plansQuery = 'SELECT plan_name FROM plans WHERE status = $1';
+    const plansResult = await client.query(plansQuery, ['active']);
+    const plans = plansResult.rows.map(row => row.plan_name);
+
+    console.log(plans);
+
+    // Fetch trainer id and name from trainers table
+    const trainersQuery = 'SELECT trainer_id, name FROM trainers';
+    const trainersResult = await client.query(trainersQuery);
+    const trainers = trainersResult.rows.map(row => ({
+      trainer_id: row.trainer_id,
+      name: row.name
+    }));
+
+    return NextResponse.json({
+      plans,
+      trainers
+    }, { status: 200 });
+
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 }
+    );
+  } finally {
+    await client.end();
   }
 }
