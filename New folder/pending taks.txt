@@ -11,10 +11,28 @@ trainer list in the add members form
 plan list in the add members add members
 > completed
 
-saving profile pic in add memmbers 
+Filtering data in staff and members
+
+members active and inactive filtering
+
+complete individual profile, details included :-
+transaction details calling with user_id in all the table
+calling trainer details with id
+
+staff attendance table architecture and calender view in the frontend
+
+add transaction type in add paln and renew plan
+
+----------------------------------------------------------------------
+
+saving profile pic in add memmbers
 
 saving profile pic in add staff
 
-staff attendance table architecture
-
+Report page:-
 transactions
+
+notification:-
+checking data expire on the backend
+
+morning wish depends on the time
