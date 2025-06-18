@@ -15,6 +15,6 @@ saving profile pic in add memmbers
 
 saving profile pic in add staff
 
-staff attendance table arrangements
+staff attendance table architecture
 
 transactions
