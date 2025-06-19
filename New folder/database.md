@@ -39,6 +39,7 @@ CREATE TABLE membership_plans (
   amount INTEGER,
   discount INTEGER,
   balance INTEGER,
+  trans_type VARCHAR(15),
   trainer VARCHAR(30),
   date DATE
 );
