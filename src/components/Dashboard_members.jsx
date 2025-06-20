@@ -1,3 +1,4 @@
+// D:\codes\Jones-Gym\src\components\Dashboard_members.jsx
 import { query } from '@/lib/db'
 
 export default async function DashboardMembers() {

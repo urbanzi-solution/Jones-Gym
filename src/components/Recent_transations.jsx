@@ -1,3 +1,5 @@
+// D:\codes\Jones-Gym\src\components\Recent_transations.jsx
+
 import { FaArrowRight } from "react-icons/fa";
 import { FaCcAmazonPay } from "react-icons/fa";
 import { HiOutlineCash } from "react-icons/hi";
