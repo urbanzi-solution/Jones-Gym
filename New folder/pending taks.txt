@@ -11,11 +11,17 @@ trainer list in the add members form
 plan list in the add members add members
 > completed
 
-add transaction type in add paln and renew plan
+add transaction type in add paln
+> completed
+
+staff profile
+> completed
 
 complete individual profile, details included :-
 transaction details calling with user_id in all the table
 calling trainer details with id
+
+add transaction type in renew plan
 
 Filtering data in dashboard, staff and members
 
@@ -24,6 +30,8 @@ members active and inactive filtering
 staff attendance table architecture and calender view in the frontend
 
 ----------------------------------------------------------------------
+
+expire data update in the member list and member profile
 
 saving profile pic in add memmbers
 

@@ -5,7 +5,7 @@ import Renew_form from "./Renew_form";
 import { GrClose } from "react-icons/gr";
 import Balance_form from "./Balance_form";
 
-export default function MemberlistProfile() {
+export default function MemberlistProfile({ member }) {
   const [renewBox, setRenewBox] = useState(false);
   const [balanceBox, setBalanceBox] = useState(false);
 
@@ -19,6 +19,23 @@ export default function MemberlistProfile() {
     if (renewBox) setRenewBox(false);
   };
 
+  // Calculate days until expiry (assuming 1-year membership)
+  const joiningDate = new Date(member.joining_date);
+  const expiryDate = new Date(joiningDate);
+  expiryDate.setFullYear(joiningDate.getFullYear() + 1);
+  const today = new Date();
+  const daysUntilExpiry = Math.max(
+    0,
+    Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24))
+  );
+
+  // Format expiry date
+  const formattedExpiry = expiryDate.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }).split('/').join('-');
+
   return (
     <div className="relative grid grid-cols-1 md:grid-cols-2 p-4 md:p-6 lg:p-10 gap-4 md:gap-10">
       {/* Profile Image Section */}
@@ -29,8 +46,8 @@ export default function MemberlistProfile() {
           alt="User profile"
         />
         <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/95 via-black/60 to-transparent">
-          <p className="text-white font-medium text-sm md:text-lg">#124</p>
-          <p className="text-white font-bold text-lg md:text-2xl">User2</p>
+          <p className="text-white font-medium text-sm md:text-lg">#{member.user_id}</p>
+          <p className="text-white font-bold text-lg md:text-2xl">{member.name}</p>
         </div>
       </div>
 
@@ -63,8 +80,8 @@ export default function MemberlistProfile() {
         {/* Membership Info */}
         <div className="bg-[#FFDD4A] text-black px-4 py-2 rounded-lg gap-2 flex flex-col items-center md:py-4">
           <h3 className="text-xl font-semibold md:text-2xl">Basic Gym</h3>
-          <p className="text-sm md:text-lg">Expiry in 32 Days</p>
-          <p className="text-sm font-semibold md:text-lg">01-01-2026</p>
+          <p className="text-sm md:text-lg">Expiry in {daysUntilExpiry} Days</p>
+          <p className="text-sm font-semibold md:text-lg">{formattedExpiry}</p>
         </div>
 
         {/* Renew Button */}

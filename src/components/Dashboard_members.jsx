@@ -10,12 +10,14 @@ export default async function DashboardMembers() {
         <div className="box">
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg md:text-2xl">Members</h2>
-                <a href="" className="text-sm text-blue-500 hover:underline">See all</a>
+                <a href="/members" className="text-sm text-blue-500 hover:underline">See all</a>
             </div>
 
             <div className="grid grid-cols-3 gap-3 justify-around">
                 {members.map((member, index) => (
-                    <a key={member.id || index} href="#" className="flex flex-col items-center">
+                    <a key={member.id || index} 
+                        href={`/member-profile?member_id=${member.user_id || 'unknown'}`}
+                        className="flex flex-col items-center">
                         <img 
                             src={member.image_url || "/images/user1.jpg"} 
                             alt="Member" 

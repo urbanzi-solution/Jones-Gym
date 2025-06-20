@@ -1,17 +1,21 @@
 import { query } from '@/lib/db'
+
 export default async function Memberlist_boxes() {
+
     const result = await query('SELECT * FROM user_data')
     const members = result.rows
     
     return (
         <div className="">
             {members.map((member, index) => (
-                <a key={member.id || index} className='box flex justify-between items-center' href='/member-profile'>
+                <a key={member.id || index} 
+                    className='box flex justify-between items-center' 
+                    href={`/member-profile?member_id=${member.user_id || 'unknown'}`}>
                     <div className="flex gap-3 items-center sm:gap-5 lg:gap-10">
                         <img 
                             className='w-16 h-16 sm:w-32 sm:h-32 lg:w-40 lg:h-40 object-cover border-2 rounded-full' 
                             src={member.image_url || "/images/user1.jpg"} 
-                            alt={member.name || "Member"} 
+                            alt={member.name || "Member"}
                         />
                         <span className='flex flex-col gap-1 text-sm sm:text-xl lg:text-2xl'>
                             <h3 className='font-semibold'>{member.name || "Member name"}</h3>
