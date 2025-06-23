@@ -1,30 +1,77 @@
 "use client";
-
 import { useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { FiSearch } from "react-icons/fi";
 import { IoFilter } from "react-icons/io5";
 import { GrClose } from "react-icons/gr";
 
-export default function staff_searchfilter() {
-  const [pt_btn, setPt_btn] = useState(false);
-  const [gym_btn, setGym_btn] = useState(false);
-  const [showFilters, setShowFilters] = useState(false);
+export default function Staff_searchfilter() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
+  const [pt_btn, setPt_btn] = useState(searchParams.get("planType") === "PT");
+  const [gym_btn, setGym_btn] = useState(searchParams.get("planType") === "Basic Gym");
+  const [showFilters, setShowFilters] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("searchQuery") || "");
+  const [selectedPlan, setSelectedPlan] = useState(searchParams.get("plan") || "");
+
+  const plans = ["Plan A", "Plan B", "Plan C", "Plan D", "Plan E", "Plan F"];
+
+  const updateSearchParams = (newFilters) => {
+    const params = new URLSearchParams(searchParams.toString());
+    Object.entries(newFilters).forEach(([key, value]) => {
+      if (value) {
+        params.set(key, value);
+      } else {
+        params.delete(key);
+      }
+    });
+    router.push(`?${params.toString()}`);
+  };
 
   const handleActiveClick = () => {
-    setPt_btn(!pt_btn);
+    const newPtState = !pt_btn;
+    setPt_btn(newPtState);
     setGym_btn(false);
-    console.log("pt button clicked");
+    updateSearchParams({
+      planType: newPtState ? "PT" : "",
+    });
   };
 
   const handleInactiveClick = () => {
+    const newGymState = !gym_btn;
     setPt_btn(false);
-    setGym_btn(!gym_btn);
-    console.log("gym button clicked");
+    setGym_btn(newGymState);
+    updateSearchParams({
+      planType: newGymState ? "Basic Gym" : "",
+    });
+  };
+
+  const handlePlanClick = (plan) => {
+    const newPlan = plan === selectedPlan ? "" : plan;
+    setSelectedPlan(newPlan);
+    updateSearchParams({
+      plan: newPlan,
+    });
   };
 
   const toggleFilters = () => {
     setShowFilters(!showFilters);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    updateSearchParams({
+      searchQuery: e.target.value,
+    });
+  };
+
+  const clearFilters = () => {
+    setPt_btn(false);
+    setGym_btn(false);
+    setSelectedPlan("");
+    setSearchQuery("");
+    router.push("?");
   };
 
   return (
@@ -37,6 +84,8 @@ export default function staff_searchfilter() {
         <input
           type="text"
           placeholder="Search Staff"
+          value={searchQuery}
+          onChange={handleSearchChange}
           className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFDD4A] focus:border-transparent text-gray-900 placeholder-gray-400"
         />
       </div>
@@ -56,7 +105,6 @@ export default function staff_searchfilter() {
             >
               PT
             </button>
-
             <button
               onClick={handleInactiveClick}
               className={`px-4 py-2 md:px-6 md:py-3 rounded-xl ${
@@ -68,7 +116,6 @@ export default function staff_searchfilter() {
               Basic Gym
             </button>
           </span>
-
           <button
             onClick={toggleFilters}
             className="flex items-center gap-1 hover:text-[#FFDD4A] transition-colors"
@@ -89,48 +136,28 @@ export default function staff_searchfilter() {
                 size={18}
               />
             </div>
-
-            
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
-                <button className="p-3 rounded-lg text-sm bg-[#232024] md:text-xl hover:border border-[#FFDD4A]" onClick={() => console.log("Plan A clicked")}>
-                  plan A
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
+              {plans.map((plan) => (
+                <button
+                  key={plan}
+                  onClick={() => handlePlanClick(plan)}
+                  className={`p-3 rounded-lg text-sm bg-[#232024] md:text-xl ${
+                    selectedPlan === plan ? "border border-[#FFDD4A]" : "hover:border border-[#FFDD4A]"
+                  }`}
+                >
+                  {plan}
                 </button>
-                
-                <button className="p-3 rounded-lg text-sm bg-[#232024] md:text-xl hover:border border-[#FFDD4A]" onClick={() => console.log("Plan A clicked")}>
-                  plan A
-                </button>
-                
-                <button className="p-3 rounded-lg text-sm bg-[#232024] md:text-xl hover:border border-[#FFDD4A]" onClick={() => console.log("Plan A clicked")}>
-                  plan A
-                </button>
-                
-                <button className="p-3 rounded-lg text-sm bg-[#232024] md:text-xl hover:border border-[#FFDD4A]" onClick={() => console.log("Plan A clicked")}>
-                  plan A
-                </button>
-                
-                <button className="p-3 rounded-lg text-sm bg-[#232024] md:text-xl hover:border border-[#FFDD4A]" onClick={() => console.log("Plan A clicked")}>
-                  plan A
-                </button>
-                
-                <button className="p-3 rounded-lg text-sm bg-[#232024] md:text-xl hover:border border-[#FFDD4A]" onClick={() => console.log("Plan A clicked")}>
-                  plan A
-                </button>
-                
-               
-
-              </div>
-            
-
-            
-
+              ))}
+            </div>
             <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-[#2B2E32]">
-              <button 
-                
+              <button
+                onClick={clearFilters}
                 className="px-4 py-2 rounded-lg border border-gray-600 hover:bg-gray-800"
               >
                 Clear
               </button>
               <button
+                onClick={toggleFilters}
                 className="px-4 py-2 rounded-lg bg-[#FFDD4A] text-black hover:bg-[#FFD700]"
               >
                 Apply

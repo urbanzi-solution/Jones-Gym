@@ -17,15 +17,20 @@ add transaction type in add paln
 staff profile
 > completed
 
-complete individual profile, details included :-
-transaction details calling with user_id in all the table
-calling trainer details with id
+Filtering data in members
+> completed
+
+members active and inactive filtering
+> completed
+
+Filtering data in staff
+> completed
 
 add transaction type in renew plan
 
-Filtering data in dashboard, staff and members
-
-members active and inactive filtering
+complete individual profile, details included :-
+transaction details calling with user_id in all the table
+calling trainer details with id
 
 staff attendance table architecture and calender view in the frontend
 
