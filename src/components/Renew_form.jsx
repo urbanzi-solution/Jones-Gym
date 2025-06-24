@@ -1,47 +1,76 @@
 "use client";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-import { useState, useEffect } from 'react';
-
-export default function RenewalFormSection() {
+export default function RenewalFormSection({ user_id }) {
   const [formData, setFormData] = useState({
     plan: '',
     amount: '',
     discount: '',
-    balance: 0
+    balance: 0,
+    transaction_type: '',
+    trainer_name: '',
   });
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+  const router = useRouter();
 
   // Calculate balance whenever amount or discount changes
-  useEffect(() => {
-    const amount = parseFloat(formData.amount) || 0;
-    const discount = parseFloat(formData.discount) || 0;
-    setFormData(prev => ({
-      ...prev,
-      balance: Math.max(0, amount - discount)
-    }));
-  }, [formData.amount, formData.discount]);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData((prev) => {
+      const newData = { ...prev, [name]: value };
+      if (name === 'amount' || name === 'discount') {
+        const amount = parseFloat(newData.amount) || 0;
+        const discount = parseFloat(newData.discount) || 0;
+        newData.balance = Math.max(0, amount - discount).toFixed(2);
+      }
+      return newData;
+    });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Renewal data:', formData);
-    alert('Renewal saved successfully!');
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const response = await fetch('/api/renew-membership', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, user_id }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit renewal data');
+      }
+
+      const result = await response.json();
+      setSuccess('Renewal saved successfully!');
+      // Reset form
+      setFormData({
+        plan: '',
+        amount: '',
+        discount: '',
+        balance: 0,
+        transaction_type: '',
+        trainer_name: '',
+      });
+      // Refresh the page
+      router.refresh();
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   const handleCancel = () => {
-    // Reset form or navigate away
     setFormData({
       plan: '',
       amount: '',
       discount: '',
-      balance: 0
+      balance: 0,
+      transaction_type: '',
+      trainer_name: '',
     });
   };
 
@@ -49,11 +78,13 @@ export default function RenewalFormSection() {
     <div className="mt-8 border-t pt-6 border-[#3E3A3D]">
       <h3 className="text-lg font-medium mb-4 text-gray-300">Renew Membership</h3>
       
+      {error && <p className="text-red-500 mb-4">{error}</p>}
+      {success && <p className="text-green-500 mb-4">{success}</p>}
+
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Left Column */}
           <div className="space-y-4">
-            {/* Plan Dropdown */}
             <div>
               <label htmlFor="renewal-plan" className="block text-sm font-medium mb-1 text-gray-300">
                 Plan *
@@ -72,8 +103,41 @@ export default function RenewalFormSection() {
                 <option value="premium">Premium Membership (₹3000)</option>
               </select>
             </div>
-
-            {/* Amount Input */}
+            <div>
+              <label htmlFor="renewal-discount" className="block text-sm font-medium mb-1 text-gray-300">
+                Discount (₹)
+              </label>
+              <input
+                type="number"
+                id="renewal-discount"
+                name="discount"
+                value={formData.discount}
+                onChange={handleChange}
+                placeholder="Enter discount"
+                min="0"
+                className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
+              />
+            </div>
+            <div>
+              <label htmlFor="transaction_type" className="block text-sm font-medium mb-1 text-gray-300">
+                Transaction Type
+              </label>
+              <select
+                id="transaction_type"
+                name="transaction_type"
+                value={formData.transaction_type}
+                onChange={handleChange}
+                className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] appearance-none"
+              >
+                <option value="">Select Type</option>
+                <option value="gpay">GPay</option>
+                <option value="cash">Cash</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+          {/* Right Column */}
+          <div className="space-y-4">
             <div>
               <label htmlFor="renewal-amount" className="block text-sm font-medium mb-1 text-gray-300">
                 Amount (₹) *
@@ -90,28 +154,6 @@ export default function RenewalFormSection() {
                 required
               />
             </div>
-          </div>
-
-          {/* Right Column */}
-          <div className="space-y-4">
-            {/* Discount Input */}
-            <div>
-              <label htmlFor="renewal-discount" className="block text-sm font-medium mb-1 text-gray-300">
-                Discount (₹)
-              </label>
-              <input
-                type="number"
-                id="renewal-discount"
-                name="discount"
-                value={formData.discount}
-                onChange={handleChange}
-                placeholder="Enter discount"
-                min="0"
-                className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
-              />
-            </div>
-
-            {/* Balance Display (read-only) */}
             <div>
               <label htmlFor="renewal-balance" className="block text-sm font-medium mb-1 text-gray-300">
                 Balance (₹)
@@ -120,15 +162,30 @@ export default function RenewalFormSection() {
                 type="number"
                 id="renewal-balance"
                 name="balance"
-                value={formData.balance.toFixed(2)}
+                value={formData.balance}
                 readOnly
                 className="p-4 w-full bg-[#2E2A2D] rounded-lg border border-[#3E3A3D] cursor-not-allowed"
               />
             </div>
+            <div>
+              <label htmlFor="trainer_name" className="block text-sm font-medium mb-1 text-gray-300">
+                Trainer for the Member
+              </label>
+              <select
+                id="trainer_name"
+                name="trainer_name"
+                value={formData.trainer_name}
+                onChange={handleChange}
+                className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] appearance-none"
+              >
+                <option value="">Select Trainer</option>
+                <option value="trainer1">Trainer 1</option>
+                <option value="trainer2">Trainer 2</option>
+                <option value="trainer3">Trainer 3</option>
+              </select>
+            </div>
           </div>
         </div>
-
-        {/* Form Buttons */}
         <div className="flex justify-end gap-4 mt-8">
           <button
             type="button"

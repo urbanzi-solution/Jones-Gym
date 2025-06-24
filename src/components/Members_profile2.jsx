@@ -1,5 +1,4 @@
-// D:\codes\Jones-Gym\src\components\Members_profile2.jsx
-
+// src\components\Members_profile2.jsx
 import { FaLocationDot } from "react-icons/fa6";
 import { SiTrainerroad } from "react-icons/si";
 import { FaPhoneAlt } from "react-icons/fa";

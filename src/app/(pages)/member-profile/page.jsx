@@ -1,4 +1,4 @@
-// D:\codes\Jones-Gym\src\app\(pages)\member-profile\page.jsx
+// src\app\(pages)\member-profile\page.jsx
 import Inpage_header from "@/components/Inpage_header_3dot";
 import Memberlist_profile from "@/components/memberlist_profile";
 import Members_profile2 from "@/components/Members_profile2";
@@ -28,7 +28,7 @@ export default async function MemberProfile({ searchParams }) {
   } catch (error) {
     console.error('Error fetching member data:', {
       message: error.message,
-      query: 'SELECT * FROM users WHERE user_id = $1',
+      query: 'SELECT * FROM user_data WHERE user_id = $1',
       params: [member_id],
     });
     notFound();

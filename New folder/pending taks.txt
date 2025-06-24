@@ -32,6 +32,8 @@ complete individual profile, details included :-
 transaction details calling with user_id in all the table
 calling trainer details with id
 
+staff - add plan
+
 staff attendance table architecture and calender view in the frontend
 
 ----------------------------------------------------------------------

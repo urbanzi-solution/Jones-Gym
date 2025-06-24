@@ -1,5 +1,4 @@
-// D:\codes\Jones-Gym\src\components\memberlist_profile.jsx
-
+// src\components\memberlist_profile.jsx
 "use client";
 import { useState } from "react";
 import { FaRegCheckCircle } from "react-icons/fa";
@@ -105,7 +104,8 @@ export default function MemberlistProfile({ member }) {
                   size={28}
                 />
               </div>
-              <Renew_form />
+              {/* <Renew_form /> */}
+              <Renew_form user_id={member.user_id} />
             </div>
           )}
         </div>
