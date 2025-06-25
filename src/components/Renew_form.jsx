@@ -1,5 +1,5 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function RenewalFormSection({ user_id }) {
@@ -11,9 +11,47 @@ export default function RenewalFormSection({ user_id }) {
     transaction_type: '',
     trainer_name: '',
   });
+  const [plans, setPlans] = useState([]);
+  const [trainers, setTrainers] = useState([]);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const router = useRouter();
+
+  // Fetch plans and trainers data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch plans
+        const plansResponse = await fetch('/api/fetch_plans');
+        if (!plansResponse.ok) throw new Error('Failed to fetch plans');
+        const plansData = await plansResponse.json();
+        setPlans(plansData);
+
+        // Fetch trainers
+        const trainersResponse = await fetch('/api/fetch_trainers');
+        if (!trainersResponse.ok) throw new Error('Failed to fetch trainers');
+        const trainersData = await trainersResponse.json();
+        setTrainers(trainersData);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+    fetchData();
+  }, []);
+
+  // Update amount when plan changes
+  useEffect(() => {
+    if (formData.plan) {
+      const selectedPlan = plans.find(plan => plan.name === formData.plan);
+      if (selectedPlan) {
+        setFormData(prev => ({
+          ...prev,
+          amount: selectedPlan.amount.toString(),
+          balance: Math.max(0, selectedPlan.amount - (parseFloat(prev.discount) || 0)).toFixed(2)
+        }));
+      }
+    }
+  }, [formData.plan, plans]);
 
   // Calculate balance whenever amount or discount changes
   const handleChange = (e) => {
@@ -98,9 +136,11 @@ export default function RenewalFormSection({ user_id }) {
                 required
               >
                 <option value="">Select Plan</option>
-                <option value="basic">Basic Membership (₹1000)</option>
-                <option value="standard">Standard Membership (₹2000)</option>
-                <option value="premium">Premium Membership (₹3000)</option>
+                {plans.map((plan) => (
+                  <option key={plan.id} value={plan.name}>
+                    {plan.name} (₹{plan.amount})
+                  </option>
+                ))}
               </select>
             </div>
             <div>
@@ -179,9 +219,11 @@ export default function RenewalFormSection({ user_id }) {
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] appearance-none"
               >
                 <option value="">Select Trainer</option>
-                <option value="trainer1">Trainer 1</option>
-                <option value="trainer2">Trainer 2</option>
-                <option value="trainer3">Trainer 3</option>
+                {trainers.map((trainer) => (
+                  <option key={trainer.trainer_id} value={trainer.name}>
+                    {trainer.name}
+                  </option>
+                ))}
               </select>
             </div>
           </div>

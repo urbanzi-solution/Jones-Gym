@@ -1,3 +1,4 @@
+// src\app\(pages)\staff\page.jsx
 import Inpage_header from "@/components/Inpage_header";
 import Dashboardgreeting from "@/components/Dashboard_greeting";
 import StaffClient from "@/components/StaffClient";

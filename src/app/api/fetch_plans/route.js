@@ -1,5 +1,4 @@
 // src\app\api\fetch_plans\route.js
-
 import { getClient } from '@/lib/db';
 import { NextResponse } from 'next/server';
 
