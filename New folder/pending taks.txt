@@ -33,6 +33,7 @@ dynamic datas in in renew plan
 > completed
 
 client count for staff in the src\app\(pages)\staff\page.jsx and src\app\(pages)\staff-profile\page.jsx
+> completed
 
 set up plans table architecture
 
