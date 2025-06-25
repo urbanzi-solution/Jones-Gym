@@ -1,3 +1,4 @@
+// src\app\(pages)\staff-profile\page.jsx
 import Inpage_header from '@/components/Inpage_header_3dot';
 import Staff_profile from '@/components/Staff_profile';
 import Staff_profile2 from '@/components/Staff_profile2';

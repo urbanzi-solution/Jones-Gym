@@ -11,7 +11,7 @@ CREATE TABLE user_data (
   location VARCHAR(255),
   phone_no VARCHAR(20),
   whatsapp_no VARCHAR(20),
-  joining_date DATE,
+  joining_date DATE
 );
 ```
 
@@ -30,21 +30,6 @@ VALUES
 ('USR010', 'Maria Garcia', 'Female', '1986-06-20', 'Mexico City, Mexico', '+525512345678', '+525512345678', '2020-10-30');
 ```
 
-### membership_plans table
-
-```sql
-CREATE TABLE membership_plans (
-  user_id VARCHAR(6),
-  plan_name VARCHAR(30),
-  amount INTEGER,
-  discount INTEGER,
-  balance INTEGER,
-  trans_type VARCHAR(15),
-  trainer VARCHAR(30),
-  date DATE
-);
-```
-
 ### trainers table
 
 ```sql
@@ -61,7 +46,18 @@ CREATE TABLE trainers (
 ```
 
 ```sql
-
+INSERT INTO trainers (trainer_id, name, gender, date_of_birth, location, phone_no, whatsapp_number, joining_date)
+VALUES
+('TRN001', 'Alex Johnson', 'Male', '1980-05-12', 'Los Angeles, USA', '+12125559876', '+12125559876', '2019-01-15'),
+('TRN002', 'Sophia Martinez', 'Female', '1985-08-22', 'Madrid, Spain', '+34123456789', '+34123456789', '2019-03-10'),
+('TRN003', 'Daniel Kim', 'Male', '1990-11-30', 'Seoul, South Korea', '+82212345678', '+82212345678', '2019-05-20'),
+('TRN004', 'Emma Wilson', 'Female', '1987-04-05', 'Toronto, Canada', '+14165554321', '+14165554321', '2019-07-15'),
+('TRN005', 'Carlos Rodriguez', 'Male', '1983-09-18', 'Mexico City, Mexico', '+525512345678', '+525512345678', '2019-09-25'),
+('TRN006', 'Priya Patel', 'Female', '1992-02-14', 'Mumbai, India', '+912212345678', '+912212345678', '2020-01-05'),
+('TRN007', 'James White', 'Male', '1988-07-09', 'London, UK', '+442076543210', '+442076543210', '2020-03-12'),
+('TRN008', 'Anna Schmidt', 'Female', '1991-12-25', 'Berlin, Germany', '+493098765432', '+493098765432', '2020-05-18'),
+('TRN009', 'Luca Ferrari', 'Male', '1986-06-08', 'Rome, Italy', '+390612345678', '+390612345678', '2020-07-22'),
+('TRN010', 'Yuki Tanaka', 'Female', '1993-03-17', 'Tokyo, Japan', '+81398765432', '+81398765432', '2020-09-30');
 ```
 
 ### plans table
@@ -72,8 +68,53 @@ CREATE TABLE plans (
     description VARCHAR(250),
     amount INTEGER,
     duration VARCHAR(10),
+    trainer_id VARCHAR(8),
     status VARCHAR(10)
 );
+```
+```sql
+INSERT INTO plans (plan_name, description, amount, duration, trainer_id, status)
+VALUES
+('Exercise Plan', 'Full-body workout with weights and cardio', 2000, '1 month', 'TRN001', 'Active'),
+('Zumba Plan', 'High-energy dance fitness program', 1500, '1 month', 'TRN002', 'Active'),
+('Calisthenics Plan', 'Bodyweight training for strength and flexibility', 3000, '2 months', 'TRN003', 'Active'),
+('Yoga Plan', 'Mindfulness and flexibility training', 1000, '1 month', 'TRN004', 'Active'),
+('CrossFit Plan', 'High-intensity functional training', 2500, '1 month', 'TRN005', 'Active'),
+('Pilates Plan', 'Core strengthening and posture improvement', 1800, '1 month', 'TRN006', 'Inactive'),
+('Boxing Plan', 'Cardio and strength training with boxing techniques', 2200, '2 months', 'TRN007', 'Inactive'),
+('Swimming Plan', 'Low-impact full-body workout', 2700, '2 months', 'TRN008', 'Inactive'),
+('HIIT Plan', 'Short bursts of intense exercise', 1900, '1 month', 'TRN009', 'Inactive'),
+('Meditation Plan', 'Stress relief and mental wellness sessions', 1200, '1 month', 'TRN010', 'Inactive');
+```
+
+### membership_plans table
+
+```sql
+CREATE TABLE membership_plans (
+  user_id VARCHAR(6),
+  plan_name VARCHAR(30),
+  amount INTEGER,
+  discount INTEGER,
+  balance INTEGER,
+  trans_type VARCHAR(15),
+  trainer VARCHAR(30),
+  date DATE
+);
+```
+
+```sql
+INSERT INTO membership_plans (user_id, plan_name, amount, discount, balance, trans_type, trainer, date)
+VALUES
+('USR001', 'Exercise Plan', 2000, 200, 1800, 'GPay', 'TRN001', '2023-01-05'),
+('USR002', 'Zumba Plan', 1500, 150, 1350, 'Cash', 'TRN002', '2023-02-10'),
+('USR003', 'Calisthenics Plan', 3000, 300, 2700, 'Other', 'TRN003', '2023-03-15'),
+('USR004', 'Yoga Plan', 1000, 100, 900, 'GPay', 'TRN004', '2023-04-20'),
+('USR005', 'CrossFit Plan', 2500, 250, 2250, 'Cash', 'TRN005', '2023-05-25'),
+('USR006', 'Exercise Plan', 2000, 200, 1800, 'Other', 'TRN006', '2023-06-30'),
+('USR007', 'Zumba Plan', 1500, 150, 1350, 'GPay', 'TRN007', '2023-07-05'),
+('USR008', 'Calisthenics Plan', 3000, 300, 2700, 'Cash', 'TRN008', '2023-08-10'),
+('USR009', 'Yoga Plan', 1000, 100, 900, 'Other', 'TRN009', '2023-09-15'),
+('USR010', 'CrossFit Plan', 2500, 250, 2250, 'GPay', 'TRN010', '2023-10-20');
 ```
 
 ### transations table
@@ -89,6 +130,26 @@ CREATE TABLE transations (
     amount VARCHAR(5),
     balance VARCHAR(5)
 );
+```
+
+```sql
+INSERT INTO transations (user_id, bill_no, date, plan, transc_type, pay_method, amount, balance)
+VALUES
+('USR001', 'BL0001', '2023-01-05', 'Exercise Plan', 'GPay', '', '2000', '1800'),
+('USR001', 'BL0002', '2023-01-05', 'Yoga Plan', 'Cash', '', '1000', '900'),
+('USR002', 'BL0003', '2023-02-10', 'Zumba Plan', 'Cash', '', '1500', '1350'),
+('USR003', 'BL0004', '2023-03-15', 'Calisthenics Plan', 'Other', '', '3000', '2700'),
+('USR003', 'BL0005', '2023-04-15', 'CrossFit Plan', 'GPay', '', '2500', '2250'),
+('USR004', 'BL0006', '2023-04-20', 'Yoga Plan', 'GPay', '', '1000', '900'),
+('USR005', 'BL0007', '2023-05-25', 'CrossFit Plan', 'Cash', '', '2500', '2250'),
+('USR005', 'BL0008', '2023-06-25', 'CrossFit Plan', 'Other', '', '2500', '2250'),
+('USR006', 'BL0009', '2023-06-30', 'Exercise Plan', 'Other', '', '2000', '1800'),
+('USR007', 'BL0010', '2023-07-05', 'Zumba Plan', 'GPay', '', '1500', '1350'),
+('USR007', 'BL0011', '2023-07-05', 'Yoga Plan', 'Cash', '', '1000', '900'),
+('USR008', 'BL0012', '2023-08-10', 'Calisthenics Plan', 'Cash', '', '3000', '2700'),
+('USR009', 'BL0013', '2023-09-15', 'Yoga Plan', 'Other', '', '1000', '900'),
+('USR010', 'BL0014', '2023-10-20', 'CrossFit Plan', 'GPay', '', '2500', '2250'),
+('USR010', 'BL0015', '2023-11-20', 'Exercise Plan', 'Cash', '', '2000', '1800');
 ```
 
 

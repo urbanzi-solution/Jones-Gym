@@ -32,17 +32,24 @@ add transaction type in renew plan
 dynamic datas in in renew plan
 > completed
 
+client count for staff in the src\app\(pages)\staff\page.jsx and src\app\(pages)\staff-profile\page.jsx
+
+set up plans table architecture
+
+add trainer name in the src\components\Plan_addform.jsx
+
 transactions in member profile
 
 staff filter partially pending
+staff - add plan (related to filter)
+
+----------------------------------------------------------------------
 
 expiry data update in the member profile
 
 expiry data update in the dashboard member list
 
 expiry data update in the notification
-
-staff - add plan (related to filter)
 
 staff attendance table architecture and calender view in the frontend
 
