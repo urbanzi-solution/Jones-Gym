@@ -32,13 +32,17 @@ add transaction type in renew plan
 dynamic datas in in renew plan
 > completed
 
-complete individual profile, details included :-
-transaction details calling with user_id in all the table
-calling trainer details with id
+transactions in member profile
 
 staff filter partially pending
 
-staff - add plan
+expiry data update in the member profile
+
+expiry data update in the dashboard member list
+
+expiry data update in the notification
+
+staff - add plan (related to filter)
 
 staff attendance table architecture and calender view in the frontend
 
