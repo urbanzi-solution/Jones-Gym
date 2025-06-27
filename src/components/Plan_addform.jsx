@@ -1,30 +1,57 @@
-// D:\codes\Jones-Gym\src\components\Plan_addform.jsx
 "use client";
 import { GrClose } from "react-icons/gr";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function PlanAddPage() {
   const router = useRouter();
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [trainers, setTrainers] = useState([]);
+  const [selectedTrainers, setSelectedTrainers] = useState([]);
+
+  useEffect(() => {
+    const fetchTrainers = async () => {
+      try {
+        const response = await fetch('/api/fetch_trainers');
+        const data = await response.json();
+        if (response.ok) {
+          setTrainers(data);
+        } else {
+          setError(data.error || "Failed to fetch trainers");
+        }
+      } catch (err) {
+        setError("An error occurred while fetching trainers");
+      }
+    };
+    fetchTrainers();
+  }, []);
+
+  const handleTrainerSelection = (trainerId) => {
+    setSelectedTrainers(prev => 
+      prev.includes(trainerId) 
+        ? prev.filter(id => id !== trainerId) 
+        : [...prev, trainerId]
+    );
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Collect form data
     const formData = {
       plan_name: e.target.planName.value,
       description: e.target.description.value,
       amount: parseInt(e.target.amount.value),
       duration: e.target.duration.value,
       status: e.target.status.value,
+      trainers: selectedTrainers
     };
 
     try {
-      const response = await fetch("/api/add_plans", {
+      // Add the plan
+      const planResponse = await fetch("/api/add_plans", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -32,23 +59,40 @@ export default function PlanAddPage() {
         body: JSON.stringify(formData),
       });
 
-      const result = await response.json();
+      const planResult = await planResponse.json();
 
-      if (response.ok) {
-        setSuccess("Plan added successfully!");
-        setError(null);
-        // Reset form
-        e.target.reset();
-        // Redirect to see-allplans page
-        router.push("/see-allplans");
-      } else {
-        setError(result.error || "Failed to add plan.");
-        setSuccess(null);
-        setIsSubmitting(false);
+      if (!planResponse.ok) {
+        throw new Error(planResult.error || "Failed to add plan");
       }
+
+      // If trainers are selected, add trainer-plan associations
+      if (selectedTrainers.length > 0) {
+        const trainerPlanResponse = await fetch("/api/add_trainers_plans", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            plan_name: formData.plan_name,
+            trainer_ids: selectedTrainers
+          }),
+        });
+
+        if (!trainerPlanResponse.ok) {
+          const trainerPlanResult = await trainerPlanResponse.json();
+          throw new Error(trainerPlanResult.error || "Failed to add trainer-plan associations");
+        }
+      }
+
+      setSuccess("Plan and trainer associations added successfully!");
+      setError(null);
+      e.target.reset();
+      setSelectedTrainers([]);
+      router.push("/see-allplans");
     } catch (err) {
-      setError("An error occurred while adding the plan.");
+      setError(err.message);
       setSuccess(null);
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -64,11 +108,9 @@ export default function PlanAddPage() {
       </div>
 
       <form onSubmit={handleSubmit} className="mt-5">
-        {/* Display success or error messages */}
         {success && <div className="text-green-500 mb-4">{success}</div>}
         {error && <div className="text-red-500 mb-4">{error}</div>}
 
-        {/* Grid layout for responsive columns */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Left Column */}
           <div className="space-y-4">
@@ -152,6 +194,29 @@ export default function PlanAddPage() {
                 <option value="inactive">Inactive</option>
               </select>
             </div>
+          </div>
+        </div>
+
+        {/* Trainer Selection Section */}
+        <div className="mt-6">
+          <label className="block text-sm font-medium mb-2 text-gray-300">
+            Assign Trainers (Optional)
+          </label>
+          <div className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] appearance-none">
+            {trainers.map(trainer => (
+              <div key={trainer.trainer_id} className="flex items-center">
+                <input
+                  type="checkbox"
+                  id={`trainer-${trainer.trainer_id}`}
+                  checked={selectedTrainers.includes(trainer.trainer_id)}
+                  onChange={() => handleTrainerSelection(trainer.trainer_id)}
+                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <label htmlFor={`trainer-${trainer.trainer_id}`} className="ml-2 text-gray-300">
+                  {trainer.name} (ID: {trainer.trainer_id})
+                </label>
+              </div>
+            ))}
           </div>
         </div>
 

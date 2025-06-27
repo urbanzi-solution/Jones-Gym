@@ -1,54 +1,76 @@
-// src\components\Recent_transations.jsx
+"use client";
+import { useState, useEffect } from 'react';
 import { FaArrowRight } from "react-icons/fa";
-import { FaCcAmazonPay } from "react-icons/fa";
+import { FaGooglePay } from "react-icons/fa";
+import { FaPiggyBank } from "react-icons/fa";
 import { HiOutlineCash } from "react-icons/hi";
 import { CiCreditCard1 } from "react-icons/ci";
 
+export default function Recent_transations({ userId }) {
+  const [transactions, setTransactions] = useState([]);
 
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const response = await fetch('/api/fetch_transactions');
+        const { data } = await response.json();
+        // Filter by user_id, sort by date, and take last 3
+        const filteredTransactions = data
+          .filter(transaction => transaction.user_id === userId)
+          .sort((a, b) => new Date(b.date) - new Date(a.date))
+          .slice(0, 3);
+        setTransactions(filteredTransactions);
+      } catch (error) {
+        console.error('Error fetching transactions:', error);
+      }
+    };
 
-export default function Recent_transations() {
+    if (userId) {
+      fetchTransactions();
+    }
+  }, [userId]);
+
+  // Function to render the appropriate icon based on trans_type
+  const getTransactionIcon = (transType) => {
+    switch (transType) {
+      case 'GPay':
+        return <FaGooglePay className="size-8 md:size-12" />;
+      case 'Cash':
+        return <HiOutlineCash className="size-8 md:size-12" />;
+      case 'Credit Card':
+        return <CiCreditCard1 className="size-8 md:size-12" />;
+      case 'Bank Transfer':
+        return <FaPiggyBank className="size-8 md:size-12" />;
+      case 'Other':
+        return <span className="text-lg md:text-xl">Other</span>;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="box">
       <div className="flex justify-between items-center text-lg md:text-xl font-semibold lg:text-2xl">
-        <h2 className="">Recent Transactions</h2>
-        <a href="/transations"><FaArrowRight /></a>
+        <h2>Recent Transactions</h2>
+        <a href={`/transations?userId=${userId}`}><FaArrowRight /></a>
       </div>
 
-      <div className="flex justify-between items-center bg-[#181818] px-4 py-2 rounded-lg my-5 md:px-8 md:py-4">
-        <div className="flex gap-2 items-center md:gap-5">
-          <FaCcAmazonPay className="size-8 md:size-12" />
-          <div className="md:text-xl">
-            <h2>Basic Gym</h2>
-            <p>01-01-2026</p>
+      {transactions.map((transaction, index) => (
+        <div
+          key={index}
+          className="flex justify-between items-center bg-[#181818] px-4 py-2 rounded-lg my-5 md:px-8 md:py-4"
+        >
+          <div className="flex gap-2 items-center md:gap-5">
+            {getTransactionIcon(transaction.trans_type)}
+            <div className="md:text-xl ml-2">
+              <h2>{transaction.plan}</h2>
+              <p>{new Date(transaction.date).toLocaleDateString()}</p>
+            </div>
           </div>
+          <p className="text-lg text-[#71CA35] md:text-xl">{transaction.amount}</p>
+          <p className="text-lg text-[#B30000] md:text-xl">{transaction.balance}</p>
         </div>
-        <p className="text-lg text-[#71CA35] md:text-xl">2500</p>
-        <p className="text-lg text-[#B30000] md:text-xl">0</p>
-      </div>
-
-      <div className="flex justify-between items-center bg-[#181818] px-4 py-2 rounded-lg my-5 md:px-8 md:py-4">
-        <div className="flex gap-2 items-center md:gap-5">
-          <HiOutlineCash className="size-8 md:size-12" />
-          <div className="md:text-xl">
-            <h2>Basic Gym</h2>
-            <p>01-01-2026</p>
-          </div>
-        </div>
-        <p className="text-lg text-[#71CA35] md:text-xl">2500</p>
-        <p className="text-lg text-[#B30000] md:text-xl">0</p>
-      </div>
-
-      <div className="flex justify-between items-center bg-[#181818] px-4 py-2 rounded-lg my-5 md:px-8 md:py-4">
-        <div className="flex gap-2 items-center md:gap-5">
-          <CiCreditCard1 className="size-8 md:size-12" />
-          <div className="md:text-xl">
-            <h2>Basic Gym</h2>
-            <p>01-01-2026</p>
-          </div>
-        </div>
-        <p className="text-lg text-[#71CA35] md:text-xl">2500</p>
-        <p className="text-lg text-[#B30000] md:text-xl">0</p>
-      </div>
+      ))}
     </div>
   );
 }

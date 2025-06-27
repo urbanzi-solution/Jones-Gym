@@ -36,13 +36,48 @@ client count for staff in the src\app\(pages)\staff\page.jsx and src\app\(pages)
 > completed
 
 set up plans table architecture
+> completed
+
+----------------------------------------------------------------------
 
 add trainer name in the src\components\Plan_addform.jsx
+import the trainers with checksum, select the trainers for the corresponding plan
 
+create table called trainer_plan
+CREATE TABLE trainers_plans (
+    trainer_id VARCHAR(6),
+    plan_name VARCHAR(30)
+);
+
+save the data of trainer_id and plan_name in the table
+
+> completed
+----------------------------------------------------------------------
+
+create a route for fetching the transactions api/fetch_transactions/route.js
+
+assign the transactions for the member using the urser_id in the backend
 transactions in member profile
+
+call the entire transactions from the fetch_transactios
+transactions in report page
+
+filter in transaction report
+
+filter in individual transaction report
+
+----------------------------------------------------------------------
 
 staff filter partially pending
 staff - add plan (related to filter)
+
+fetched the entire plans, filter the active plansin the backend and display in the filter
+
+shows only active plan in the filter list
+
+----------------------------------------------------------------------
+
+no filter in transaction report
 
 ----------------------------------------------------------------------
 
@@ -62,10 +97,13 @@ saving profile pic in add memmbers
 
 saving profile pic in add staff
 
-Report page:-
-transactions
-
 notification:-
 checking data expire on the backend
 
 morning wish depends on the time
+
+----------------------------------------------------------------------
+
+regular promting
+
+.env.local and lib/db.js are all set for the connection with the neon db and also use import getclient for the process in the route file

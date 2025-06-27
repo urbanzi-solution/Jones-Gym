@@ -1,32 +1,29 @@
-// src\app\(pages)\staff\page.jsx
 import Inpage_header from "@/components/Inpage_header";
 import Dashboardgreeting from "@/components/Dashboard_greeting";
 import StaffClient from "@/components/StaffClient";
 import { query } from "@/lib/db";
 
 export default async function Staff({ searchParams }) {
-  const { searchQuery, planType, plan } = await searchParams;
+  const { searchQuery, plan } = await searchParams;
 
-  // Fetch all trainers
-  let queryString = 'SELECT * FROM trainers';
+  // Fetch trainers with optional filters
+  let queryString = `
+    SELECT DISTINCT t.*
+    FROM trainers t
+    LEFT JOIN trainers_plans tp ON t.trainer_id = tp.trainer_id
+  `;
   let queryParams = [];
   let conditions = [];
 
-  // Apply search query filter
+  // Apply search query filter (on trainer name)
   if (searchQuery) {
-    conditions.push('name ILIKE $' + (queryParams.length + 1));
+    conditions.push('t.name ILIKE $' + (queryParams.length + 1));
     queryParams.push(`%${searchQuery}%`);
   }
 
-  // Apply plan type filter
-  if (planType) {
-    conditions.push('plan_type = $' + (queryParams.length + 1));
-    queryParams.push(planType);
-  }
-
-  // Apply specific plan filter
+  // Apply specific plan filter (using trainers_plans table)
   if (plan) {
-    conditions.push('plan_id = $' + (queryParams.length + 1));
+    conditions.push('tp.plan_name = $' + (queryParams.length + 1));
     queryParams.push(plan);
   }
 

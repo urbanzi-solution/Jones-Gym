@@ -9,32 +9,45 @@ export default function Staff_searchfilter() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [pt_btn, setPt_btn] = useState(searchParams.get("planType") === "PT");
-  const [gym_btn, setGym_btn] = useState(searchParams.get("planType") === "Basic Gym");
   const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState(searchParams.get("searchQuery") || "");
   const [selectedPlan, setSelectedPlan] = useState(searchParams.get("plan") || "");
-  const [plans, setPlans] = useState([]); // State to hold fetched plans
+  const [plans, setPlans] = useState([]); // State for plans from fetch_plans
+  const [trainersPlans, setTrainersPlans] = useState([]); // State for trainers_plans
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
 
-  // Fetch plans from API when component mounts
+  // Fetch plans and trainers_plans from APIs when component mounts
   useEffect(() => {
-    async function fetchPlans() {
+    async function fetchData() {
       try {
-        const response = await fetch('/api/fetch_plans');
-        if (!response.ok) {
+        // Fetch plans
+        const plansResponse = await fetch('/api/fetch_plans');
+        if (!plansResponse.ok) {
           throw new Error('Failed to fetch plans');
         }
-        const data = await response.json();
-        setPlans(data.map(plan => plan.name)); // Extract plan names for display
+        const plansData = await plansResponse.json();
+        // Filter plans where status is "active" and map to plan names
+        const activePlans = plansData
+          .filter(plan => plan.status.toLowerCase() === "active")
+          .map(plan => plan.name);
+        setPlans(activePlans);
+
+        // Fetch trainers_plans
+        const trainersPlansResponse = await fetch('/api/fetch_trainers_plans');
+        if (!trainersPlansResponse.ok) {
+          throw new Error('Failed to fetch trainers plans');
+        }
+        const trainersPlansData = await trainersPlansResponse.json();
+        setTrainersPlans(trainersPlansData);
+
         setLoading(false);
       } catch (err) {
         setError(err.message);
         setLoading(false);
       }
     }
-    fetchPlans();
+    fetchData();
   }, []);
 
   const updateSearchParams = (newFilters) => {
@@ -47,24 +60,6 @@ export default function Staff_searchfilter() {
       }
     });
     router.push(`?${params.toString()}`);
-  };
-
-  const handleActiveClick = () => {
-    const newPtState = !pt_btn;
-    setPt_btn(newPtState);
-    setGym_btn(false);
-    updateSearchParams({
-      planType: newPtState ? "PT" : "",
-    });
-  };
-
-  const handleInactiveClick = () => {
-    const newGymState = !gym_btn;
-    setPt_btn(false);
-    setGym_btn(newGymState);
-    updateSearchParams({
-      planType: newGymState ? "Basic Gym" : "",
-    });
   };
 
   const handlePlanClick = (plan) => {
@@ -87,12 +82,15 @@ export default function Staff_searchfilter() {
   };
 
   const clearFilters = () => {
-    setPt_btn(false);
-    setGym_btn(false);
     setSelectedPlan("");
     setSearchQuery("");
     router.push("?");
   };
+
+  // Filter trainers based on selected plan
+  const filteredTrainers = selectedPlan
+    ? trainersPlans.filter(tp => tp.plan === selectedPlan).map(tp => tp.trainer)
+    : trainersPlans.map(tp => tp.trainer);
 
   return (
     <div className="p-4 md:p-6 lg:p-10">
@@ -115,6 +113,11 @@ export default function Staff_searchfilter() {
         {/* Main Filter Bar */}
         <div className="flex justify-between gap-5 items-center md:text-xl p-3 rounded-lg">
           <span className="flex gap-2 md:gap-5">
+            {selectedPlan && (
+              <span className="text-sm md:text-base">
+                Selected: {selectedPlan}
+              </span>
+            )}
           </span>
           <button
             onClick={toggleFilters}
@@ -129,7 +132,7 @@ export default function Staff_searchfilter() {
         {showFilters && (
           <div className="absolute top-full left-0 right-0 z-50 bg-[#0a0a0a] rounded-xl shadow-lg mt-2 p-4 md:p-8 text-center border border-[#6e6e6e]">
             <div className="flex justify-between items-center mb-4 border-b pb-2">
-              <h2 className="text-lg font-medium md:text-2xl">All Plans</h2>
+              <h2 className="text-lg font-medium md:text-2xl">Active Plans</h2>
               <GrClose
                 onClick={toggleFilters}
                 className="cursor-pointer hover:scale-90 transition-transform text-gray-400 hover:text-white"
@@ -140,6 +143,8 @@ export default function Staff_searchfilter() {
               <p>Loading plans...</p>
             ) : error ? (
               <p className="text-red-500">Error: {error}</p>
+            ) : plans.length === 0 ? (
+              <p>No active plans available.</p>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
                 {plans.map((plan) => (
@@ -172,6 +177,7 @@ export default function Staff_searchfilter() {
           </div>
         )}
       </div>
+
     </div>
   );
 }

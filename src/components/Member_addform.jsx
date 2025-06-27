@@ -426,7 +426,7 @@ export default function Member_addpage() {
                     id={`balance-${index}`}
                     value={plan.balance.toFixed(2)}
                     readOnly
-                    className="p-4 w-full bg-[#2E2A2D] rounded-lg border border-[#3E3A3D] cursor-not-allowed"
+                    className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] cursor-not-allowed"
                   />
                 </div>
 
@@ -441,9 +441,11 @@ export default function Member_addpage() {
                     className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] appearance-none"
                   >
                     <option value="">Select Type</option>
-                    <option value="gpay">GPay</option>
-                    <option value="cash">Cash</option>
-                    <option value="other">Other</option>
+                    <option value="GPay">GPay</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Credit Card">Credit Card</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="Other">Other</option>
                   </select>
                 </div>
 

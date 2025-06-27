@@ -1,13 +1,18 @@
+'use client';
 import Inpage_header from "@/components/Inpage_header"
 import Detailed_transations from "@/components/Detailed_transations"
+import { useSearchParams } from 'next/navigation'
 
-export default function page() {
+export default function Page() {
+  const searchParams = useSearchParams();
+  const userId = searchParams.get('userId');
+  // console.log("just consoling", userId);
+
   return (
     <div>
       <Inpage_header title='Transations' />
-      <Detailed_transations />
+      <Detailed_transations userId={userId} />
       <div className="h-20"></div>
     </div>
   )
 }
-

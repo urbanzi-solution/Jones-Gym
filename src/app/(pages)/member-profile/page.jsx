@@ -7,15 +7,11 @@ import { query } from '@/lib/db';
 import { notFound } from 'next/navigation';
 
 export default async function MemberProfile({ searchParams }) {
-
   const params = await searchParams;
-  
   const member_id = params.member_id;
 
   let member = null;
   try {
-    // console.log(`Fetching data for member_id: ${member_id}`);
-    // Replace 'users' with the correct table name if different (e.g., 'members')
     const result = await query('SELECT * FROM user_data WHERE user_id = $1', [member_id]);
 
     if (result.rows.length === 0) {
@@ -24,7 +20,6 @@ export default async function MemberProfile({ searchParams }) {
     }
 
     member = result.rows[0];
-    // console.log('Fetched member data :', member);
   } catch (error) {
     console.error('Error fetching member data:', {
       message: error.message,
@@ -39,7 +34,7 @@ export default async function MemberProfile({ searchParams }) {
       <Inpage_header title="Member Profile" />
       <Memberlist_profile member={member} />
       <Members_profile2 member={member} />
-      <Recent_transations />
+      <Recent_transations userId={member_id} />
       <div className="h-20"></div>
     </div>
   );
