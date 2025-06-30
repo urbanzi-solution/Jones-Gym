@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const client = await getClient();
     const { rows } = await client.query('SELECT * FROM trainers_plans');
-    await client.end();
+    // await client.end();
     
     // Map database fields to match frontend expectations
     const plans = rows.map((row, index) => ({
@@ -14,7 +14,7 @@ export async function GET() {
       plan: row.plan_name,
     }));
 
-    console.log(plans);
+    // console.log(plans);
 
     return NextResponse.json(plans);
   } catch (error) {

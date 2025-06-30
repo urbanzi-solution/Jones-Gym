@@ -33,6 +33,6 @@ export async function GET() {
       headers: { 'Content-Type': 'application/json' }
     });
   } finally {
-    await client.end();
+    // await client.end();
   }
 }

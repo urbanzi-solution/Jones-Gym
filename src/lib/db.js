@@ -1,31 +1,40 @@
-// /src/lib/db.js
-import { Pool } from 'pg'
+import { neon } from '@neondatabase/serverless';
 
-// Create a connection pool
-const pool = new Pool({
-  connectionString: process.env.NEON_DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false // Required for Neon's SSL connection
+// Create a Neon serverless client
+const sql = neon(process.env.NEON_DATABASE_URL, {
+  // Optional: Configure fetch options for the Neon driver
+  fetchOptions: {
+    cache: 'no-store', // Prevent caching for serverless environments
   },
-    max: 20, // Maximum number of clients in the pool
-    idleTimeoutMillis: 30000, // Close idle clients after 30 seconds
-    connectionTimeoutMillis: 2000 // Return an error after 2 seconds if no connection
-})
-
+});
 
 // Generic query function
-export async function query(text, params) {
-  const client = await pool.connect()
+export async function query(text, params = []) {
   try {
-    const result = await client.query(text, params)
-    return result
-  } finally {
-    client.release()
+    const result = await sql.query(text, params);
+    // Return result in a pg-compatible format
+    return { rows: result };
+  } catch (err) {
+    console.error('Database query error:', err.message);
+    throw err;
   }
 }
 
-// For server components
+// For server components (mimics pg client behavior)
 export async function getClient() {
-  const client = await pool.connect()
-  return client
+  // Neon driver doesn't use traditional connections, so return a client-like object
+  return {
+    query: async (text, params = []) => {
+      try {
+        const result = await sql.query(text, params);
+        return { rows: result };
+      } catch (err) {
+        console.error('Database query error:', err.message);
+        throw err;
+      }
+    },
+    release: () => {
+      // No-op since Neon driver doesn't use connection pooling
+    },
+  };
 }

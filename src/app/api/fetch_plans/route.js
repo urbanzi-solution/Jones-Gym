@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const client = await getClient();
     const { rows } = await client.query('SELECT * FROM plans');
-    await client.end();
+    // await client.end();
     
     // Map database fields to match frontend expectations
     const plans = rows.map((row, index) => ({
