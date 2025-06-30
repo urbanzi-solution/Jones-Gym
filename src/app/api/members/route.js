@@ -114,7 +114,7 @@ export async function GET(request) {
     const plansResult = await client.query(plansQuery, ['active']);
     const plans = plansResult.rows.map(row => row.plan_name);
 
-    console.log(plans);
+    // console.log(plans);
 
     // Fetch trainer id and name from trainers table
     const trainersQuery = 'SELECT trainer_id, name FROM trainers';
@@ -136,6 +136,6 @@ export async function GET(request) {
       { status: 500 }
     );
   } finally {
-    await client.end();
+    // await client.end();
   }
 }

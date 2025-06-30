@@ -107,3 +107,43 @@ morning wish depends on the time
 regular promting
 
 .env.local and lib/db.js are all set for the connection with the neon db and also use import getclient for the process in the route file
+
+----------------------------------------------------------------------
+Pending tasks
+----------------------------------------------------------------------
+
+Edit task - 
+plan-add page - remove Assign Trainers (Optional) in the 
+staff page - remove and edit filter function depends on the Assign Trainers
+
+dashboard - General Banner in dashboard
+
+dashboard - Active Plans Banner in dashboard
+
+member page - Active and inactive in member page with expiry date
+
+member profile - data in member profile 1 in member component 
+member profile - validity through, expiry data, day counts plan banner change
+
+expiry data in members page
+
+member page - Export in member page
+
+member profile - option button actions and add remark for the member
+member profile - edit data, blacklist member with remark, remark add membership
+
+member profile - add remark in the user profile 
+
+member list - note remark
+
+staff profile - pt attendance and staff attandece in staff profile 
+
+staff profile - basic gym pt, related plans and member count in the staff profile
+
+staff page - Export in staff page
+
+transaction page - export transaction
+
+detailed transaction page - edit and delete
+
+notification popup and natification functions and updates
