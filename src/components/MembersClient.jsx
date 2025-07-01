@@ -1,5 +1,5 @@
+// src\components\MembersClient.jsx
 "use client";
-
 import { useState } from "react";
 import MemberSearchFilter from "@/components/Member_searchFilter";
 import Memberlist_boxes from "@/components/Memberlist_boxes";

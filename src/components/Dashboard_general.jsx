@@ -38,7 +38,7 @@ export default function DashboardGeneral() {
                     lg:min-h-[100px]
                     md:p-6
                 "
-          href=""
+          href="/members?status=Inactive"
         >
           <span>Inactive Members</span>
         </a>
@@ -58,7 +58,7 @@ export default function DashboardGeneral() {
                     lg:min-h-[100px]
                     md:p-6
                 "
-          href=""
+          href="/members?expiryWithin=1+day"
         >
           <span>Expiring Tomorrow</span>
         </a>
@@ -78,7 +78,7 @@ export default function DashboardGeneral() {
                     lg:min-h-[100px]
                     md:p-6
                 "
-          href=""
+          href="/members?expiryWithin=2+days"
         >
           <span>Expiry in 2 Days</span>
         </a>
@@ -97,9 +97,9 @@ export default function DashboardGeneral() {
                     lg:min-h-[100px]
                     md:p-6
                 "
-          href=""
+          href="/members?expiryWithin=3+days"
         >
-          <span>Expiry in 1 Month</span>
+          <span>Expiry in 3 Days</span>
         </a>
 
         <a

@@ -1,6 +1,4 @@
-// src\components\Member_searchFilter.jsx
 "use client";
-
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FiSearch } from "react-icons/fi";
@@ -21,8 +19,26 @@ export default function MemberSearchFilter({ setFilters }) {
   const [payment, setPayment] = useState("");
   const [plan, setPlan] = useState("");
   const [expiryWithin, setExpiryWithin] = useState("");
+  const [plans, setPlans] = useState([]);
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  // Fetch membership plans
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const response = await fetch('/api/fetch_plans');
+        if (!response.ok) {
+          throw new Error('Failed to fetch plans');
+        }
+        const data = await response.json();
+        setPlans(data);
+      } catch (error) {
+        console.error('Error fetching plans:', error);
+      }
+    };
+    fetchPlans();
+  }, []);
 
   // Initialize filters from URL query parameters
   useEffect(() => {
@@ -123,7 +139,7 @@ export default function MemberSearchFilter({ setFilters }) {
   const handlePlanClick = (value) => {
     const newPlan = plan === value ? "" : value;
     setPlan(newPlan);
-    updateQueryParams({ active, inactive, searchQuery, gender, status, payment, plan: newPlan, expiryWithin, startDate, endDate });
+    updateQueryParams({ active, inactive, searchQuery, gender, status, payment, plan: newPlan, expiryWithin, startDate, endDate, });
   };
 
   const handleExpiryWithinClick = (value) => {
@@ -177,7 +193,7 @@ export default function MemberSearchFilter({ setFilters }) {
       <div className="mt-4 relative">
         <div className="flex justify-between items-center md:text-xl p-3 rounded-lg">
           <span className="flex gap-2 md:gap-5">
-            <button
+            {/* <button
               onClick={handleActiveClick}
               className={`px-4 py-2 md:px-6 md:py-3 rounded-xl ${
                 active
@@ -186,8 +202,8 @@ export default function MemberSearchFilter({ setFilters }) {
               }`}
             >
               Active
-            </button>
-            <button
+            </button> */}
+            {/* <button
               onClick={handleInactiveClick}
               className={`px-4 py-2 md:px-6 md:py-3 rounded-xl ${
                 inactive
@@ -196,7 +212,7 @@ export default function MemberSearchFilter({ setFilters }) {
               }`}
             >
               Inactive
-            </button>
+            </button> */}
           </span>
           <button
             onClick={toggleFilters}
@@ -221,7 +237,7 @@ export default function MemberSearchFilter({ setFilters }) {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               <div>
-                <h3 className="text-sm mb-2">Joining Date Range</h3>
+                <h3 className="text-sm mb-2">Joining Date The range</h3>
                 <DatePicker
                   selectsRange
                   startDate={startDate}
@@ -291,19 +307,25 @@ export default function MemberSearchFilter({ setFilters }) {
               <div>
                 <h3 className="text-sm mb-2">Plans</h3>
                 <div className="grid grid-cols-3 gap-2">
-                  {["PT", "TP", "Gym"].map((p) => (
-                    <button
-                      key={p}
-                      onClick={() => handlePlanClick(p)}
-                      className={`px-3 py-2 rounded-xl text-sm ${
-                        plan === p
-                          ? "bg-black border border-[#FFDD4A]"
-                          : "bg-[#232024] hover:border hover:border-[#FFDD4A]"
-                      }`}
-                    >
-                      {p}
-                    </button>
-                  ))}
+                  {plans.length > 0 ? (
+                    plans
+                      .filter((p) => p.status.toLowerCase() === "active")
+                      .map((p) => (
+                        <button
+                          key={p.name}
+                          onClick={() => handlePlanClick(p.name)}
+                          className={`px-3 py-2 rounded-xl text-sm ${
+                            plan === p.name
+                              ? "bg-black border border-[#FFDD4A]"
+                              : "bg-[#232024] hover:border hover:border-[#FFDD4A]"
+                          }`}
+                        >
+                          {p.name}
+                        </button>
+                      ))
+                  ) : (
+                    <p className="text-gray-500 text-sm">Loading plans...</p>
+                  )}
                 </div>
               </div>
               <div>

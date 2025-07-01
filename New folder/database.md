@@ -4,7 +4,7 @@
 
 ```sql
 CREATE TABLE user_data (
-  user_id VARCHAR(50),
+  user_id VARCHAR(10),
   name VARCHAR(255),
   gender VARCHAR(50),
   date_of_birth DATE,
@@ -166,21 +166,21 @@ VALUES
 ('USR010', 'BL0015', '2023-11-20', 'Exercise Plan', 'Cash', '', 2200, 200, 2000);
 ```
 
-### trainers_plans table
+### user_Remark table
 
 ```sql
-CREATE TABLE trainers_plans (
-    trainer_id VARCHAR(6),
-    plan_name VARCHAR(30)
+CREATE TABLE user_Remark (
+    user_id VARCHAR(10),
+    remark VARCHAR(70)
 );
 ```
 
 ```sql
-INSERT INTO trainers_plans (trainer_id, plan_name)
+INSERT INTO user_Remark (user_id, remark)
 VALUES 
-('TRN010', 'CrossFit Plan'),
-('TRN009', 'Yoga Plan'),
-('TRN008', 'Zumba Plan');
+('TRN007', 'CrossFit Plan missbehave'),
+('TRN008', 'Drinking'),
+('TRN008', 'smoking');
 ```
 
 ### 

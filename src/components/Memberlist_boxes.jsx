@@ -4,6 +4,20 @@ import { useState, useEffect } from 'react';
 export default function Memberlist_boxes({ members, filters }) {
   const [membershipPlans, setMembershipPlans] = useState([]);
   const currentDate = new Date();
+  const currentDateOnly = currentDate.toISOString().split('T')[0]; // e.g., '2025-07-01'
+
+  // Helper function to get date only (YYYY-MM-DD)
+  const getDateOnly = (date) => {
+    if (!date) return null;
+    try {
+      const parsedDate = new Date(date);
+      if (isNaN(parsedDate)) return null;
+      return parsedDate.toISOString().split('T')[0];
+    } catch (error) {
+      console.error(`Error parsing date ${date}:`, error);
+      return null;
+    }
+  };
 
   // Fetch membership plans data
   useEffect(() => {
@@ -23,17 +37,70 @@ export default function Memberlist_boxes({ members, filters }) {
   }, []);
 
   const filteredMembers = members.filter((member) => {
-    // Find matching membership plan for the member
+    // Find matching membership plan
     const memberPlan = membershipPlans.find(
       (plan) => plan.user_id === member.user_id
     );
-    const expiryDate = memberPlan ? new Date(memberPlan.exp_date) : null;
+    const expiryDateOnly = memberPlan ? getDateOnly(memberPlan.exp_date) : null;
+    const joiningDate = member.joining_date ? new Date(member.joining_date) : null;
 
-    // Inactive filter
-    if (filters.inactive) {
-      if (expiryDate && expiryDate >= currentDate) return false;
-    } else if (filters.active) {
-      if (expiryDate && expiryDate < currentDate) return false;
+    // Active/Inactive filter (based on expiry dates)
+    let passesActiveInactive = true;
+    if (filters.active && !filters.inactive) {
+      passesActiveInactive = expiryDateOnly && expiryDateOnly >= currentDateOnly;
+      if (!passesActiveInactive) return false;
+    } else if (filters.inactive && !filters.active) {
+      passesActiveInactive = !expiryDateOnly || expiryDateOnly < currentDateOnly;
+      if (!passesActiveInactive) return false;
+    }
+
+    // Status filter (for "Active", "Blacklisted", etc.)
+    if (filters.status) {
+      const filterStatus = filters.status.toLowerCase();
+      
+      // Handle "Active" status filter - members with non-expired memberships
+      if (filterStatus === "active") {
+        const isActiveByExpiry = expiryDateOnly && expiryDateOnly >= currentDateOnly;
+        if (!isActiveByExpiry) {
+          return false;
+        }
+      }
+
+      // Handle "Inactive" status filter - members with expired memberships
+      else if (filterStatus === "inactive") {
+        const isInactiveByExpiry = !expiryDateOnly || expiryDateOnly < currentDateOnly;
+        if (!isInactiveByExpiry) {
+          return false;
+        }
+      }
+
+      // Handle "Blacklisted" status filter
+      else if (filterStatus === "blacklisted") {
+        if (member.status?.toLowerCase() !== "blacklisted") {
+          return false;
+        }
+      }
+      // Handle other status filters by comparing member.status
+      else {
+        if (member.status?.toLowerCase() !== filterStatus) {
+          return false;
+        }
+      }
+    }
+
+    // Joining Date Range filter
+    if (filters.startDate && filters.endDate && joiningDate) {
+      const joiningDateOnly = getDateOnly(joiningDate);
+      const startDateOnly = getDateOnly(filters.startDate);
+      const endDateOnly = getDateOnly(filters.endDate);
+      if (joiningDateOnly < startDateOnly || joiningDateOnly > endDateOnly) {
+        return false;
+      }
+    }
+
+    // Gender filter
+    if (filters.gender && member.gender?.toLowerCase() !== filters.gender.toLowerCase()) {
+      return false;
     }
 
     // Search query filter
@@ -47,57 +114,48 @@ export default function Memberlist_boxes({ members, filters }) {
       }
     }
 
-    // Gender filter
-    if (filters.gender && member.gender?.toLowerCase() !== filters.gender.toLowerCase()) {
-      return false;
-    }
-
-    // Status filter
-    if (filters.status) {
-      const isExpired = expiryDate && expiryDate < currentDate;
-      if (filters.status === "Active" && isExpired) return false;
-      if (filters.status === "Inactive" && !isExpired) return false;
-      if (filters.status === "Blacklisted" && member.status?.toLowerCase() !== "blacklisted") {
-        return false;
-      }
-    }
-
     // Payment filter
-    if (filters.payment) {
+    if (filters.payment && memberPlan) {
+      const balance = memberPlan.balance || 0;
       if (
-        (filters.payment === "Fully paid" && member.balance > 0) ||
-        (filters.payment === "With Balance" && member.balance === 0)
+        (filters.payment === "Fully paid" && balance > 0) ||
+        (filters.payment === "With Balance" && balance === 0)
       ) {
         return false;
       }
     }
 
     // Plan filter
-    if (filters.plan && member.membership_type?.toLowerCase() !== filters.plan.toLowerCase()) {
+    if (filters.plan && memberPlan?.plan_name?.toLowerCase() !== filters.plan.toLowerCase()) {
       return false;
     }
 
     // Expiry Within filter
-    if (filters.expiryWithin) {
-      if (!expiryDate) return false;
-      const daysUntilExpiry = Math.max(
-        0,
-        Math.floor((expiryDate - currentDate) / (1000 * 60 * 60 * 24))
-      );
-      const days = parseInt(filters.expiryWithin);
-      if (daysUntilExpiry > days) return false;
-    }
-
-    // Date Range filter
-    if (filters.startDate && filters.endDate) {
-      if (!expiryDate) return false;
-      if (expiryDate < filters.startDate || expiryDate > filters.endDate) {
+    if (filters.expiryWithin && expiryDateOnly) {
+      const expiryDateObj = new Date(expiryDateOnly);
+      const daysUntilExpiry = Math.floor((expiryDateObj - new Date(currentDateOnly)) / (1000 * 60 * 60 * 24));
+      const days = parseInt(filters.expiryWithin) || 0;
+      
+      // Only show members whose expiry exactly matches the specified days
+      if (daysUntilExpiry !== days) {
         return false;
       }
     }
 
     return true;
   });
+
+  // Log final filtered members
+  // console.log('Filters applied:', filters);
+  // console.log(
+  //   'Filtered members:',
+  //   filteredMembers.map((m) => ({
+  //     user_id: m.user_id,
+  //     name: m.name,
+  //     exp_date: membershipPlans.find((p) => p.user_id === m.user_id)?.exp_date,
+  //     parsed_expiry: getDateOnly(membershipPlans.find((p) => p.user_id === m.user_id)?.exp_date),
+  //   }))
+  // );
 
   return (
     <div className="p-4">
@@ -106,11 +164,17 @@ export default function Memberlist_boxes({ members, filters }) {
           const memberPlan = membershipPlans.find(
             (plan) => plan.user_id === member.user_id
           );
-          const expiryDate = memberPlan ? new Date(memberPlan.exp_date) : null;
-          const daysUntilExpiry = expiryDate
-            ? Math.max(0, Math.floor((expiryDate - currentDate) / (1000 * 60 * 60 * 24)))
+          const expiryDateOnly = memberPlan ? getDateOnly(memberPlan.exp_date) : null;
+          const daysUntilExpiry = expiryDateOnly
+            ? Math.max(
+                0,
+                Math.floor(
+                  (new Date(expiryDateOnly) - new Date(currentDateOnly)) /
+                    (1000 * 60 * 60 * 24)
+                )
+              )
             : 0;
-          const isExpired = expiryDate && expiryDate < currentDate;
+          const isExpired = expiryDateOnly && expiryDateOnly < currentDateOnly;
 
           return (
             <a
@@ -128,13 +192,7 @@ export default function Memberlist_boxes({ members, filters }) {
                   <h3 className="font-semibold">{member.name || "Member name"}</h3>
                   <h4>{member.user_id || "member_id"}</h4>
                   <p className={isExpired ? "text-red-600" : "text-green-600"}>
-                    {expiryDate
-                      ? expiryDate.toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })
-                      : "01-01-2000"}
+                    {expiryDateOnly || "01-01-2000"}
                   </p>
                   <p className="text-yellow-500 text-sm md:text-lg">Note: Remarks</p>
                 </span>
@@ -148,7 +206,7 @@ export default function Memberlist_boxes({ members, filters }) {
                   {isExpired ? "Expired" : "Not Expired"}
                 </p>
                 <p className="bg-[#232024] px-2 py-1 rounded-full border border-white text-center">
-                  {member.membership_type || "Basic Gym"}
+                  {memberPlan?.plan_name || "Basic Gym"}
                 </p>
               </span>
             </a>
