@@ -74,16 +74,16 @@ CREATE TABLE plans (
 ```sql
 INSERT INTO plans (plan_name, description, amount, duration, status)
 VALUES
-('Exercise Plan', 'Full-body workout with weights and cardio', 2000, '1 month', 'active'),
-('Zumba Plan', 'High-energy dance fitness program', 1500, '1 month','Active'),
-('Calisthenics Plan', 'Bodyweight training for strength and flexibility', 3000, '2 months', 'active'),
-('Yoga Plan', 'Mindfulness and flexibility training', 1000, '1 month','active'),
-('CrossFit Plan', 'High-intensity functional training', 2500, '1 month','active'),
-('Pilates Plan', 'Core strengthening and posture improvement', 1800, '1 month', 'inactive'),
-('Boxing Plan', 'Cardio and strength training with boxing techniques', 2200, '2 months', 'inactive'),
-('Swimming Plan', 'Low-impact full-body workout', 2700, '2 months', 'inactive'),
-('HIIT Plan', 'Short bursts of intense exercise', 1900, '1 month', 'inactive'),
-('Meditation Plan', 'Stress relief and mental wellness sessions', 1200, '1 month', 'inactive');
+('Exercise Plan', 'Full-body workout with weights and cardio', 2000, '30', 'active'),
+('Zumba Plan', 'High-energy dance fitness program', 1500, '30','active'),
+('Calisthenics Plan', 'Bodyweight training for strength and flexibility', 3000, '60', 'active'),
+('Yoga Plan', 'Mindfulness and flexibility training', 1000, '30','active'),
+('CrossFit Plan', 'High-intensity functional training', 2500, '30','active'),
+('Pilates Plan', 'Core strengthening and posture improvement', 1800, '30', 'inactive'),
+('Boxing Plan', 'Cardio and strength training with boxing techniques', 2200, '60', 'inactive'),
+('Swimming Plan', 'Low-impact full-body workout', 2700, '15', 'inactive'),
+('HIIT Plan', 'Short bursts of intense exercise', 1900, '18', 'inactive'),
+('Meditation Plan', 'Stress relief and mental wellness sessions', 1200, '20', 'inactive');
 ```
 
 ### membership_plans table
@@ -97,7 +97,8 @@ CREATE TABLE membership_plans (
   balance INTEGER,
   trans_type VARCHAR(15),
   trainer VARCHAR(30),
-  date DATE
+  date DATE,
+  exp_date DATE
 );
 ```
 
@@ -115,6 +116,19 @@ VALUES
 ('USR009', 'Yoga Plan', 1000, 100, 900, 'Other', 'TRN009', '2023-09-15'),
 ('USR010', 'CrossFit Plan', 2500, 250, 2250, 'GPay', 'TRN010', '2023-10-20');
 ```
+
+INSERT INTO membership_plans (user_id, plan_name, amount, discount, balance, trans_type, trainer, date, exp_date)
+VALUES
+('USR001', 'Exercise Plan', 2000, 200, 1800, 'GPay', 'TRN001', '2024-12-01', '2024-12-31'),
+('USR002', 'Zumba Plan', 1500, 150, 1350, 'Cash', 'TRN002', '2024-11-15', '2024-12-15'),
+('USR003', 'Calisthenics Plan', 3000, 300, 2700, 'Other', 'TRN003', '2024-10-20', '2024-11-19'),
+('USR004', 'Yoga Plan', 1000, 100, 900, 'GPay', 'TRN004', '2024-09-25', '2024-10-25'),
+('USR005', 'CrossFit Plan', 2500, 250, 2250, 'Cash', 'TRN005', '2024-08-30', '2024-09-29'),
+('USR006', 'Exercise Plan', 2000, 200, 1800, 'Other', 'TRN006', '2025-06-01', '2025-07-01'),
+('USR007', 'Zumba Plan', 1500, 150, 1350, 'GPay', 'TRN007', '2025-06-05', '2025-07-05'),
+('USR008', 'Calisthenics Plan', 3000, 300, 2700, 'Cash', 'TRN008', '2025-06-10', '2025-07-10'),
+('USR009', 'Yoga Plan', 1000, 100, 900, 'Other', 'TRN009', '2025-06-15', '2025-07-15'),
+('USR010', 'CrossFit Plan', 2500, 250, 2250, 'GPay', 'TRN010', '2025-06-20', '2025-07-20');
 
 ### transations table
 

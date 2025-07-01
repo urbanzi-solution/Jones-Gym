@@ -1,3 +1,4 @@
+// src\app\(pages)\staff\page.jsx
 import Inpage_header from "@/components/Inpage_header";
 import Dashboardgreeting from "@/components/Dashboard_greeting";
 import StaffClient from "@/components/StaffClient";
@@ -10,7 +11,7 @@ export default async function Staff({ searchParams }) {
   let queryString = `
     SELECT DISTINCT t.*
     FROM trainers t
-    LEFT JOIN trainers_plans tp ON t.trainer_id = tp.trainer_id
+    LEFT JOIN membership_plans mp ON t.trainer_id = mp.trainer
   `;
   let queryParams = [];
   let conditions = [];
@@ -21,15 +22,17 @@ export default async function Staff({ searchParams }) {
     queryParams.push(`%${searchQuery}%`);
   }
 
-  // Apply specific plan filter (using trainers_plans table)
+  // Apply specific plan filter (using membership_plans table)
   if (plan) {
-    conditions.push('tp.plan_name = $' + (queryParams.length + 1));
+    conditions.push('mp.plan_name = $' + (queryParams.length + 1));
     queryParams.push(plan);
   }
 
   if (conditions.length > 0) {
     queryString += ' WHERE ' + conditions.join(' AND ');
   }
+
+  queryString += ' ORDER BY t.trainer_id';
 
   const trainerResult = await query(queryString, queryParams);
   const staff = trainerResult.rows;

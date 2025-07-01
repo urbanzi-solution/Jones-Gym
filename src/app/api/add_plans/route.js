@@ -78,9 +78,6 @@ export async function POST(request) {
 
     const result = await client.query(query, values);
 
-    // Release the client
-    await client.end();
-
     return new Response(
       JSON.stringify({ message: "Plan added successfully", data: result.rows[0] }),
       {

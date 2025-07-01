@@ -1,23 +1,68 @@
 "use client";
+import { useState, useEffect } from "react";
 import { IoPerson } from "react-icons/io5";
 import { useRouter } from 'next/navigation';
 
 export default function DashboardActivePlans() {
   const router = useRouter();
-  
-  // Mock data for active plans - in a real app, this would come from your backend
-  const activePlans = [
-    { id: 1, name: "Basic Gym", price: 2500, members: 8, duration: 30, status: "active" },
-    { id: 2, name: "Premium Plan", price: 4000, members: 5, duration: 60, status: "active" },
-    { id: 3, name: "Student Special", price: 1800, members: 12, duration: 30, status: "active" },
-  ];
+  const [plans, setPlans] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch plans
+        const plansResponse = await fetch('/api/fetch_plans');
+        if (!plansResponse.ok) throw new Error('Failed to fetch plans');
+        const plansData = await plansResponse.json();
+
+        // Fetch membership plans
+        const membershipsResponse = await fetch('/api/fetch_membership_plans');
+        if (!membershipsResponse.ok) throw new Error('Failed to fetch membership plans');
+        const membershipsData = await membershipsResponse.json();
+
+        // Calculate member count per plan
+        const planMemberCounts = membershipsData.reduce((acc, membership) => {
+          if (membership.plan_name) {
+            acc[membership.plan_name] = (acc[membership.plan_name] || 0) + 1;
+          }
+          return acc;
+        }, {});
+
+        // Map plans with member counts
+        const enrichedPlans = plansData
+          .filter(plan => plan.status === 'active')
+          .map(plan => ({
+            ...plan,
+            members: planMemberCounts[plan.name] || 0
+          }));
+
+        setPlans(enrichedPlans);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div className="box">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="box">Error: {error}</div>;
+  }
 
   return (
     <div className="box">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg md:text-2xl">Active Plans</h2>
         <button 
-          onClick={() => router.push('/plans/add')} // Link to your add plan form
+          onClick={() => router.push('/plan-add')}
           className="flex items-center gap-1 text-sm text-blue-500 hover:underline"
         >
           Add Plan
@@ -25,14 +70,14 @@ export default function DashboardActivePlans() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        {activePlans.map((plan) => (
+        {plans.map((plan) => (
           <div 
             key={plan.id}
             className="flex flex-col w-full gap-3 bg-[#232024] p-5 rounded-lg items-center justify-center sm:text-xl hover:bg-[#2E2A2D] transition-colors cursor-pointer"
-            onClick={() => router.push(`/plans/${plan.id}`)} // Link to plan details
+            onClick={() => router.push(`/plans/${plan.id}`)}
           >
             <h4 className="text-center font-medium">{plan.name}</h4>
-            <h3 className="text-[#FFDD4A] font-semibold">{plan.price.toLocaleString()}/-</h3>
+            <h3 className="text-[#FFDD4A] font-semibold">{plan.amount.toLocaleString()}/-</h3>
             <div className="flex items-center gap-2 text-gray-400">
               <span className="flex items-center gap-1">
                 <IoPerson className="text-[#FFDD4A]" />

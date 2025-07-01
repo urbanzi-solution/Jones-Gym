@@ -5,16 +5,13 @@ import { NextResponse } from 'next/server';
 export async function GET() {
   try {
     const client = await getClient();
-    const { rows } = await client.query('SELECT * FROM trainers_plans');
-    // await client.end();
+    const { rows } = await client.query('SELECT trainer, plan_name FROM membership_plans');
     
     // Map database fields to match frontend expectations
     const plans = rows.map((row, index) => ({
-      trainer: row.trainer_id,
+      trainer: row.trainer,
       plan: row.plan_name,
     }));
-
-    // console.log(plans);
 
     return NextResponse.json(plans);
   } catch (error) {

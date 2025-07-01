@@ -18,7 +18,7 @@ export default function DashboardGeneral() {
                     lg:min-h-[100px]
                     md:p-6
                 "
-          href=""
+          href="/members"
         >
           <span>All Members</span>
         </a>

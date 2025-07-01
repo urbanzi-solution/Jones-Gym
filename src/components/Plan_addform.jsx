@@ -8,33 +8,9 @@ export default function PlanAddPage() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [trainers, setTrainers] = useState([]);
   const [selectedTrainers, setSelectedTrainers] = useState([]);
 
-  useEffect(() => {
-    const fetchTrainers = async () => {
-      try {
-        const response = await fetch('/api/fetch_trainers');
-        const data = await response.json();
-        if (response.ok) {
-          setTrainers(data);
-        } else {
-          setError(data.error || "Failed to fetch trainers");
-        }
-      } catch (err) {
-        setError("An error occurred while fetching trainers");
-      }
-    };
-    fetchTrainers();
-  }, []);
 
-  const handleTrainerSelection = (trainerId) => {
-    setSelectedTrainers(prev => 
-      prev.includes(trainerId) 
-        ? prev.filter(id => id !== trainerId) 
-        : [...prev, trainerId]
-    );
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -63,25 +39,6 @@ export default function PlanAddPage() {
 
       if (!planResponse.ok) {
         throw new Error(planResult.error || "Failed to add plan");
-      }
-
-      // If trainers are selected, add trainer-plan associations
-      if (selectedTrainers.length > 0) {
-        const trainerPlanResponse = await fetch("/api/add_trainers_plans", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            plan_name: formData.plan_name,
-            trainer_ids: selectedTrainers
-          }),
-        });
-
-        if (!trainerPlanResponse.ok) {
-          const trainerPlanResult = await trainerPlanResponse.json();
-          throw new Error(trainerPlanResult.error || "Failed to add trainer-plan associations");
-        }
       }
 
       setSuccess("Plan and trainer associations added successfully!");
@@ -194,29 +151,6 @@ export default function PlanAddPage() {
                 <option value="inactive">Inactive</option>
               </select>
             </div>
-          </div>
-        </div>
-
-        {/* Trainer Selection Section */}
-        <div className="mt-6">
-          <label className="block text-sm font-medium mb-2 text-gray-300">
-            Assign Trainers (Optional)
-          </label>
-          <div className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] appearance-none">
-            {trainers.map(trainer => (
-              <div key={trainer.trainer_id} className="flex items-center">
-                <input
-                  type="checkbox"
-                  id={`trainer-${trainer.trainer_id}`}
-                  checked={selectedTrainers.includes(trainer.trainer_id)}
-                  onChange={() => handleTrainerSelection(trainer.trainer_id)}
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-                <label htmlFor={`trainer-${trainer.trainer_id}`} className="ml-2 text-gray-300">
-                  {trainer.name} (ID: {trainer.trainer_id})
-                </label>
-              </div>
-            ))}
           </div>
         </div>
 
