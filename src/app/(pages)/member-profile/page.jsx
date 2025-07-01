@@ -31,7 +31,7 @@ export default async function MemberProfile({ searchParams }) {
 
   return (
     <div>
-      <Inpage_header title="Member Profile" />
+      <Inpage_header title="Member Profile" member_id={member_id} />
       <Memberlist_profile member={member} />
       <Members_profile2 member={member} />
       <Recent_transations userId={member_id} />

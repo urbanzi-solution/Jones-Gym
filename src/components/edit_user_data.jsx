@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 
-export default function BlacklistForm({ onSave, onCancel }) {
+export default function EditUserData({ onSave, onCancel }) {
   const [name, setName] = useState("");
   const [reason, setReason] = useState("");
 

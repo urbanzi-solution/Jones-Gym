@@ -183,14 +183,21 @@ VALUES
 ('TRN008', 'smoking');
 ```
 
-### 
+### Blacklist table
 
 ```sql
-
+CREATE TABLE Blacklist (
+    user_id VARCHAR(10),
+    description VARCHAR(50)
+);
 ```
 
 ```sql
-
+INSERT INTO user_Remark (user_id, description)
+VALUES 
+('TRN007', 'CrossFit Plan missbehave'),
+('TRN008', 'Drinking'),
+('TRN008', 'smoking');
 ```
 
 
