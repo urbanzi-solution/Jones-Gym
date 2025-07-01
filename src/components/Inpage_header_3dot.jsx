@@ -1,3 +1,4 @@
+// src\components\Inpage_header_3dot.jsx
 "use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -9,7 +10,7 @@ import RemarksForm from "@/components/Remarks_form";
 import BlacklistForm from "@/components/Blacklist_form";
 import EditUserData from "@/components/edit_user_data";
 
-export default function Inpage_header({ title, member_id }) {
+export default function Inpage_header({ title, member_id, member }) {
   const router = useRouter();
   const [showOptions, setShowOptions] = useState(false);
   const [addMembershipShow, setAddMembershipShow] = useState(false);
@@ -202,6 +203,7 @@ export default function Inpage_header({ title, member_id }) {
             </div>
             <div className="overflow-y-auto p-4 md:p-6 text-sm md:text-base">
               <EditUserData
+                member={member} // Pass member data
                 user_id={member_id}
                 onSave={(data) => {
                   console.log("User Data Edited:", data);
