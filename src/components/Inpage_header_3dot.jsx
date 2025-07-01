@@ -7,6 +7,7 @@ import { GrClose } from "react-icons/gr";
 import Addmembership from "@/components/Add-membership_form";
 import RemarksForm from "@/components/Remarks_form";
 import BlacklistForm from "@/components/Blacklist_form";
+import EditUserData from "@/components/edit_user_data";
 
 export default function Inpage_header({ title, member_id }) {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function Inpage_header({ title, member_id }) {
   const [addMembershipShow, setAddMembershipShow] = useState(false);
   const [remarksShow, setRemarksShow] = useState(false);
   const [blacklistShow, setBlacklistShow] = useState(false);
+  const [editUserDataShow, setEditUserDataShow] = useState(false);
 
   const toggleOptions = () => setShowOptions(!showOptions);
 
@@ -21,6 +23,7 @@ export default function Inpage_header({ title, member_id }) {
     setAddMembershipShow(true);
     setRemarksShow(false);
     setBlacklistShow(false);
+    setEditUserDataShow(false);
     setShowOptions(false);
   };
 
@@ -28,6 +31,7 @@ export default function Inpage_header({ title, member_id }) {
     setRemarksShow(true);
     setAddMembershipShow(false);
     setBlacklistShow(false);
+    setEditUserDataShow(false);
     setShowOptions(false);
   };
 
@@ -35,6 +39,15 @@ export default function Inpage_header({ title, member_id }) {
     setBlacklistShow(true);
     setAddMembershipShow(false);
     setRemarksShow(false);
+    setEditUserDataShow(false);
+    setShowOptions(false);
+  };
+
+  const openEditUserData = () => {
+    setEditUserDataShow(true);
+    setAddMembershipShow(false);
+    setRemarksShow(false);
+    setBlacklistShow(false);
     setShowOptions(false);
   };
 
@@ -42,6 +55,7 @@ export default function Inpage_header({ title, member_id }) {
     setAddMembershipShow(false);
     setRemarksShow(false);
     setBlacklistShow(false);
+    setEditUserDataShow(false);
   };
 
   return (
@@ -65,7 +79,10 @@ export default function Inpage_header({ title, member_id }) {
             />
           </div>
           <ul className="space-y-2 flex flex-col p-3 text-sm md:text-xl text-center">
-            <button className="bg-[#232024] p-3 rounded-2xl hover:border border-[#FFDD4A]">
+            <button
+              onClick={openEditUserData}
+              className="bg-[#232024] p-3 rounded-2xl hover:border border-[#FFDD4A]"
+            >
               Edit Data
             </button>
             <button
@@ -162,6 +179,32 @@ export default function Inpage_header({ title, member_id }) {
                 user_id={member_id}
                 onSave={(data) => {
                   console.log("Blacklisted:", data);
+                  closeAllModals();
+                }}
+                onCancel={closeAllModals}
+              />
+            </div>
+            <div className="h-20" />
+          </div>
+        </div>
+      )}
+
+      {/* Edit User Data Form */}
+      {editUserDataShow && (
+        <div className="fixed inset-0 z-50 bg-[#0a0a0a]/80 flex justify-center items-center overflow-y-auto p-4">
+          <div className="relative w-full max-w-2xl bg-[#0a0a0a] border border-[#6e6e6e] rounded-xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="sticky top-0 z-10 bg-[#0a0a0a] p-4 border-b border-[#6e6e6e] flex justify-end">
+              <GrClose
+                onClick={closeAllModals}
+                className="cursor-pointer text-gray-400 hover:text-white hover:scale-90 transition-transform"
+                size={28}
+              />
+            </div>
+            <div className="overflow-y-auto p-4 md:p-6 text-sm md:text-base">
+              <EditUserData
+                user_id={member_id}
+                onSave={(data) => {
+                  console.log("User Data Edited:", data);
                   closeAllModals();
                 }}
                 onCancel={closeAllModals}

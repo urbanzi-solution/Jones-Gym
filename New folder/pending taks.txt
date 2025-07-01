@@ -25,14 +25,14 @@ member page - Filters
 member page - Active and inactive in member page with expiry date
 > completed
 
-member profile - option button actions and add remark for the member
-member profile - edit data, blacklist member with remark, remark add membership
-
 Block and remark table
 Block and remark member page, member list
 Block and remark in the member profile
+> completed
 
-member page - Export in member page
+member profile - option button actions and add remark for the member
+member profile - edit data, blacklist member with remark, remark add membership
+
 
 ----------------------------------------------------------------------
 
@@ -45,6 +45,7 @@ staff profile - pt attendance and staff attandece in staff profile
 staff profile - basic gym pt, related plans and member count in the staff profile
 
 staff page - Export in staff page
+member page - Export in member page
 
 transaction page - export transaction
 
