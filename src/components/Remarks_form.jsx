@@ -1,41 +1,98 @@
 "use client";
+import { useState, useEffect } from "react";
 
-import { useState } from "react";
-
-export default function RemarksForm({ onSave, onCancel }) {
+export default function RemarksForm({ user_id, onSave, onCancel }) {
+  const [name, setName] = useState("");
   const [remarks, setRemarks] = useState("");
+  const [error, setError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSave = () => {
-    if (onSave) onSave(remarks);
+  useEffect(() => {
+    if (user_id) {
+      setName(user_id);
+    }
+  }, [user_id]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/add_Remark', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_id: name, description: remarks }),
+      });
+
+      if (!response.ok) {
+        const { error } = await response.json();
+        throw new Error(error || 'Failed to add remark');
+      }
+
+      if (onSave) onSave({ name, remarks });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <div className="p-4 bg-[#0a0a0a] border border-[#3E3A3D] rounded-xl max-w-xl w-full">
-      <label className="block text-sm font-medium text-gray-300 mb-2">
-        Remarks
-      </label>
-      <textarea
-        rows={4}
-        value={remarks}
-        onChange={(e) => setRemarks(e.target.value)}
-        placeholder="Enter your remarks..."
-        className="w-full p-4 bg-[#232024] rounded-lg border border-[#3E3A3D] text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-      />
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {/* User ID Field */}
+      <div>
+        <label className="block text-gray-300 mb-2">User ID</label>
+        <input
+          type="text"
+          className="w-full p-3 bg-[#232024] border border-[#3E3A3D] rounded-lg text-white"
+          placeholder="Enter user ID"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          disabled={isSubmitting}
+          maxLength={10}
+        />
+      </div>
 
-      <div className="flex justify-end gap-3 mt-4">
+      {/* Remarks Field */}
+      <div>
+        <label className="block text-gray-300 mb-2">Remarks</label>
+        <textarea
+          rows={4}
+          className="w-full p-3 bg-[#232024] border border-[#3E3A3D] rounded-lg text-white"
+          placeholder="Enter remarks"
+          value={remarks}
+          onChange={(e) => setRemarks(e.target.value)}
+          disabled={isSubmitting}
+          maxLength={50}
+        />
+      </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="text-red-500 text-sm">{error}</div>
+      )}
+
+      {/* Action Buttons */}
+      <div className="flex flex-col sm:flex-row gap-4">
         <button
+          type="button"
           onClick={onCancel}
-          className="px-5 py-2 border border-gray-500 text-white rounded-lg hover:bg-[#1a1a1a] transition-colors"
+          className="w-full border border-gray-500 text-white rounded-lg py-3 hover:bg-[#1a1a1a] transition"
+          disabled={isSubmitting}
         >
           Cancel
         </button>
         <button
-          onClick={handleSave}
-          className="px-5 py-2 bg-[#FFDD4A] text-black font-bold rounded-lg hover:bg-[#ffd700] transition-colors"
+          type="submit"
+          className="w-full bg-[#FFDD4A] text-black font-bold py-3 rounded-lg hover:bg-[#ffd700] transition"
+          disabled={isSubmitting}
         >
-          Save
+          {isSubmitting ? 'Saving...' : 'Save Remarks'}
         </button>
       </div>
-    </div>
+    </form>
   );
 }

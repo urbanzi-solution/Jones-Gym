@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 
 export default function Memberlist_boxes({ members, filters }) {
   const [membershipPlans, setMembershipPlans] = useState([]);
+  const [remarkData, setRemarkData] = useState({});
   const currentDate = new Date();
   const currentDateOnly = currentDate.toISOString().split('T')[0]; // e.g., '2025-07-01'
 
@@ -34,6 +35,31 @@ export default function Memberlist_boxes({ members, filters }) {
       }
     };
     fetchMembershipPlans();
+  }, []);
+
+  // Fetch remark and blacklist data
+  useEffect(() => {
+    const fetchRemarkBlacklist = async () => {
+      try {
+        const response = await fetch('/api/fetch_remark_blcklist');
+        if (!response.ok) {
+          throw new Error('Failed to fetch remark and blacklist data');
+        }
+        const data = await response.json();
+        // Create a lookup object for remarks and blacklist status
+        const remarkLookup = {};
+        data.forEach(item => {
+          remarkLookup[item.userId] = {
+            remark: item.remark || 'No Remarks',
+            blacklistStatus: item.blacklistDescription ? 'Black-listed' : 'Not Black-listed'
+          };
+        });
+        setRemarkData(remarkLookup);
+      } catch (error) {
+        console.error('Error fetching remark and blacklist data:', error);
+      }
+    };
+    fetchRemarkBlacklist();
   }, []);
 
   const filteredMembers = members.filter((member) => {
@@ -145,18 +171,6 @@ export default function Memberlist_boxes({ members, filters }) {
     return true;
   });
 
-  // Log final filtered members
-  // console.log('Filters applied:', filters);
-  // console.log(
-  //   'Filtered members:',
-  //   filteredMembers.map((m) => ({
-  //     user_id: m.user_id,
-  //     name: m.name,
-  //     exp_date: membershipPlans.find((p) => p.user_id === m.user_id)?.exp_date,
-  //     parsed_expiry: getDateOnly(membershipPlans.find((p) => p.user_id === m.user_id)?.exp_date),
-  //   }))
-  // );
-
   return (
     <div className="p-4">
       {filteredMembers.length > 0 ? (
@@ -175,6 +189,8 @@ export default function Memberlist_boxes({ members, filters }) {
               )
             : 0;
           const isExpired = expiryDateOnly && expiryDateOnly < currentDateOnly;
+          const memberRemark = remarkData[member.user_id]?.remark || 'No Remarks';
+          const memberBlacklistStatus = remarkData[member.user_id]?.blacklistStatus || 'Not Black-listed';
 
           return (
             <a
@@ -184,7 +200,7 @@ export default function Memberlist_boxes({ members, filters }) {
             >
               <div className="flex gap-3 items-center sm:gap-5 lg:gap-10">
                 <img
-                  className="w-16 h-16 sm:w-32 sm:h-32 lg:w-40 lg:h-40 object-cover border-2 rounded-full"
+                  className="w-16 h-16 sm:32 sm:h-32 lg:w-40 lg:h-40 object-cover border-2 rounded-full"
                   src={member.image_url || "/images/user1.jpg"}
                   alt={member.name || "Member"}
                 />
@@ -194,13 +210,18 @@ export default function Memberlist_boxes({ members, filters }) {
                   <p className={isExpired ? "text-red-600" : "text-green-600"}>
                     {expiryDateOnly || "01-01-2000"}
                   </p>
-                  <p className="text-yellow-500 text-sm md:text-lg">Note: Remarks</p>
+                  <p className={memberRemark === 'No Remarks' ? "text-white" : "text-yellow-600"}>
+                    Note: {memberRemark}
+                  </p>
+                  <p className={memberBlacklistStatus === 'Black-listed' ? "text-red-600" : "text-green-600"}>
+                    Blacklist Status: {memberBlacklistStatus}
+                  </p>
                 </span>
               </div>
               <span className="flex flex-col gap-2 items-end justify-center text-[10px] sm:text-lg lg:text-xl">
                 <p
                   className={`px-2 py-1 rounded-full border border-white text-center ${
-                    isExpired ? "bg-red-600" : "bg-green-600"
+                    isExpired ? "bg-red-800" : "bg-green-800"
                   }`}
                 >
                   {isExpired ? "Expired" : "Not Expired"}

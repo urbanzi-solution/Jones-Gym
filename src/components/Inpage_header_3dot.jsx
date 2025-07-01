@@ -1,4 +1,3 @@
-// src\components\Inpage_header_3dot.jsx
 "use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -9,7 +8,7 @@ import Addmembership from "@/components/Add-membership_form";
 import RemarksForm from "@/components/Remarks_form";
 import BlacklistForm from "@/components/Blacklist_form";
 
-export default function Inpage_header({ title }) {
+export default function Inpage_header({ title, member_id }) {
   const router = useRouter();
   const [showOptions, setShowOptions] = useState(false);
   const [addMembershipShow, setAddMembershipShow] = useState(false);
@@ -140,7 +139,7 @@ export default function Inpage_header({ title }) {
               />
             </div>
             <div className="overflow-y-auto p-4 md:p-6 text-sm md:text-base">
-              <RemarksForm onSave={closeAllModals} onCancel={closeAllModals} />
+              <RemarksForm user_id={member_id} onSave={closeAllModals} onCancel={closeAllModals} />
             </div>
             <div className="h-20" />
           </div>
@@ -160,6 +159,7 @@ export default function Inpage_header({ title }) {
             </div>
             <div className="overflow-y-auto p-4 md:p-6 text-sm md:text-base">
               <BlacklistForm
+                user_id={member_id}
                 onSave={(data) => {
                   console.log("Blacklisted:", data);
                   closeAllModals();
