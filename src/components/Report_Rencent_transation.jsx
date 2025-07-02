@@ -6,6 +6,8 @@ import { FaGooglePay } from "react-icons/fa";
 import { FaPiggyBank } from "react-icons/fa";
 import { HiOutlineCash } from "react-icons/hi";
 import { CiCreditCard1 } from "react-icons/ci";
+import Inpage_header from "@/components/Inpage_header";
+import * as XLSX from 'xlsx';
 
 export default function Recent_transations() {
   const [transactions, setTransactions] = useState([]);
@@ -28,6 +30,36 @@ export default function Recent_transations() {
     fetchTransactions();
   }, []);
 
+
+  const exportToExcel = () => {
+    const data = transactions.map(transaction => ({
+      'Bill No': transaction.bill_no || "N/A",
+      'Name': transaction.name || "N/A",
+      'Plan': transaction.plan || "N/A",
+      'Payment Method': transaction.trans_type || "N/A",
+      'Amount': transaction.amount || "N/A",
+      'Balance': transaction.balance || "N/A",
+      'Date': transaction.date ? new Date(transaction.date).toLocaleDateString() : "N/A"
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Transactions");
+
+    // Set column widths
+    worksheet['!cols'] = [
+      { wch: 10 },  // Bill No
+      { wch: 20 },  // Name
+      { wch: 15 },  // Plan
+      { wch: 15 },  // Payment Method
+      { wch: 10 },  // Amount
+      { wch: 10 },  // Balance
+      { wch: 15 }   // Date
+    ];
+
+    XLSX.writeFile(workbook, "Recent_Transactions.xlsx");
+  };
+
   // Function to render the appropriate icon based on trans_type
   const getTransactionIcon = (transType) => {
     switch (transType) {
@@ -47,7 +79,11 @@ export default function Recent_transations() {
   };
 
   return (
+    
     <div className="box">
+
+      <Inpage_header onExport={exportToExcel} />
+
       <div className="flex justify-between items-center text-lg md:text-xl font-semibold lg:text-2xl">
         <h2>Recent Transactions</h2>
         <a href="/report-transations"><FaArrowRight /></a>

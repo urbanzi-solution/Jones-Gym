@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { SlCalender } from "react-icons/sl";
 import { FaCaretDown, FaEllipsisV } from "react-icons/fa";
+import Inpage_header from "@/components/Inpage_header";
+import * as XLSX from 'xlsx';
 
 export default function DetailedTransactions() {
   const [transactions, setTransactions] = useState([]);
@@ -26,6 +28,40 @@ export default function DetailedTransactions() {
     fetchTransactions();
   }, []);
 
+    // Export to Excel function
+  const exportToExcel = () => {
+    const data = transactions.map(transaction => ({
+      'User Name': transaction.name || "N/A",
+      'User ID': transaction.user_id || "N/A",
+      'Date': transaction.date ? new Date(transaction.date).toLocaleDateString() : "N/A",
+      'Bill Number': transaction.bill_no || "N/A",
+      'Plan': transaction.plan || "N/A",
+      'Amount Paid': transaction.amount || "0",
+      'Discount': transaction.discount || "0",
+      'Balance': transaction.balance || "0",
+      'Transaction Type': transaction.trans_type || "N/A"
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Transactions");
+
+    // Set column widths
+    worksheet['!cols'] = [
+      { wch: 20 },  // User Name
+      { wch: 10 },  // User ID
+      { wch: 12 },  // Date
+      { wch: 12 },  // Bill Number
+      { wch: 15 },  // Plan
+      { wch: 12 },  // Amount Paid
+      { wch: 10 },  // Discount
+      { wch: 10 },  // Balance
+      { wch: 15 }   // Transaction Type
+    ];
+
+    XLSX.writeFile(workbook, "Detailed_Transactions.xlsx");
+  };
+
   // Function to handle edit action
   const handleEdit = (billNumber) => {
     console.log(`Edit transaction with Bill Number: ${billNumber}`);
@@ -40,6 +76,7 @@ export default function DetailedTransactions() {
 
   return (
     <div className="box">
+      <Inpage_header  onExport={exportToExcel} />
       <div className="flex justify-between items-center md:text-xl">
         <h3 className="flex items-center">
           Today <FaCaretDown />

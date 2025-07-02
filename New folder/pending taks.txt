@@ -32,27 +32,36 @@ Block and remark in the member profile
 
 member profile - option button actions and add remark for the member
 member profile - edit data, blacklist member with remark, remark add membership
+> completed
 
+member profile - add remark in the user profile 
+> completed
+
+member list - note remark
+> completed
 
 ----------------------------------------------------------------------
 
-member profile - add remark in the user profile 
-
-member list - note remark
-
-staff profile - pt attendance and staff attandece in staff profile 
-
 staff profile - basic gym pt, related plans and member count in the staff profile
+> completed
 
 staff page - Export in staff page
 member page - Export in member page
+> completed
 
 transaction page - export transaction
+> completed
 
 ----------------------------------------------------------------------
+
+report-transations page - filters in detail transaction, today, yesterday, 2 day before, calender
 
 detailed transaction page - edit and delete
 
 see all plan - edit plans
 
 notification popup and natification functions and updates
+
+save image - member profile, staff profile, member list, staff list
+
+staff profile - pt attendance and staff attandece in staff profile 

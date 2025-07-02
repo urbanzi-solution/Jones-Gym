@@ -1,11 +1,9 @@
-/* src/app/(pages)/members/page.jsx */
 import { query } from '@/lib/db';
 import Inpage_header from "@/components/Inpage_header";
 import MembersClient from "@/components/MembersClient";
 import Dashboardgreeting from "@/components/Dashboard_greeting";
 
 export default async function Members({ searchParams }) {
-
   const params = await searchParams; 
 
   const inactiveFilter = params.inactive === 'true';
@@ -24,7 +22,7 @@ export default async function Members({ searchParams }) {
   return (
     <div>
       <Dashboardgreeting />
-      <Inpage_header title="Members List" />
+      {/* <Inpage_header title="Members List" members={members} /> */}
       <MembersClient members={members} />
       <div className="h-20"></div>
     </div>

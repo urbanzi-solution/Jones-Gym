@@ -54,7 +54,6 @@ export default async function Staff({ searchParams }) {
   return (
     <div>
       <Dashboardgreeting />
-      <Inpage_header title="Staff List" />
       <StaffClient initialStaff={staffWithCounts} />
       <div className="h-20"></div>
     </div>
