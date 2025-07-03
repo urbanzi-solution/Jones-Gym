@@ -55,12 +55,16 @@ transaction page - export transaction
 ----------------------------------------------------------------------
 
 report-transations page - filters in detail transaction, today, yesterday, 2 day before, calender
+> completed
 
 detailed transaction page - edit and delete
+> completed
 
 see all plan - edit plans
+> completed
 
 see all plan - edit plans, mark as inactive and mark as active
+> completed
 
 notification popup and natification functions and updates
 

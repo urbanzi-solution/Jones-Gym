@@ -1,4 +1,3 @@
-// src\components\Plan_See.jsx
 "use client";
 import { useState, useEffect } from "react";
 import { FaEdit } from "react-icons/fa";
@@ -30,13 +29,32 @@ export default function PlanList() {
     fetchPlans();
   }, []);
 
-  const handleStatusToggle = (id) => {
-    const updated = plans.map((plan) =>
-      plan.id === id
-        ? { ...plan, status: plan.status === "active" ? "inactive" : "active" }
-        : plan
-    );
-    setPlans(updated);
+  const handleStatusToggle = async (planName, currentStatus) => {
+    const newStatus = currentStatus === "active" ? "inactive" : "active";
+    
+    try {
+      const response = await fetch('/api/change_plan_status', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: planName,
+          status: newStatus,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update plan status');
+      }
+
+      const updatedPlans = plans.map((plan) =>
+        plan.name === planName ? { ...plan, status: newStatus } : plan
+      );
+      setPlans(updatedPlans);
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   const handleEditClick = (plan) => {
@@ -87,7 +105,7 @@ export default function PlanList() {
       {/* Plan Cards */}
       <div className="grid gap-6">
         {plans
-          .filter((PLAN) => PLAN.status === activeTab)
+          .filter((plan) => plan.status === activeTab)
           .map((plan) => (
             <div
               key={plan.id}
@@ -120,7 +138,7 @@ export default function PlanList() {
                 </div>
               </div>
               <button
-                onClick={() => handleStatusToggle(plan.id)}
+                onClick={() => handleStatusToggle(plan.name, plan.status)}
                 className="mt-4 px-4 py-2 bg-yellow-400 text-black rounded-lg hover:bg-yellow-500"
               >
                 Mark as {plan.status === "active" ? "Inactive" : "Active"}
