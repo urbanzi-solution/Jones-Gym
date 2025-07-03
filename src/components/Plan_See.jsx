@@ -1,13 +1,13 @@
+// src\components\Plan_See.jsx
 "use client";
 import { useState, useEffect } from "react";
 import { FaEdit } from "react-icons/fa";
-import { GrClose } from "react-icons/gr";
+import EditPlan from "./edit_plan";
 
 export default function PlanList() {
   const [plans, setPlans] = useState([]);
   const [activeTab, setActiveTab] = useState("active");
-  const [editId, setEditId] = useState(null);
-  const [editedPlan, setEditedPlan] = useState({});
+  const [editPlan, setEditPlan] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -40,20 +40,19 @@ export default function PlanList() {
   };
 
   const handleEditClick = (plan) => {
-    setEditId(plan.id);
-    setEditedPlan(plan);
+    setEditPlan(plan);
   };
 
-  const handleSave = () => {
+  const handleSave = (updatedPlan) => {
     const updated = plans.map((plan) =>
-      plan.id === editId ? editedPlan : plan
+      plan.id === updatedPlan.id ? updatedPlan : plan
     );
     setPlans(updated);
-    setEditId(null);
+    setEditPlan(null);
   };
 
-  const handleChange = (field, value) => {
-    setEditedPlan({ ...editedPlan, [field]: value });
+  const handleCancel = () => {
+    setEditPlan(null);
   };
 
   if (loading) return <div>Loading plans...</div>;
@@ -88,103 +87,56 @@ export default function PlanList() {
       {/* Plan Cards */}
       <div className="grid gap-6">
         {plans
-          .filter((plan) => plan.status === activeTab)
+          .filter((PLAN) => PLAN.status === activeTab)
           .map((plan) => (
             <div
               key={plan.id}
               className="p-5 border border-[#3E3A3D] rounded-lg bg-[#1a1a1a]"
             >
-              {editId === plan.id ? (
-                <>
-                  {/* Editable Form */}
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-xl font-bold">Edit Plan</h3>
-                    <GrClose
-                      onClick={() => setEditId(null)}
-                      className="cursor-pointer hover:scale-90 text-gray-400 hover:text-white"
-                    />
-                  </div>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <input
-                      type="text"
-                      value={editedPlan.name}
-                      onChange={(e) => handleChange("name", e.target.value)}
-                      className="p-3 bg-[#232024] rounded-lg border border-[#3E3A3D]"
-                    />
-                    <input
-                      type="number"
-                      value={editedPlan.amount}
-                      onChange={(e) => handleChange("amount", e.target.value)}
-                      className="p-3 bg-[#232024] rounded-lg border border-[#3E3A3D]"
-                    />
-                    <input
-                      type="number"
-                      value={editedPlan.duration}
-                      onChange={(e) => handleChange("duration", e.target.value)}
-                      className="p-3 bg-[#232024] rounded-lg border border-[#3E3A3D]"
-                    />
-                    <textarea
-                      value={editedPlan.description}
-                      onChange={(e) => handleChange("description", e.target.value)}
-                      rows={3}
-                      className="p-3 bg-[#232024] rounded-lg border border-[#3E3A3D]"
-                    />
-                  </div>
-                  <div className="flex justify-end gap-4 mt-4">
-                    <button
-                      onClick={() => setEditId(null)}
-                      className="px-4 py-2 rounded-lg bg-transparent text-gray-300 border border-gray-500 hover:bg-[#2e2e2e]"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={handleSave}
-                      className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
-                    >
-                      Save
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  {/* View Mode */}
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-xl font-bold text-white">{plan.name}</h3>
-                    <button
-                      onClick={() => handleEditClick(plan)}
-                      className="text-blue-400 hover:text-blue-600"
-                    >
-                      <FaEdit size={20} />
-                    </button>
-                  </div>
-                  <p className="text-gray-400 mt-2">{plan.description}</p>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-4 text-sm">
-                    <div>💰 Amount: ₹{plan.amount}</div>
-                    <div>📆 Duration: {plan.duration} days</div>
-                    <div>
-                      🔄 Status:{" "}
-                      <span
-                        className={`font-semibold ${
-                          plan.status === "active"
-                            ? "text-green-400"
-                            : "text-red-400"
-                        }`}
-                      >
-                        {plan.status}
-                      </span>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => handleStatusToggle(plan.id)}
-                    className="mt-4 px-4 py-2 bg-yellow-400 text-black rounded-lg hover:bg-yellow-300"
+              <div className="flex justify-between items-center">
+                <h3 className="text-xl font-bold text-white">{plan.name}</h3>
+                <button
+                  onClick={() => handleEditClick(plan)}
+                  className="text-blue-400 hover:text-blue-600"
+                >
+                  <FaEdit size={20} />
+                </button>
+              </div>
+              <p className="text-gray-400 mt-2">{plan.description}</p>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-4 text-sm">
+                <div>💰 Amount: ₹{plan.amount}</div>
+                <div>📆 Duration: {plan.duration} days</div>
+                <div>
+                  🔄 Status:{" "}
+                  <span
+                    className={`font-semibold ${
+                      plan.status === "active"
+                        ? "text-green-400"
+                        : "text-red-400"
+                    }`}
                   >
-                    Mark as {plan.status === "active" ? "Inactive" : "Active"}
-                  </button>
-                </>
-              )}
+                    {plan.status}
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={() => handleStatusToggle(plan.id)}
+                className="mt-4 px-4 py-2 bg-yellow-400 text-black rounded-lg hover:bg-yellow-500"
+              >
+                Mark as {plan.status === "active" ? "Inactive" : "Active"}
+              </button>
             </div>
           ))}
       </div>
+
+      {/* Edit Plan Popup */}
+      {editPlan && (
+        <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-[#020202] p-6 rounded-lg max-w-md w-md">
+            <EditPlan plan={editPlan} onSave={handleSave} onCancel={handleCancel} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

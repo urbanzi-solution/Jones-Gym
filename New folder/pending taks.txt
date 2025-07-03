@@ -60,6 +60,8 @@ detailed transaction page - edit and delete
 
 see all plan - edit plans
 
+see all plan - edit plans, mark as inactive and mark as active
+
 notification popup and natification functions and updates
 
 save image - member profile, staff profile, member list, staff list

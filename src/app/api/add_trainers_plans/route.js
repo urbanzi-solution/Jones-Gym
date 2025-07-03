@@ -15,8 +15,6 @@ export async function POST(request) {
       });
     }
 
-    // await client.connect();
-
     // Prepare the values for batch insert
     const values = trainer_ids.map(trainer_id => 
       `('${trainer_id.replace(/'/g, "''")}', '${plan_name.replace(/'/g, "''")}')`

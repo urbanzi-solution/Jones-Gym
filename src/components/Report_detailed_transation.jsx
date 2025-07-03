@@ -1,4 +1,4 @@
-// src\components\Report_detailed_transation.jsx
+// src\components\  
 'use client';
 import { useState, useEffect } from 'react';
 import { FaCaretDown, FaEllipsisV } from "react-icons/fa";
@@ -6,6 +6,7 @@ import Inpage_header from "@/components/Inpage_header";
 import * as XLSX from 'xlsx';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import EditTransactionData from "@/components/edit_transaction_data";
 
 export default function DetailedTransactions() {
   const [transactions, setTransactions] = useState([]);
@@ -18,6 +19,8 @@ export default function DetailedTransactions() {
   const [selectedOption, setSelectedOption] = useState('Today');
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showCustomDate, setShowCustomDate] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
 
   // Fetch transactions from the API
   useEffect(() => {
@@ -77,17 +80,60 @@ export default function DetailedTransactions() {
     XLSX.writeFile(workbook, "Detailed_Transactions.xlsx");
   };
 
-  // Function to handle edit action
-  const handleEdit = (billNumber) => {
-    console.log(`Edit transaction with Bill Number: ${billNumber}`);
-    // You can replace this with actual edit logic
-  };
+    // Function to handle edit action
+    const handleEdit = (transaction) => {
+      setSelectedTransaction(transaction);
+      setIsEditModalOpen(true);
+    };
 
-  // Function to handle delete action
-  const handleDelete = (billNumber) => {
-    console.log(`Delete transaction with Bill Number: ${billNumber}`);
-    // You can replace this with actual delete logic
-  };
+    const handleSave = (updatedTransaction) => {
+      // Update the transactions in state
+      setTransactions(prev => prev.map(t => 
+        t.bill_no === updatedTransaction.bill_no ? updatedTransaction : t
+      ));
+      setAllTransactions(prev => prev.map(t => 
+        t.bill_no === updatedTransaction.bill_no ? updatedTransaction : t
+      ));
+      setIsEditModalOpen(false);
+      alert('Transaction updated successfully');
+    };
+
+    // Add this delete handler function to your component
+    const handleDelete = async (bill_no) => {
+      if (!window.confirm('Are you sure you want to permanently delete this transaction?')) {
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/delete_trans', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ bill_no }),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.message || 'Failed to delete transaction');
+        }
+
+        if (result.success) {
+          // Update state to remove the deleted transaction
+          setTransactions(prev => prev.filter(t => t.bill_no !== bill_no));
+          setAllTransactions(prev => prev.filter(t => t.bill_no !== bill_no));
+          
+          // Show success message
+          alert('Transaction deleted successfully');
+        } else {
+          throw new Error(result.message);
+        }
+      } catch (error) {
+        console.error('Delete error:', error);
+        alert(error.message || 'Error deleting transaction');
+      }
+    };
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -413,7 +459,7 @@ export default function DetailedTransactions() {
                     </button>
                     <div className="dropdown-menu absolute right-0 mt-2 w-48 bg-[#404346] rounded-md shadow-lg z-10 hidden group-hover:block">
                       <button
-                        onClick={() => handleEdit(transaction.bill_no)}
+                        onClick={() => handleEdit(transaction)}
                         className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-[#505356]"
                       >
                         Edit
@@ -433,6 +479,20 @@ export default function DetailedTransactions() {
         </table>
         )}
       </div>
+
+      {/* Edit Modal - placed here */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50 ">
+          <div className="bg-[#27292b] p-6 rounded-lg w-full max-w-md max-h-[80vh] overflow-y-auto">
+            <EditTransactionData 
+              transaction={selectedTransaction}
+              onSave={handleSave}
+              onCancel={() => setIsEditModalOpen(false)}
+            />
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

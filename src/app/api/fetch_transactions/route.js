@@ -14,8 +14,6 @@ export async function GET() {
 
     const result = await client.query(query);
 
-    // console.log(result);
-
     return new Response(JSON.stringify({
       success: true,
       data: result.rows
@@ -33,6 +31,5 @@ export async function GET() {
       headers: { 'Content-Type': 'application/json' }
     });
   } finally {
-    // await client.end();
   }
 }

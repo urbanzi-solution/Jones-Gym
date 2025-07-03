@@ -170,9 +170,11 @@ export default function RenewalFormSection({ user_id }) {
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] appearance-none"
               >
                 <option value="">Select Type</option>
-                <option value="gpay">GPay</option>
-                <option value="cash">Cash</option>
-                <option value="other">Other</option>
+                <option value="GPay">GPay</option>
+                <option value="Cash">Cash</option>
+                <option value="Credit Card">Credit Card</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+                <option value="Other">Other</option>
               </select>
             </div>
           </div>
