@@ -6,8 +6,6 @@ export async function POST(request) {
   try {
     const planData = await request.json();
 
-    console.log(planData);
-
     // Validate required fields
     if (!planData.name || !planData.amount || !planData.duration || !('description' in planData) || !planData.status) {
       return Response.json(
