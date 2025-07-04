@@ -15,7 +15,7 @@ export default function Recent_transations() {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await fetch('/api/fetch_transactions');
+        const response = await fetch('/api/fetch_membership_plans');
         const { data } = await response.json();
         // Sort by date and take last 10
         const sortedTransactions = data
@@ -35,7 +35,7 @@ export default function Recent_transations() {
     const data = transactions.map(transaction => ({
       'Bill No': transaction.bill_no || "N/A",
       'Name': transaction.name || "N/A",
-      'Plan': transaction.plan || "N/A",
+      'Plan': transaction.plan_name || "N/A",
       'Payment Method': transaction.trans_type || "N/A",
       'Amount': transaction.amount || "N/A",
       'Balance': transaction.balance || "N/A",
@@ -98,7 +98,7 @@ export default function Recent_transations() {
             {getTransactionIcon(transaction.trans_type)}
             <div className="md:text-xl ml-2">
               <h2>{transaction.name}</h2>
-              <h2>{transaction.plan}</h2>
+              <h2>{transaction.plan_name}</h2>
               <p>{transaction.bill_no}</p>
             </div>
           </div>

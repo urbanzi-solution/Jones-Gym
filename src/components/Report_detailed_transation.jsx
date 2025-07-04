@@ -11,7 +11,7 @@ import EditTransactionData from "@/components/edit_transaction_data";
 export default function DetailedTransactions() {
   const [transactions, setTransactions] = useState([]);
   const [error, setError] = useState(null);
-  const [allTransactions, setAllTransactions] = useState([]); // Store all transactions
+  const [allTransactions, setAllTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -22,13 +22,15 @@ export default function DetailedTransactions() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
 
+
   // Fetch transactions from the API
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/api/fetch_transactions');
+        const response = await fetch('/api/fetch_membership_plans');
         const data = await response.json();
+        // console.log(data);
         if (data.success) {
           setTransactions(data.data);
           setAllTransactions(data.data);
@@ -46,14 +48,16 @@ export default function DetailedTransactions() {
     fetchTransactions();
   }, []);
 
+  // console.log("transactions",transactions);
+
     // Export to Excel function
   const exportToExcel = () => {
     const data = transactions.map(transaction => ({
-      'User Name': transaction.name || "N/A",
       'User ID': transaction.user_id || "N/A",
-      'Date': transaction.date ? new Date(transaction.date).toLocaleDateString() : "N/A",
+      'User Name': transaction.name || "N/A",
       'Bill Number': transaction.bill_no || "N/A",
       'Plan': transaction.plan || "N/A",
+      'Date': transaction.date ? new Date(transaction.date).toLocaleDateString() : "N/A",
       'Amount Paid': transaction.amount || "0",
       'Discount': transaction.discount || "0",
       'Balance': transaction.balance || "0",
@@ -68,13 +72,13 @@ export default function DetailedTransactions() {
     worksheet['!cols'] = [
       { wch: 20 },  // User Name
       { wch: 10 },  // User ID
+      { wch: 10 },  // Bill No
       { wch: 12 },  // Date
       { wch: 12 },  // Bill Number
       { wch: 15 },  // Plan
       { wch: 12 },  // Amount Paid
       { wch: 10 },  // Discount
       { wch: 10 },  // Balance
-      { wch: 15 }   // Transaction Type
     ];
 
     XLSX.writeFile(workbook, "Detailed_Transactions.xlsx");
@@ -270,7 +274,7 @@ export default function DetailedTransactions() {
   return (
     <div className="box">
 
-      <Inpage_header title='Transations' onExport={exportToExcel} />
+      <Inpage_header title='Transactions' onExport={exportToExcel} />
 
       {/* Loading and error states */}
       {loading && <div className="text-center py-4">Loading transactions...</div>}
@@ -410,11 +414,11 @@ export default function DetailedTransactions() {
         <table className="min-w-full text-center">
           <thead>
             <tr className="text-center font-bold md:text-lg text-sm">
-              <th className="p-3 bg-[#303336] border-r">User name</th>
               <th className="p-3 bg-[#303336] border-r">User id</th>
-              <th className="p-3 bg-[#303336] border-r">Date</th>
-              <th className="p-3 bg-[#303336] border-r">Bill Number</th>
+              <th className="p-3 bg-[#303336] border-r">User name</th>
+              <th className="p-3 bg-[#303336] border-r">Bill No</th>
               <th className="p-3 bg-[#303336] border-r">Plan</th>
+              <th className="p-3 bg-[#303336] border-r">Date</th>
               <th className="p-3 bg-[#303336] border-r">Amount Paid</th>
               <th className="p-3 bg-[#303336] border-r">Discount</th>
               <th className="p-3 bg-[#303336] border-r">Balance</th>
@@ -425,20 +429,21 @@ export default function DetailedTransactions() {
           <tbody>
             {transactions.map((transaction) => (
               <tr key={transaction.bill_no} className="group text-sm">
-                <td className="p-3 py-6 bg-[#404346] text-white border-r group-hover:bg-[#505356]">
-                  {transaction.name}
-                </td>
                 <td className="p-3 py-6 bg-[#404346] text-white group-hover:bg-[#505356] border-r">
                   {transaction.user_id}
                 </td>
-                <td className="p-3 py-6 bg-[#404346] text-white group-hover:bg-[#505356] border-r">
-                  {new Date(transaction.date).toISOString().split('T')[0]}
+                <td className="p-3 py-6 bg-[#404346] text-white border-r group-hover:bg-[#505356]">
+                  {transaction.name}
                 </td>
                 <td className="p-3 py-6 bg-[#404346] text-white group-hover:bg-[#505356] border-r">
                   {transaction.bill_no}
                 </td>
                 <td className="p-3 py-6 bg-[#404346] text-white group-hover:bg-[#505356] border-r">
-                  {transaction.plan}
+                  {transaction.plan_name}
+                </td>
+                
+                <td className="p-3 py-6 bg-[#404346] text-white group-hover:bg-[#505356] border-r">
+                  {new Date(transaction.date).toISOString().split('T')[0]}
                 </td>
                 <td className="p-3 py-6 bg-[#404346] text-white group-hover:bg-[#505356] border-r">
                   ${transaction.amount}

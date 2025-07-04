@@ -17,7 +17,7 @@ export async function DELETE(request) {
     client = await getClient();
     
     // First check if transaction exists
-    const checkQuery = 'SELECT 1 FROM transations WHERE bill_no = $1 LIMIT 1';
+    const checkQuery = 'SELECT 1 FROM membership_plans WHERE bill_no = $1 LIMIT 1';
     const checkResult = await client.query(checkQuery, [bill_no]);
     
     if (checkResult.rowCount === 0) {
@@ -29,7 +29,7 @@ export async function DELETE(request) {
 
     // Delete transaction
     const deleteQuery = `
-      DELETE FROM transations 
+      DELETE FROM membership_plans 
       WHERE bill_no = $1
       RETURNING bill_no, user_id, amount
     `;

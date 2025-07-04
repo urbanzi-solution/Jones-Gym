@@ -66,6 +66,14 @@ see all plan - edit plans
 see all plan - edit plans, mark as inactive and mark as active
 > completed
 
+----------------------------------------------------------------------
+
+membership_plans and transations reconstructions, changes in the code where reflects that
+input, add member, renew plan corresponding route.js,
+detailed report, member transactions, report page
+route.js which passes fetch and insert to these tables 
+
+
 notification popup and natification functions and updates
 
 save image - member profile, staff profile, member list, staff list

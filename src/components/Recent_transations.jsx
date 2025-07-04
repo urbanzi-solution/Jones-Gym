@@ -10,18 +10,29 @@ export default function Recent_transations({ userId }) {
   const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
+    console.log('userId:', userId); // Debug userId
     const fetchTransactions = async () => {
       try {
-        const response = await fetch('/api/fetch_transactions');
-        const { data } = await response.json();
-        // Filter by user_id, sort by date, and take last 3
+        const response = await fetch('/api/fetch_membership_plans');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const { success, data, error } = await response.json();
+        if (!success) {
+          throw new Error(error || 'API request failed');
+        }
         const filteredTransactions = data
-          .filter(transaction => transaction.user_id === userId)
+          .filter(transaction => transaction.user_id == userId) // Use == for type coercion
+          .map(transaction => {
+            console.log('Transaction date:', transaction.date); // Debug date
+            return transaction;
+          })
           .sort((a, b) => new Date(b.date) - new Date(a.date))
           .slice(0, 3);
         setTransactions(filteredTransactions);
       } catch (error) {
         console.error('Error fetching transactions:', error);
+        setTransactions([]);
       }
     };
 
@@ -63,7 +74,7 @@ export default function Recent_transations({ userId }) {
           <div className="flex gap-2 items-center md:gap-5">
             {getTransactionIcon(transaction.trans_type)}
             <div className="md:text-xl ml-2">
-              <h2>{transaction.plan}</h2>
+              <h2>{transaction.plan_name}</h2>
               <p>{new Date(transaction.date).toLocaleDateString()}</p>
             </div>
           </div>

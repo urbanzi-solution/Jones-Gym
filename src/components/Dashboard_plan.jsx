@@ -22,19 +22,25 @@ export default function DashboardActivePlans() {
         if (!membershipsResponse.ok) throw new Error('Failed to fetch membership plans');
         const membershipsData = await membershipsResponse.json();
 
+        // Ensure membershipsData.data exists, as per the API response structure
+        const membershipPlans = membershipsData.success ? membershipsData.data : [];
+
         // Calculate member count per plan
-        const planMemberCounts = membershipsData.reduce((acc, membership) => {
+        const planMemberCounts = membershipPlans.reduce((acc, membership) => {
           if (membership.plan_name) {
             acc[membership.plan_name] = (acc[membership.plan_name] || 0) + 1;
           }
           return acc;
         }, {});
 
-        // Map plans with member counts
+        // Map plans with member counts, ensuring only active plans are included
         const enrichedPlans = plansData
           .filter(plan => plan.status === 'active')
           .map(plan => ({
-            ...plan,
+            id: plan.id,
+            name: plan.name,
+            amount: plan.amount,
+            duration: plan.duration,
             members: planMemberCounts[plan.name] || 0
           }));
 
@@ -70,24 +76,28 @@ export default function DashboardActivePlans() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        {plans.map((plan) => (
-          <div 
-            key={plan.id}
-            className="flex flex-col w-full gap-3 bg-[#232024] p-5 rounded-lg items-center justify-center sm:text-xl hover:bg-[#2E2A2D] transition-colors cursor-pointer"
-            onClick={() => router.push(`/plans/${plan.id}`)}
-          >
-            <h4 className="text-center font-medium">{plan.name}</h4>
-            <h3 className="text-[#FFDD4A] font-semibold">{plan.amount.toLocaleString()}/-</h3>
-            <div className="flex items-center gap-2 text-gray-400">
-              <span className="flex items-center gap-1">
-                <IoPerson className="text-[#FFDD4A]" />
-                {plan.members}
-              </span>
-              <span>•</span>
-              <span>{plan.duration} days</span>
+        {plans.length > 0 ? (
+          plans.map((plan) => (
+            <div 
+              key={plan.id}
+              className="flex flex-col w-full gap-3 bg-[#232024] p-5 rounded-lg items-center justify-center sm:text-xl hover:bg-[#2E2A2D] transition-colors cursor-pointer"
+              onClick={() => router.push(`/plans/${plan.id}`)}
+            >
+              <h4 className="text-center font-medium">{plan.name}</h4>
+              <h3 className="text-[#FFDD4A] font-semibold">{plan.amount.toLocaleString()}/-</h3>
+              <div className="flex items-center gap-2 text-gray-400">
+                <span className="flex items-center gap-1">
+                  <IoPerson className="text-[#FFDD4A]" />
+                  {plan.members}
+                </span>
+                <span>•</span>
+                <span>{plan.duration} days</span>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <div className="text-gray-400">No active plans found.</div>
+        )}
       </div>
     </div>
   );

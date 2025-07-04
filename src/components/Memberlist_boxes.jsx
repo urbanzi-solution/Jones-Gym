@@ -29,7 +29,7 @@ export default function Memberlist_boxes({ members, filters }) {
           throw new Error('Failed to fetch membership plans');
         }
         const data = await response.json();
-        setMembershipPlans(data);
+        setMembershipPlans(data.data);
       } catch (error) {
         console.error('Error fetching membership plans:', error);
       }

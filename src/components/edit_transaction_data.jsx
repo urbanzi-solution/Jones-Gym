@@ -3,11 +3,11 @@ import { useState, useEffect } from "react";
 
 export default function EditTransactionData({ transaction, onSave, onCancel }) {
   const [formData, setFormData] = useState({
-    name: '',
     user_id: '',
-    date: '',
+    name: '',
     bill_no: '',
-    plan: '',
+    plan_name: '',
+    date: '',
     amount: 0,
     discount: 0,
     balance: 0,
@@ -19,11 +19,11 @@ export default function EditTransactionData({ transaction, onSave, onCancel }) {
   useEffect(() => {
     if (transaction) {
       setFormData({
-        name: transaction.name || '',
         user_id: transaction.user_id || '',
-        date: transaction.date ? new Date(transaction.date).toISOString().split('T')[0] : '',
+        name: transaction.name || '',
         bill_no: transaction.bill_no || '',
-        plan: transaction.plan || '',
+        plan_name: transaction.plan_name || '',
+        date: transaction.date ? new Date(transaction.date).toISOString().split('T')[0] : '',
         amount: transaction.amount || 0,
         discount: transaction.discount || 0,
         balance: transaction.balance || 0,
@@ -77,19 +77,6 @@ export default function EditTransactionData({ transaction, onSave, onCancel }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <h2 className="text-xl font-bold mb-4">Edit Transaction</h2>
-      
-      {/* Name Field */}
-      <div>
-        <label className="block text-gray-300 mb-1">User Name</label>
-        <input
-          type="text"
-          name="name"
-          className="w-full p-2 bg-[#232024] border border-[#3E3A3D] rounded text-white"
-          value={formData.name}
-          onChange={handleChange}
-          disabled={isSubmitting}
-        />
-      </div>
 
       {/* User ID Field */}
       <div>
@@ -103,15 +90,15 @@ export default function EditTransactionData({ transaction, onSave, onCancel }) {
           disabled={isSubmitting}
         />
       </div>
-
-      {/* Date Field */}
+      
+      {/* Name Field */}
       <div>
-        <label className="block text-gray-300 mb-1">Date</label>
+        <label className="block text-gray-300 mb-1">User Name</label>
         <input
-          type="date"
-          name="date"
+          type="text"
+          name="name"
           className="w-full p-2 bg-[#232024] border border-[#3E3A3D] rounded text-white"
-          value={formData.date}
+          value={formData.name}
           onChange={handleChange}
           disabled={isSubmitting}
         />
@@ -135,9 +122,22 @@ export default function EditTransactionData({ transaction, onSave, onCancel }) {
         <label className="block text-gray-300 mb-1">Plan</label>
         <input
           type="text"
-          name="plan"
+          name="plan_name"
           className="w-full p-2 bg-[#232024] border border-[#3E3A3D] rounded text-white"
-          value={formData.plan}
+          value={formData.plan_name}
+          onChange={handleChange}
+          disabled={isSubmitting}
+        />
+      </div>
+
+      {/* Date Field */}
+      <div>
+        <label className="block text-gray-300 mb-1">Date</label>
+        <input
+          type="date"
+          name="date"
+          className="w-full p-2 bg-[#232024] border border-[#3E3A3D] rounded text-white"
+          value={formData.date}
           onChange={handleChange}
           disabled={isSubmitting}
         />
