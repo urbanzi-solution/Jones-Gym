@@ -4,7 +4,7 @@ export async function POST(request) {
   try {
     const client = await getClient();
     const data = await request.json();
-    const { user_id, plan, amount, discount, balance, transaction_type, trainer_name } = data;
+    const { user_id, bill_no, plan, amount, discount, balance, transaction_type, trainer_name } = data;
 
     console.log('Received data:', data);
 
@@ -31,11 +31,11 @@ export async function POST(request) {
 
     // Insert data into the database
     const queryText = `
-      INSERT INTO membership_plans (user_id, plan_name, amount, discount, balance, trans_type, trainer, date)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_DATE)
+      INSERT INTO membership_plans (user_id, plan_name, bill_no, amount, discount, balance, trans_type, trainer, date)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CURRENT_DATE)
       RETURNING user_id
     `;
-    const values = [user_id, plan, parsedAmount, parsedDiscount, parsedBalance, transaction_type || null, trainer_name || null];
+    const values = [user_id, plan, bill_no, parsedAmount, parsedDiscount, parsedBalance, transaction_type || null, trainer_name || null];
 
     const result = await client.query(queryText, values);
 

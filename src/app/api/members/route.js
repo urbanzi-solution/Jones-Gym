@@ -57,12 +57,12 @@ export async function POST(request) {
     if (membership_plans.length > 0) {
       const planInsertQuery = `
         INSERT INTO membership_plans (
-          user_id, plan_name, amount, discount, balance, trans_type, trainer, date
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+          user_id, plan_name, amount, discount, balance, trans_type, bill_no, trainer, date
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       `;
 
       for (const plan of membership_plans) {
-        const { plan: planName, amount, discount, balance, transaction_type, trainer, days } = plan;
+        const { plan: planName, amount, discount, balance, transaction_type, bill_no, trainer, days } = plan;
         await client.query(planInsertQuery, [
           gym_id,
           planName,
@@ -70,6 +70,7 @@ export async function POST(request) {
           parseInt(discount),
           parseInt(balance),
           transaction_type,
+          bill_no,
           trainer,
           days ? parseInt(days) : null,
         ]);
@@ -110,11 +111,14 @@ export async function GET(request) {
   const client = await getClient();
   try {
     // Fetch plan names from plans table
-    const plansQuery = 'SELECT plan_name FROM plans WHERE status = $1';
+    const plansQuery = 'SELECT plan_name, duration FROM plans WHERE status = $1';
     const plansResult = await client.query(plansQuery, ['active']);
-    const plans = plansResult.rows.map(row => row.plan_name);
+    const plans = plansResult.rows.map(row => ({
+      plan_name: row.plan_name,
+      duration: row.duration
+      }));
 
-    // console.log(plans);
+    console.log(plans);
 
     // Fetch trainer id and name from trainers table
     const trainersQuery = 'SELECT trainer_id, name FROM trainers';
@@ -125,6 +129,7 @@ export async function GET(request) {
     }));
 
     return NextResponse.json({
+      plansResult,
       plans,
       trainers
     }, { status: 200 });

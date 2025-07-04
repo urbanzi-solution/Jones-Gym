@@ -26,6 +26,8 @@ export default function Member_addpage() {
     fetchData();
   }, []);
 
+  console.log(availablePlans);
+
   const router = useRouter();
   const [formData, setFormData] = useState({
     gym_id: '',
@@ -46,6 +48,7 @@ export default function Member_addpage() {
       discount: '',
       balance: 0,
       transaction_type: '',
+      bill_no: '',
       trainer: '',
       includeDays: false,
       days: '',
@@ -380,8 +383,8 @@ export default function Member_addpage() {
                   >
                     <option value="">Select Plan</option>
                     {availablePlans.map((planName) => (
-                      <option key={planName} value={planName}>
-                        {planName}
+                      <option key={planName.plan_name} value={planName.plan_name}>
+                        {planName.plan_name}
                       </option>
                     ))}
                   </select>
@@ -447,6 +450,21 @@ export default function Member_addpage() {
                     <option value="Bank Transfer">Bank Transfer</option>
                     <option value="Other">Other</option>
                   </select>
+                </div>
+
+                <div>
+                  <label htmlFor={`bill_no-${index}`} className="block text-sm font-medium mb-1 text-gray-300">
+                    Bill No
+                  </label>
+                  <input
+                    type="text"
+                    id={`bill_no-${index}`}
+                    value={plan.bill_no}
+                    onChange={(e) => handlePlanChange(index, 'bill_no', e.target.value)}
+                    placeholder="Bill No"
+                    min="0"
+                    className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
+                  />
                 </div>
 
                 <div className="md:col-span-5">
