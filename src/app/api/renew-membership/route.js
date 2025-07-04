@@ -4,13 +4,13 @@ export async function POST(request) {
   try {
     const client = await getClient();
     const data = await request.json();
-    const { user_id, bill_no, plan, amount, discount, balance, transaction_type, trainer_name } = data;
+    const { user_id, plan_name, bill_no, amount, discount, balance, trans_type, trainer, date, exp_date } = data;
 
     console.log('Received data:', data);
 
     // Validate required fields
-    if (!user_id || !plan || !amount) {
-      return new Response(JSON.stringify({ error: 'User ID, plan, and amount are required' }), {
+    if (!user_id || !plan_name || !amount) {
+      return new Response(JSON.stringify({ error: 'User ID, plan name, and amount are required' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
       });
@@ -31,11 +31,22 @@ export async function POST(request) {
 
     // Insert data into the database
     const queryText = `
-      INSERT INTO membership_plans (user_id, plan_name, bill_no, amount, discount, balance, trans_type, trainer, date)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CURRENT_DATE)
+      INSERT INTO membership_plans (user_id, plan_name, bill_no, amount, discount, balance, trans_type, trainer, date, exp_date)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       RETURNING user_id
     `;
-    const values = [user_id, plan, bill_no, parsedAmount, parsedDiscount, parsedBalance, transaction_type || null, trainer_name || null];
+    const values = [
+      user_id,
+      plan_name,
+      bill_no || null,
+      parsedAmount,
+      parsedDiscount,
+      parsedBalance,
+      trans_type || null,
+      trainer || null,
+      date || null,
+      exp_date || null
+    ];
 
     const result = await client.query(queryText, values);
 

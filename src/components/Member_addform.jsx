@@ -65,20 +65,8 @@ export default function Member_addpage() {
     }));
   };
 
-  const handlePlanChange = (index, field, value) => {
-    setPlans((prevPlans) => {
-      const newPlans = [...prevPlans];
-      newPlans[index] = { ...newPlans[index], [field]: value };
 
-      if (field === 'amount' || field === 'discount') {
-        const amount = parseFloat(newPlans[index].amount) || 0;
-        const discount = parseFloat(newPlans[index].discount) || 0;
-        newPlans[index].balance = Math.max(0, amount - discount);
-      }
-
-      return newPlans;
-    });
-  };
+  
 
   const handleToggleDays = (index) => {
     setPlans((prevPlans) => {
@@ -114,66 +102,117 @@ export default function Member_addpage() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setError('');
-
-    // Basic validation
-    if (!/^\d{10}$/.test(formData.phone_no)) {
-      setError('Phone number must be 10 digits');
-      setIsSubmitting(false);
-      return;
-    }
-    if (!/^\d{10}$/.test(formData.whatsapp_no)) {
-      setError('WhatsApp number must be 10 digits');
-      setIsSubmitting(false);
-      return;
-    }
-
-    try {
-      const dataToSubmit = {
-        gym_id: formData.gym_id,
-        full_name: formData.fullName,
-        gender: formData.gender,
-        dob: formData.dob,
-        location: formData.location,
-        phone: formData.phone_no,
-        whatsapp: formData.whatsapp_no,
-        join_date: formData.join_date,
-        ...(includeMembership && { membership_plans: plans }),
-      };
-
-      if (formData.profilePicture) {
-        console.warn('Profile picture selected but not uploaded (no storage configured)');
-        // Future: Add cloud storage upload (e.g., Cloudinary) and include URL
-        // const imageUrl = await uploadImage(formData.profilePicture);
-        // dataToSubmit.profile_picture = imageUrl;
-      }
-
-      const response = await fetch('/api/members', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataToSubmit),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to submit form');
-      }
-
-      const result = await response.json();
-      console.log('Success:', result);
-      router.push('/members');
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      setError(error.message);
-    } finally {
-      setIsSubmitting(false);
-    }
+  // Calculate expiry date based on current date and duration
+  const calculateExpiryDate = (duration) => {
+    if (!duration) return '';
+    const currentDate = new Date();
+    const expiryDate = new Date(currentDate);
+    expiryDate.setDate(expiryDate.getDate() + parseInt(duration)); // Use setDate() for days
+    return expiryDate.toISOString().split('T')[0];
   };
+
+  const handlePlanChange = (index, field, value) => {
+    setPlans((prevPlans) => {
+      const newPlans = [...prevPlans];
+      newPlans[index] = { ...newPlans[index], [field]: value };
+
+      if (field === 'amount' || field === 'discount') {
+        const amount = parseFloat(newPlans[index].amount) || 0;
+        const discount = parseFloat(newPlans[index].discount) || 0;
+        newPlans[index].balance = Math.max(0, amount - discount);
+      }
+
+      if (field === 'plan' && value) {
+        const selectedPlan = availablePlans.find(plan => plan.plan_name === value);
+        if (selectedPlan) {
+          newPlans[index].expiry_date = calculateExpiryDate(selectedPlan.duration);
+        }
+      }
+
+      return newPlans;
+    });
+  };
+
+  // Handle form input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  setIsSubmitting(true);
+  setError('');
+
+  // Basic validation
+  if (!/^\d{10}$/.test(formData.phone_no)) {
+    setError('Phone number must be 10 digits');
+    setIsSubmitting(false);
+    return;
+  }
+  if (!/^\d{10}$/.test(formData.whatsapp_no)) {
+    setError('WhatsApp number must be 10 digits');
+    setIsSubmitting(false);
+    return;
+  }
+
+  try {
+    const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+    const dataToSubmit = {
+      gym_id: formData.gym_id,
+      full_name: formData.fullName,
+      gender: formData.gender,
+      dob: formData.dob,
+      location: formData.location,
+      phone: formData.phone_no,
+      whatsapp: formData.whatsapp_no,
+      join_date: currentDate,
+      ...(includeMembership && {
+        membership_plans: plans.map(plan => ({
+          plan_name: plan.plan,
+          join_date: currentDate,
+          expiry_date: plan.expiry_date,
+          amount: parseFloat(plan.amount) || 0,
+          discount: parseFloat(plan.discount) || 0,
+          balance: plan.balance,
+          transaction_type: plan.transaction_type,
+          bill_no: plan.bill_no,
+          trainer: plan.trainer,
+          include_days: plan.includeDays,
+          days: plan.includeDays ? parseInt(plan.days) || '' : '',
+        })),
+      }),
+    };
+
+    if (formData.profilePicture) {
+      console.warn('Profile picture selected but not uploaded (no storage configured)');
+    }
+
+    const response = await fetch('/api/members', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dataToSubmit),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to submit form');
+    }
+
+    const result = await response.json();
+    console.log('Success:', result);
+    router.push('/members');
+  } catch (error) {
+    console.error('Error submitting form:', error);
+    setError(error.message);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
+
 
   return (
     <div className="box">

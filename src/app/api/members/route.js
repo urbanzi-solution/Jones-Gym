@@ -57,22 +57,27 @@ export async function POST(request) {
     if (membership_plans.length > 0) {
       const planInsertQuery = `
         INSERT INTO membership_plans (
-          user_id, plan_name, amount, discount, balance, trans_type, bill_no, trainer, date
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+          user_id, plan_name, bill_no, amount, discount, balance, trans_type, trainer, date, exp_date
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       `;
 
       for (const plan of membership_plans) {
-        const { plan: planName, amount, discount, balance, transaction_type, bill_no, trainer, days } = plan;
+        const { plan_name, amount, discount, balance, transaction_type, bill_no, trainer, join_date: planJoinDate, expiry_date } = plan;
+        const parsedAmount = parseInt(amount);
+        const parsedDiscount = parseInt(discount);
+        const parsedBalance = parseInt(balance);
+
         await client.query(planInsertQuery, [
           gym_id,
-          planName,
-          parseInt(amount),
-          parseInt(discount),
-          parseInt(balance),
-          transaction_type,
-          bill_no,
-          trainer,
-          days ? parseInt(days) : null,
+          plan_name || null,
+          bill_no || null,
+          isNaN(parsedAmount) ? null : parsedAmount,
+          isNaN(parsedDiscount) ? null : parsedDiscount,
+          isNaN(parsedBalance) ? null : parsedBalance,
+          transaction_type || null,
+          trainer || null,
+          planJoinDate || join_date || null,
+          expiry_date || null,
         ]);
       }
     }

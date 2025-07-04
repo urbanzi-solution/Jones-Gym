@@ -4,13 +4,14 @@ import { useRouter } from 'next/navigation';
 
 export default function RenewalFormSection({ user_id }) {
   const [formData, setFormData] = useState({
-    bill_no:'',
+    bill_no: '',
     plan: '',
     amount: '',
     discount: '',
     balance: 0,
     transaction_type: '',
     trainer_name: '',
+    expiry_date: ''
   });
   const [plans, setPlans] = useState([]);
   const [trainers, setTrainers] = useState([]);
@@ -40,14 +41,20 @@ export default function RenewalFormSection({ user_id }) {
     fetchData();
   }, []);
 
-  // Update amount when plan changes
+  // Update amount and expiry_date when plan changes
   useEffect(() => {
     if (formData.plan) {
       const selectedPlan = plans.find(plan => plan.name === formData.plan);
       if (selectedPlan) {
+        const currentDate = new Date();
+        const expiryDate = new Date(currentDate);
+        expiryDate.setDate(expiryDate.getDate() + parseInt(selectedPlan.duration));
+        const expiryDateFormatted = expiryDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+
         setFormData(prev => ({
           ...prev,
           amount: selectedPlan.amount.toString(),
+          expiry_date: expiryDateFormatted,
           balance: Math.max(0, selectedPlan.amount - (parseFloat(prev.discount) || 0)).toFixed(2)
         }));
       }
@@ -74,10 +81,26 @@ export default function RenewalFormSection({ user_id }) {
     setSuccess(null);
 
     try {
+      const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+      const dataToSubmit = {
+        user_id,
+        plan_name: formData.plan,
+        bill_no: formData.bill_no,
+        amount: formData.amount ? parseInt(formData.amount) : null,
+        discount: formData.discount ? parseInt(formData.discount) : null,
+        balance: formData.balance ? parseInt(formData.balance) : null,
+        trans_type: formData.transaction_type,
+        trainer: formData.trainer_name,
+        date: currentDate,
+        exp_date: formData.expiry_date
+      };
+
+      console.log("🚀 Sending data to backend:", dataToSubmit);
+
       const response = await fetch('/api/renew-membership', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, user_id }),
+        body: JSON.stringify(dataToSubmit),
       });
 
       if (!response.ok) {
@@ -88,13 +111,14 @@ export default function RenewalFormSection({ user_id }) {
       setSuccess('Renewal saved successfully!');
       // Reset form
       setFormData({
-        bill_no:'',
+        bill_no: '',
         plan: '',
         amount: '',
         discount: '',
         balance: 0,
         transaction_type: '',
         trainer_name: '',
+        expiry_date: ''
       });
       // Refresh the page
       router.refresh();
@@ -105,13 +129,14 @@ export default function RenewalFormSection({ user_id }) {
 
   const handleCancel = () => {
     setFormData({
-      bill_no:'',
+      bill_no: '',
       plan: '',
       amount: '',
       discount: '',
       balance: 0,
       transaction_type: '',
       trainer_name: '',
+      expiry_date: ''
     });
   };
 
@@ -126,19 +151,17 @@ export default function RenewalFormSection({ user_id }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Left Column */}
           <div className="space-y-4">
-
             <div>
-              <label htmlFor="renewal-discount" className="block text-sm font-medium mb-1 text-gray-300">
+              <label htmlFor="bill_no" className="block text-sm font-medium mb-1 text-gray-300">
                 Bill No
               </label>
               <input
-                type="number"
+                type="text"
                 id="bill_no"
                 name="bill_no"
                 value={formData.bill_no}
                 onChange={handleChange}
-                placeholder="Enter discount"
-                min="0"
+                placeholder="Enter bill number"
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
               />
             </div>
@@ -196,12 +219,10 @@ export default function RenewalFormSection({ user_id }) {
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
               />
             </div>
-
           </div>
 
           {/* Right Column */}
           <div className="space-y-4">
-
             <div>
               <label htmlFor="renewal-balance" className="block text-sm font-medium mb-1 text-gray-300">
                 Balance (₹)
@@ -254,6 +275,20 @@ export default function RenewalFormSection({ user_id }) {
                   </option>
                 ))}
               </select>
+            </div>
+
+            <div>
+              <label htmlFor="expiry_date" className="block text-sm font-medium mb-1 text-gray-300">
+                Expiry Date
+              </label>
+              <input
+                type="date"
+                id="expiry_date"
+                name="expiry_date"
+                value={formData.expiry_date}
+                readOnly
+                className="p-4 w-full bg-[#2E2A2D] rounded-lg border border-[#3E3A3D] cursor-not-allowed"
+              />
             </div>
           </div>
         </div>
