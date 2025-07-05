@@ -1,14 +1,14 @@
-"use client"; // Add this directive to make it a Client Component
+"use client";
 
 import { IoPersonSharp } from "react-icons/io5";
 import { IoNotifications } from "react-icons/io5";
-import useSWR from "swr"; // Correct import for useSWR
+import useSWR from "swr";
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function Header() {
   const { data, error } = useSWR("/api/notification", fetcher, {
-    refreshInterval: 3600000, // Poll every hour
+    refreshInterval: 3600000,
   });
 
   const notificationCount = data?.updates?.length || 0;

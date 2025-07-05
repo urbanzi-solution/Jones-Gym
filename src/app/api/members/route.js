@@ -17,7 +17,7 @@ export async function POST(request) {
       membership_plans = [],
     } = data;
 
-    console.log("🚀 Received data from frontend:", data);
+    // console.log("🚀 Received data from frontend:", data);
 
     // Get database client
     client = await getClient();
@@ -116,14 +116,15 @@ export async function GET(request) {
   const client = await getClient();
   try {
     // Fetch plan names from plans table
-    const plansQuery = 'SELECT plan_name, duration FROM plans WHERE status = $1';
+    const plansQuery = 'SELECT plan_name, duration, amount FROM plans WHERE status = $1';
     const plansResult = await client.query(plansQuery, ['active']);
     const plans = plansResult.rows.map(row => ({
       plan_name: row.plan_name,
-      duration: row.duration
+      duration: row.duration,
+      amount: row.amount
       }));
 
-    console.log(plans);
+    // console.log(plans);
 
     // Fetch trainer id and name from trainers table
     const trainersQuery = 'SELECT trainer_id, name FROM trainers';

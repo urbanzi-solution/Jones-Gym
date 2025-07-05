@@ -1,5 +1,3 @@
-// src\components\Member_addform.jsx
-
 "use client";
 import { GrClose } from "react-icons/gr";
 import { useRouter } from "next/navigation";
@@ -26,8 +24,6 @@ export default function Member_addpage() {
     fetchData();
   }, []);
 
-  console.log(availablePlans);
-
   const router = useRouter();
   const [formData, setFormData] = useState({
     gym_id: '',
@@ -40,6 +36,7 @@ export default function Member_addpage() {
     join_date: '',
     profilePicture: null,
   });
+  const [selectedFileName, setSelectedFileName] = useState('');
   const [includeMembership, setIncludeMembership] = useState(false);
   const [plans, setPlans] = useState([
     {
@@ -59,14 +56,19 @@ export default function Member_addpage() {
 
   const handleChange = (e) => {
     const { id, value, files } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [id]: files ? files[0] : value,
-    }));
+    if (files) {
+      setFormData((prev) => ({
+        ...prev,
+        [id]: files[0],
+      }));
+      setSelectedFileName(files[0]?.name || '');
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [id]: value,
+      }));
+    }
   };
-
-
-  
 
   const handleToggleDays = (index) => {
     setPlans((prevPlans) => {
@@ -107,7 +109,7 @@ export default function Member_addpage() {
     if (!duration) return '';
     const currentDate = new Date();
     const expiryDate = new Date(currentDate);
-    expiryDate.setDate(expiryDate.getDate() + parseInt(duration)); // Use setDate() for days
+    expiryDate.setDate(expiryDate.getDate() + parseInt(duration));
     return expiryDate.toISOString().split('T')[0];
   };
 
@@ -116,16 +118,27 @@ export default function Member_addpage() {
       const newPlans = [...prevPlans];
       newPlans[index] = { ...newPlans[index], [field]: value };
 
-      if (field === 'amount' || field === 'discount') {
-        const amount = parseFloat(newPlans[index].amount) || 0;
-        const discount = parseFloat(newPlans[index].discount) || 0;
-        newPlans[index].balance = Math.max(0, amount - discount);
+      if (field === 'amount' || field === 'discount' || field === 'plan') {
+        const selectedPlan = availablePlans.find(plan => plan.plan_name === newPlans[index].plan);
+        if (selectedPlan) {
+          const amount = parseFloat(newPlans[index].amount) || 0;
+          const discount = parseFloat(newPlans[index].discount) || 0;
+          const sum = amount + discount;
+          const planAmount = parseFloat(selectedPlan.amount) || 0;
+          newPlans[index].balance = Math.max(0, planAmount - sum);
+        }
       }
 
       if (field === 'plan' && value) {
         const selectedPlan = availablePlans.find(plan => plan.plan_name === value);
         if (selectedPlan) {
           newPlans[index].expiry_date = calculateExpiryDate(selectedPlan.duration);
+          // Recalculate balance with the new plan's amount
+          const amount = parseFloat(newPlans[index].amount) || 0;
+          const discount = parseFloat(newPlans[index].discount) || 0;
+          const sum = amount + discount;
+          const planAmount = parseFloat(selectedPlan.amount) || 0;
+          newPlans[index].balance = Math.max(0, planAmount - sum);
         }
       }
 
@@ -133,86 +146,155 @@ export default function Member_addpage() {
     });
   };
 
-  // Handle form input changes
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setIsSubmitting(true);
-  setError('');
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError('');
 
-  // Basic validation
-  if (!/^\d{10}$/.test(formData.phone_no)) {
-    setError('Phone number must be 10 digits');
-    setIsSubmitting(false);
-    return;
-  }
-  if (!/^\d{10}$/.test(formData.whatsapp_no)) {
-    setError('WhatsApp number must be 10 digits');
-    setIsSubmitting(false);
-    return;
-  }
-
-  try {
-    const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
-    const dataToSubmit = {
-      gym_id: formData.gym_id,
-      full_name: formData.fullName,
-      gender: formData.gender,
-      dob: formData.dob,
-      location: formData.location,
-      phone: formData.phone_no,
-      whatsapp: formData.whatsapp_no,
-      join_date: currentDate,
-      ...(includeMembership && {
-        membership_plans: plans.map(plan => ({
-          plan_name: plan.plan,
-          join_date: currentDate,
-          expiry_date: plan.expiry_date,
-          amount: parseFloat(plan.amount) || 0,
-          discount: parseFloat(plan.discount) || 0,
-          balance: plan.balance,
-          transaction_type: plan.transaction_type,
-          bill_no: plan.bill_no,
-          trainer: plan.trainer,
-          include_days: plan.includeDays,
-          days: plan.includeDays ? parseInt(plan.days) || '' : '',
-        })),
-      }),
-    };
-
-    if (formData.profilePicture) {
-      console.warn('Profile picture selected but not uploaded (no storage configured)');
+    // Basic validation
+    if (!/^\d{10}$/.test(formData.phone_no)) {
+      setError('Phone number must be 10 digits');
+      setIsSubmitting(false);
+      return;
+    }
+    if (!/^\d{10}$/.test(formData.whatsapp_no)) {
+      setError('WhatsApp number must be 10 digits');
+      setIsSubmitting(false);
+      return;
     }
 
-    const response = await fetch('/api/members', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(dataToSubmit),
-    });
+    try {
+      const currentDate = new Date().toISOString().split('T')[0];
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to submit form');
+      // Handle profile picture upload first if exists
+      if (formData.profilePicture) {
+        console.log('Uploading profile picture...');
+        const imageFormData = new FormData();
+        imageFormData.append('profilePicture', formData.profilePicture);
+        imageFormData.append('gym_id', formData.gym_id);
+
+        const uploadResponse = await fetch('/api/upload_profile_picture', {
+          method: 'POST',
+          body: imageFormData,
+        });
+
+        console.log('Upload response status:', uploadResponse.status);
+        console.log('Upload response headers:', uploadResponse.headers);
+        console.log('Upload response URL:', uploadResponse.url);
+
+        // Get the raw response text first
+        const responseText = await uploadResponse.text();
+        console.log('Raw response text:', responseText);
+
+        if (!uploadResponse.ok) {
+          console.error('Upload failed with status:', uploadResponse.status);
+          console.error('Response text:', responseText);
+          
+          let errorMessage = 'Failed to upload profile picture';
+          
+          // Check if response is HTML (error page)
+          if (responseText.startsWith('<!DOCTYPE html>') || responseText.startsWith('<html>')) {
+            errorMessage = `Upload failed: Received HTML response instead of JSON. Status: ${uploadResponse.status}`;
+          } else {
+            try {
+              const errorData = JSON.parse(responseText);
+              errorMessage = errorData.error || errorMessage;
+            } catch (parseError) {
+              console.error('Error parsing upload response:', parseError);
+              errorMessage = `Upload failed: ${responseText.substring(0, 100)}...`;
+            }
+          }
+          throw new Error(errorMessage);
+        }
+
+        // Try to parse JSON response
+        let uploadResult;
+        try {
+          uploadResult = JSON.parse(responseText);
+          console.log('Upload successful:', uploadResult);
+        } catch (parseError) {
+          console.error('Error parsing successful upload response:', parseError);
+          console.error('Response was:', responseText);
+          throw new Error('Upload completed but received invalid response format');
+        }
+      }
+
+      // Prepare member data
+      const dataToSubmit = {
+        gym_id: formData.gym_id,
+        full_name: formData.fullName,
+        gender: formData.gender,
+        dob: formData.dob,
+        location: formData.location,
+        phone: formData.phone_no,
+        whatsapp: formData.whatsapp_no,
+        join_date: formData.join_date || currentDate,
+        ...(includeMembership && {
+          membership_plans: plans.map(plan => ({
+            plan_name: plan.plan,
+            join_date: formData.join_date || currentDate,
+            expiry_date: plan.expiry_date,
+            amount: parseFloat(plan.amount) || 0,
+            discount: parseFloat(plan.discount) || 0,
+            balance: plan.balance,
+            transaction_type: plan.transaction_type,
+            bill_no: plan.bill_no,
+            trainer: plan.trainer,
+            include_days: plan.includeDays,
+            days: plan.includeDays ? parseInt(plan.days) || '' : '',
+          })),
+        }),
+      };
+
+      console.log('Submitting member data:', dataToSubmit);
+
+      // Submit member data
+      const response = await fetch('/api/members', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSubmit),
+      });
+
+      console.log('Member submission response status:', response.status);
+      console.log('Member submission response headers:', response.headers);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Member submission error response:', errorText);
+        
+        let errorMessage = 'Failed to submit form';
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.error || errorMessage;
+        } catch (parseError) {
+          console.error('Error parsing member submission response:', parseError);
+          errorMessage = `Submission failed: ${errorText.substring(0, 100)}...`;
+        }
+        throw new Error(errorMessage);
+      }
+
+      let result;
+      try {
+        result = await response.json();
+        console.log('Success:', result);
+      } catch (parseError) {
+        console.error('Error parsing success response:', parseError);
+        const responseText = await response.text();
+        console.log('Raw response text:', responseText);
+        // If we can't parse the response but the status is ok, consider it successful
+        result = { message: 'Member added successfully' };
+      }
+
+      router.push('/members');
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setError(error.message || 'An unexpected error occurred');
+    } finally {
+      setIsSubmitting(false);
     }
-
-    const result = await response.json();
-    console.log('Success:', result);
-    router.push('/members');
-  } catch (error) {
-    console.error('Error submitting form:', error);
-    setError(error.message);
-  } finally {
-    setIsSubmitting(false);
-  }
-};
-
-
+  };
 
   return (
     <div className="box">
@@ -376,7 +458,9 @@ export default function Member_addpage() {
                         d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                       ></path>
                     </svg>
-                    <p className="text-sm text-gray-400">Click to upload image</p>
+                    <p className="text-sm text-gray-400">
+                      {selectedFileName ? selectedFileName : 'Click to upload image'}
+                    </p>
                   </div>
                   <input
                     type="file"
@@ -468,7 +552,7 @@ export default function Member_addpage() {
                     id={`balance-${index}`}
                     value={plan.balance.toFixed(2)}
                     readOnly
-                    className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] cursor-not-allowed"
+                    className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
                   />
                 </div>
 
@@ -501,7 +585,6 @@ export default function Member_addpage() {
                     value={plan.bill_no}
                     onChange={(e) => handlePlanChange(index, 'bill_no', e.target.value)}
                     placeholder="Bill No"
-                    min="0"
                     className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
                   />
                 </div>
@@ -570,6 +653,16 @@ export default function Member_addpage() {
                 )}
               </div>
             ))}
+
+            <div className="mt-4">
+              <button
+                type="button"
+                onClick={handleAddPlan}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+              >
+                Add Another Plan
+              </button>
+            </div>
           </div>
         )}
 

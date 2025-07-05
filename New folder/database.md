@@ -92,35 +92,6 @@ VALUES
 CREATE TABLE membership_plans (
   user_id VARCHAR(6),
   plan_name VARCHAR(30),
-  amount INTEGER,
-  discount INTEGER,
-  balance INTEGER,
-  trans_type VARCHAR(15),
-  trainer VARCHAR(30),
-  date DATE,
-  exp_date DATE
-);
-```
-
-```sql
-INSERT INTO membership_plans (user_id, plan_name, amount, discount, balance, trans_type, trainer, date, exp_date)
-VALUES
-('USR001', 'Exercise Plan', 2000, 200, 1800, 'GPay', 'TRN001', '2024-12-01', '2024-12-31'),
-('USR002', 'Zumba Plan', 1500, 150, 1350, 'Cash', 'TRN002', '2024-11-15', '2024-12-15'),
-('USR003', 'Calisthenics Plan', 3000, 300, 2700, 'Other', 'TRN003', '2024-10-20', '2024-11-19'),
-('USR004', 'Yoga Plan', 1000, 100, 900, 'GPay', 'TRN004', '2024-09-25', '2024-10-25'),
-('USR005', 'CrossFit Plan', 2500, 250, 2250, 'Cash', 'TRN005', '2024-08-30', '2024-09-29'),
-('USR006', 'Exercise Plan', 2000, 200, 1800, 'Other', 'TRN006', '2025-06-01', '2025-07-01'),
-('USR007', 'Zumba Plan', 1500, 150, 1350, 'GPay', 'TRN007', '2025-06-05', '2025-07-05'),
-('USR008', 'Calisthenics Plan', 3000, 300, 2700, 'Cash', 'TRN008', '2025-06-10', '2025-07-10'),
-('USR009', 'Yoga Plan', 1000, 100, 900, 'Other', 'TRN009', '2025-06-15', '2025-07-15'),
-('USR010', 'CrossFit Plan', 2500, 250, 2250, 'GPay', 'TRN010', '2025-06-20', '2025-07-20');
-```
-
-```sql
-CREATE TABLE membership_plans (
-  user_id VARCHAR(6),
-  plan_name VARCHAR(30),
   bill_no VARCHAR(6),
   amount INTEGER,
   discount INTEGER,
@@ -147,21 +118,15 @@ VALUES
 ('USR010', 'CrossFit Plan', 'BL010', 2500, 250, 2250, 'GPay', 'TRN010', '2025-06-20', '2025-07-20');
 ```
 
-CREATE TABLE transations (
-    user_id VARCHAR(6),
-    bill_no VARCHAR(6),
-    date VARCHAR(10),
-    plan VARCHAR(30),
-    trans_type VARCHAR(20),
-    pay_method VARCHAR(20),
-    amount INTEGER,
-    discount INTEGER,
-    balance INTEGER
-);
+### trainer_attendance table
 
+```sql
 
+```
 
+```sql
 
+```
 
 ### notification table
 

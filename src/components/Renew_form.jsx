@@ -67,9 +67,12 @@ export default function RenewalFormSection({ user_id }) {
     setFormData((prev) => {
       const newData = { ...prev, [name]: value };
       if (name === 'amount' || name === 'discount') {
+        const selectedPlan = plans.find(plan => plan.name === newData.plan);
+        const planAmount = selectedPlan ? parseFloat(selectedPlan.amount) : 0;
         const amount = parseFloat(newData.amount) || 0;
         const discount = parseFloat(newData.discount) || 0;
-        newData.balance = Math.max(0, amount - discount).toFixed(2);
+        const sum = amount + discount;
+        newData.balance = Math.max(0, planAmount - sum).toFixed(2);
       }
       return newData;
     });

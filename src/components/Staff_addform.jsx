@@ -1,5 +1,5 @@
+// src\components\Staff_addform.jsx
 "use client";
-
 import { GrClose } from "react-icons/gr";
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -8,6 +8,14 @@ export default function member_addpage() {
   const router = useRouter();
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,13 +23,58 @@ export default function member_addpage() {
     setError(null);
 
     const formData = new FormData(e.target);
-
-    console.log(formData);
-
+    
     try {
+      let profilePicturePath = null;
+      
+      // Check if a profile picture was uploaded
+      const profilePictureFile = formData.get('profilePicture');
+      if (profilePictureFile && profilePictureFile.size > 0) {
+        console.log('Uploading profile picture...');
+        
+        // Create form data for image upload
+        const imageFormData = new FormData();
+        imageFormData.append('profilePicture', profilePictureFile);
+        imageFormData.append('gym_id', formData.get('gymID'));
+        
+        // Upload the image first
+        const imageResponse = await fetch('/api/upload_trainer_pic', {
+          method: 'POST',
+          body: imageFormData,
+        });
+        
+        if (!imageResponse.ok) {
+          const imageError = await imageResponse.json();
+          throw new Error(imageError.error || 'Failed to upload profile picture');
+        }
+        
+        const imageResult = await imageResponse.json();
+        profilePicturePath = imageResult.filePath;
+        console.log('Profile picture uploaded successfully:', profilePicturePath);
+      }
+      
+      // Prepare the staff data (excluding the file)
+      const staffData = {
+        gymID: formData.get('gymID'),
+        fullName: formData.get('fullName'),
+        gender: formData.get('gender'),
+        dob: formData.get('dob'),
+        location: formData.get('location'),
+        phone: formData.get('phone'),
+        whatsapp: formData.get('whatsapp'),
+        joiningdate: formData.get('joiningdate'),
+        profilePicturePath: profilePicturePath // Include the uploaded image path
+      };
+      
+      console.log('Submitting staff data:', staffData);
+      
+      // Submit the staff data to your main route
       const response = await fetch('/api/add_staff', {
         method: 'POST',
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(staffData),
       });
 
       if (!response.ok) {
@@ -30,11 +83,13 @@ export default function member_addpage() {
 
       const result = await response.json();
       if (result.success) {
-        router.push('/staff'); // Redirect to a success page or staff list
+        router.push('/staff'); // Redirect to staff list
       } else {
         setError(result.message || 'An error occurred');
       }
+      
     } catch (err) {
+      console.error('Error in handleSubmit:', err);
       setError(err.message);
     } finally {
       setIsSubmitting(false);
@@ -188,14 +243,51 @@ export default function member_addpage() {
               <div className="flex items-center justify-center w-full">
                 <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-[#3E3A3D] rounded-lg cursor-pointer bg-[#232024] hover:bg-[#2E2A2D]">
                   <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    <svg className="w-8 h-8 mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                    </svg>
-                    <p className="text-sm text-gray-400">Click to upload image</p>
+                    {selectedFile ? (
+                      <>
+                        <svg className="w-8 h-8 mb-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <p className="text-sm text-green-400 text-center">
+                          {selectedFile.name}
+                        </p>
+                        <p className="text-xs text-gray-400">
+                          ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-8 h-8 mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                        </svg>
+                        <p className="text-sm text-gray-400">Click to upload image</p>
+                      </>
+                    )}
                   </div>
-                  <input type="file" name="profilePicture" className="hidden" accept="image/*" />
+                  <input 
+                    type="file" 
+                    name="profilePicture" 
+                    className="hidden" 
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    required
+                  />
                 </label>
               </div>
+              {selectedFile && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedFile(null);
+                    // Reset the file input
+                    const fileInput = document.querySelector('input[name="profilePicture"]');
+                    if (fileInput) fileInput.value = '';
+                  }}
+                  className="mt-2 text-sm text-red-400 hover:text-red-300"
+                >
+                  Remove file
+                </button>
+              )}
             </div>
           </div>
         </div>
