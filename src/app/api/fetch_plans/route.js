@@ -6,15 +6,13 @@ export async function GET() {
   try {
     const client = await getClient();
     const { rows } = await client.query('SELECT * FROM plans');
-    // await client.end();
-    
-    // Map database fields to match frontend expectations
+
     const plans = rows.map((row, index) => ({
-      id: index + 1, // Generate ID since database doesn't have it
+      id: index + 1,
       name: row.plan_name,
       description: row.description,
       amount: row.amount,
-      duration: parseInt(row.duration), // Convert VARCHAR to number
+      duration: parseInt(row.duration),
       status: row.status
     }));
 
