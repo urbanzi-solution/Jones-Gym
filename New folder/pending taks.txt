@@ -80,6 +80,8 @@ save image - member profile, staff profile, member list, staff list
 staff profile - pt attendance and staff attandece in staff profile 
 > completed
 
+attendance table filter
+
 attendance table export
 
 gallery export
