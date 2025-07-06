@@ -7,7 +7,8 @@ export default function Staff_profile({ trainer }) {
       <div className="relative">
         <img
           className="object-cover w-full h-full rounded-lg aspect-[3/4] md:max-h-80 lg:max-h-150"
-          src={trainer?.image_url || '/images/user2.jpg'}
+          // src={trainer?.image_url || '/images/user2.jpg'}
+          src={trainer.trainer_id ? `/images/trainer_pic/${trainer.trainer_id}.png` : "/images/user1.jpg"}
           alt={trainer?.name || 'Staff member'}
         />
         <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/95 via-black/60 to-transparent">

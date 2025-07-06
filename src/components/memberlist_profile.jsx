@@ -131,7 +131,8 @@ export default function MemberlistProfile({ member }) {
       <div className="relative">
         <img
           className="object-cover w-full h-full rounded-lg aspect-[3/4] md:max-h-80 lg:max-h-150"
-          src="/images/user2.jpg"
+          // src="/images/user2.jpg"
+          src={member.user_id ? `/images/user_pic/${member.user_id}.png` : "/images/user1.jpg"}
           alt="User profile"
         />
         <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/95 via-black/60 to-transparent">

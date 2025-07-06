@@ -15,8 +15,11 @@ export default function Staff_listbox({ staff }) {
           <div className="flex gap-3 items-center sm:gap-5 lg:gap-10">
             <img
               className="w-16 h-16 sm:w-32 sm:h-32 lg:w-40 lg:h-40 object-cover border-2 rounded-full"
-              src="/images/user1.jpg"
-              alt="Member"
+              src={member.trainer_id ? `/images/trainer_pic/${member.trainer_id}.png` : "/images/user1.jpg"}
+              alt="Staff Member"
+              onError={(e) => {
+                e.target.src = "/images/user1.jpg";
+              }}
             />
             <span className="flex flex-col gap-1 md:gap-5 text-sm sm:text-xl lg:text-2xl">
               <h3 className="font-semibold">{member.name || "Unknown"}</h3>

@@ -72,10 +72,16 @@ membership_plans and transations reconstructions, changes in the code where refl
 input, add member, renew plan corresponding route.js,
 detailed report, member transactions, report page
 route.js which passes fetch and insert to these tables 
-
-
-notification popup and natification functions and updates
+> completed
 
 save image - member profile, staff profile, member list, staff list
+> completed
 
 staff profile - pt attendance and staff attandece in staff profile 
+> completed
+
+attendance table export
+
+gallery export
+
+notification popup and natification functions and updates

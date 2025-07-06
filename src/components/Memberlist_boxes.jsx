@@ -201,9 +201,13 @@ export default function Memberlist_boxes({ members, filters }) {
               <div className="flex gap-3 items-center sm:gap-5 lg:gap-10">
                 <img
                   className="w-16 h-16 sm:32 sm:h-32 lg:w-40 lg:h-40 object-cover border-2 rounded-full"
-                  src={member.image_url || "/images/user1.jpg"}
+                  src={member.user_id ? `/images/user_pic/${member.user_id}.png` : "/images/user1.jpg"}
                   alt={member.name || "Member"}
+                  onError={(e) => {
+                    e.target.src = "/images/user1.jpg";
+                  }}
                 />
+                
                 <span className="flex flex-col gap-1 text-sm sm:text-xl lg:text-2xl">
                   <h3 className="font-semibold">{member.name || "Member name"}</h3>
                   <h4>{member.user_id || "member_id"}</h4>

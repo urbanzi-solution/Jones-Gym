@@ -6,7 +6,6 @@ export async function GET() {
   try {
     const client = await getClient();
     const { rows } = await client.query('SELECT * FROM trainer_attendance ORDER BY user_id');
-    // const { rows } = await client.query('SELECT * FROM trainer_attendance ORDER BY date DESC');
 
     const attendance = rows.map((row, index) => ({
       trainer_id: row.trainer_id,
@@ -15,7 +14,7 @@ export async function GET() {
       status: row.status,
     }));
 
-    console.log('Fetched attendance data:', attendance);
+    // console.log('Fetched attendance data:', attendance);
     return NextResponse.json({ success: true, data: attendance });
   } catch (error) {
     console.error('Error fetching attendance data:', error);

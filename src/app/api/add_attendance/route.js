@@ -55,6 +55,10 @@ export async function POST(request) {
       .join(', ');
 
     await query(
+      `TRUNCATE TABLE trainer_attendance`
+    );
+
+    await query(
       `INSERT INTO trainer_attendance (trainer_id, user_id, date, status) VALUES ${placeholders}`,
       values
     );
