@@ -1,4 +1,4 @@
-// src\components\  
+// src\components\Report_detailed_transation.jsx
 'use client';
 import { useState, useEffect } from 'react';
 import { FaCaretDown, FaEllipsisV } from "react-icons/fa";

@@ -10,6 +10,23 @@ export default function PTAttendanceTable({ trainerId, name }) {
   const [error, setError] = useState(null);
   const [attendance, setAttendance] = useState({});
   const [saveStatus, setSaveStatus] = useState(null);
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth()); // Default to current month (0-11)
+
+  const options = [
+    'Select Month',
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,25 +72,26 @@ export default function PTAttendanceTable({ trainerId, name }) {
     fetchData();
   }, [trainerId]);
 
-  // Get current month days
-  const getCurrentMonthDays = () => {
+  // Get days for the selected month
+  const getMonthDays = () => {
     const now = new Date();
     const year = now.getFullYear();
-    const month = now.getMonth();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const daysInMonth = new Date(year, selectedMonth + 1, 0).getDate();
     
     return Array.from({ length: daysInMonth }, (_, i) => i + 1);
   };
 
-  const monthDays = getCurrentMonthDays();
-  const currentMonth = new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
+  const monthDays = getMonthDays();
+  const currentMonth = selectedMonth >= 0 && selectedMonth < 12 
+    ? `${options[selectedMonth + 1]} ${new Date().getFullYear()}` 
+    : 'Select a month';
 
-  // Initialize attendance state when data is loaded
+  // Initialize attendance state when data or selected month changes
   useEffect(() => {
     if (attendanceData.length > 0) {
       const initialAttendance = {};
       const currentYear = new Date().getFullYear();
-      const currentMonthNum = new Date().getMonth() + 1;
+      const currentMonthNum = selectedMonth + 1; // 1-12 for comparison
       
       // Initialize attendance structure
       attendanceData.forEach(user => {
@@ -92,7 +110,7 @@ export default function PTAttendanceTable({ trainerId, name }) {
         const recordMonth = istDate.getMonth() + 1;
         const recordDay = istDate.getDate();
         
-        // Only fill if the record is from the current month and year
+        // Only fill if the record is from the selected month and year
         if (recordYear === currentYear && recordMonth === currentMonthNum) {
           if (initialAttendance[record.user_id]) {
             initialAttendance[record.user_id][recordDay] = record.status;
@@ -102,7 +120,7 @@ export default function PTAttendanceTable({ trainerId, name }) {
 
       setAttendance(initialAttendance);
     }
-  }, [attendanceData, existingAttendance]);
+  }, [attendanceData, existingAttendance, selectedMonth]);
 
   // Handle attendance change
   const handleAttendanceChange = (userId, day, value) => {
@@ -121,7 +139,7 @@ export default function PTAttendanceTable({ trainerId, name }) {
       setSaveStatus('Saving...');
       const records = [];
       const year = new Date().getFullYear();
-      const month = (new Date().getMonth() + 1).toString().padStart(2, '0');
+      const month = (selectedMonth + 1).toString().padStart(2, '0');
 
       // Convert existingAttendance to a lookup for quick comparison
       const existingAttendanceMap = {};
@@ -195,7 +213,7 @@ export default function PTAttendanceTable({ trainerId, name }) {
 
   // Handle export to Excel
   const handleExportToExcel = () => {
-    const monthName = new Date().toLocaleString('default', { month: 'long' });
+    const monthName = selectedMonth >= 0 && selectedMonth < 12 ? options[selectedMonth + 1] : 'Attendance';
     const year = new Date().getFullYear();
     
     // Prepare data for Excel
@@ -255,6 +273,12 @@ export default function PTAttendanceTable({ trainerId, name }) {
     return { presentDays, absentDays };
   };
 
+  // Handle month change
+  const handleMonthChange = (e) => {
+    const monthIndex = options.indexOf(e.target.value) - 1; // Convert to 0-11
+    setSelectedMonth(monthIndex >= 0 ? monthIndex : new Date().getMonth());
+  };
+
   return (
     <div className="">
       <Inpage_header 
@@ -264,9 +288,22 @@ export default function PTAttendanceTable({ trainerId, name }) {
       />
       
       <div className="mt-4 flex justify-between items-center">
-        <h2 className="text-xl font-semibold mb-4 text-gray-100">
-          {currentMonth}
-        </h2>
+        <div className="flex items-center space-x-4">
+          <h2 className="text-xl font-semibold text-gray-100">
+            {currentMonth}
+          </h2>
+          <select
+            value={selectedMonth >= 0 && selectedMonth < 12 ? options[selectedMonth + 1] : options[0]}
+            onChange={handleMonthChange}
+            className="px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-700 text-gray-100"
+          >
+            {options.map((option, index) => (
+              <option key={index} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
 
         <button
           onClick={handleSaveAttendance}
@@ -283,7 +320,7 @@ export default function PTAttendanceTable({ trainerId, name }) {
                 : 'bg-blue-500 hover:bg-blue-600'
             }
           `}
-          disabled={saveStatus === 'Saving...'}
+          disabled={saveStatus === 'Saving...' || selectedMonth < 0}
         >
           {saveStatus || 'Save Attendance'}
         </button>
@@ -317,6 +354,12 @@ export default function PTAttendanceTable({ trainerId, name }) {
                   {error}
                 </td>
               </tr>
+            ) : selectedMonth < 0 ? (
+              <tr>
+                <td colSpan={monthDays.length + 4} className="py-3 px-4 text-center text-gray-500">
+                  Please select a month
+                </td>
+              </tr>
             ) : attendanceData.length > 0 ? (
               attendanceData.map((record) => {
                 const { presentDays, absentDays } = calculateTotals(record.user_id);
@@ -335,6 +378,7 @@ export default function PTAttendanceTable({ trainerId, name }) {
                           value={getAttendanceValue(record.user_id, day)}
                           onChange={(e) => handleAttendanceChange(record.user_id, day, e.target.value)}
                           className="w-full px-1 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          disabled={selectedMonth < 0}
                         >
                           <option value="">-</option>
                           <option value="P" className="text-green-600">P</option>
