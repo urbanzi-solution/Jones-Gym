@@ -7,6 +7,8 @@ export default function Memberlist_boxes({ members, filters }) {
   const currentDate = new Date();
   const currentDateOnly = currentDate.toISOString().split('T')[0]; // e.g., '2025-07-01'
 
+  console.log("membershipPlans",membershipPlans);
+
   // Helper function to get date only (YYYY-MM-DD)
   const getDateOnly = (date) => {
     if (!date) return null;
@@ -30,6 +32,7 @@ export default function Memberlist_boxes({ members, filters }) {
         }
         const data = await response.json();
         setMembershipPlans(data.data);
+        // console.log("setMembershipPlans",setMembershipPlans);
       } catch (error) {
         console.error('Error fetching membership plans:', error);
       }
@@ -230,10 +233,30 @@ export default function Memberlist_boxes({ members, filters }) {
                 >
                   {isExpired ? "Expired" : "Not Expired"}
                 </p>
+                {membershipPlans
+                  .filter((plan) => plan.user_id === member.user_id)
+                  .map((plan, index) => (
+                    <p
+                      key={`${plan.user_id}-${plan.plan_name}-${index}`}
+                      className="bg-[#232024] px-2 py-1 rounded-full border border-white text-center"
+                    >
+                      {plan.plan_name || "Basic Gym"}
+                    </p>
+                  ))}
+              </span>
+
+              {/* <span className="flex flex-col gap-2 items-end justify-center text-[10px] sm:text-lg lg:text-xl">
+                <p
+                  className={`px-2 py-1 rounded-full border border-white text-center ${
+                    isExpired ? "bg-red-800" : "bg-green-800"
+                  }`}
+                >
+                  {isExpired ? "Expired" : "Not Expired"}
+                </p>
                 <p className="bg-[#232024] px-2 py-1 rounded-full border border-white text-center">
                   {memberPlan?.plan_name || "Basic Gym"}
                 </p>
-              </span>
+              </span> */}
             </a>
           );
         })
