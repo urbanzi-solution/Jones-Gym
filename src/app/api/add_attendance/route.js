@@ -54,9 +54,9 @@ export async function POST(request) {
       .map((_, index) => `($${index * 4 + 1}, $${index * 4 + 2}, $${index * 4 + 3}, $${index * 4 + 4})`)
       .join(', ');
 
-    await query(
-      `TRUNCATE TABLE trainer_attendance`
-    );
+    // await query(
+    //   `TRUNCATE TABLE trainer_attendance`
+    // );
 
     await query(
       `INSERT INTO trainer_attendance (trainer_id, user_id, date, status) VALUES ${placeholders}`,

@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Inpage_header from "@/components/Inpage_header";
+import * as XLSX from 'xlsx';
 
 export default function PTAttendanceTable({ trainerId, name }) {
   const [attendanceData, setAttendanceData] = useState([]);
@@ -122,11 +123,28 @@ export default function PTAttendanceTable({ trainerId, name }) {
       const year = new Date().getFullYear();
       const month = (new Date().getMonth() + 1).toString().padStart(2, '0');
 
-      // Collect all non-empty attendance records
+      // Convert existingAttendance to a lookup for quick comparison
+      const existingAttendanceMap = {};
+      existingAttendance.forEach(record => {
+        const utcDate = new Date(record.date);
+        const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000)); // Convert to IST
+        const recordYear = istDate.getFullYear();
+        const recordMonth = istDate.getMonth() + 1;
+        const recordDay = istDate.getDate();
+        if (recordYear === year && recordMonth === Number(month)) {
+          existingAttendanceMap[`${record.user_id}-${recordDay}`] = record.status;
+        }
+      });
+
+      // Collect only new or changed attendance records
       Object.keys(attendance).forEach(userId => {
         monthDays.forEach(day => {
           const status = attendance[userId][day];
-          if (status === 'P' || status === 'A') {
+          const key = `${userId}-${day}`;
+          const existingStatus = existingAttendanceMap[key];
+
+          // Include record if it's new (no existing status) or changed (different status)
+          if ((status === 'P' || status === 'A') && status !== existingStatus) {
             const formattedDate = `${year}-${month}-${day.toString().padStart(2, '0')}`;
             records.push({
               trainer_id: trainerId,
@@ -139,7 +157,7 @@ export default function PTAttendanceTable({ trainerId, name }) {
       });
 
       if (records.length === 0) {
-        setSaveStatus('No attendance data to save');
+        setSaveStatus('No new or changed attendance data to save');
         return;
       }
 
@@ -153,7 +171,17 @@ export default function PTAttendanceTable({ trainerId, name }) {
 
       const result = await response.json();
       if (result.success) {
-        setSaveStatus('Saved');
+        setSaveStatus('Saved successfully');
+        // Update existingAttendance state to reflect saved changes
+        setExistingAttendance(prev => [
+          ...prev,
+          ...records.map(record => ({
+            trainer_id: record.trainer_id,
+            user_id: record.user_id,
+            date: record.date,
+            status: record.status
+          }))
+        ]);
       } else {
         setSaveStatus(`Failed: ${result.error}`);
       }
@@ -161,9 +189,58 @@ export default function PTAttendanceTable({ trainerId, name }) {
       setSaveStatus('Error saving');
       console.error('Error saving attendance:', error);
     } finally {
-      // Clear status message after 3 seconds
       setTimeout(() => setSaveStatus(null), 3000);
     }
+  };
+
+  // Handle export to Excel
+  const handleExportToExcel = () => {
+    const monthName = new Date().toLocaleString('default', { month: 'long' });
+    const year = new Date().getFullYear();
+    
+    // Prepare data for Excel
+    const exportData = attendanceData.map(record => {
+      const userAttendance = attendance[record.user_id] || {};
+      const row = {
+        'User ID': record.user_id,
+        'Name': record.name,
+        'Month': monthName
+      };
+      
+      // Add attendance for each day
+      monthDays.forEach(day => {
+        row[`Day ${day}`] = userAttendance[day] || '-';
+      });
+      
+      // Add totals
+      const { presentDays, absentDays } = calculateTotals(record.user_id);
+      row['Total Present'] = presentDays;
+      row['Total Absent'] = absentDays;
+      
+      return row;
+    });
+
+    // Create worksheet
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    
+    // Set column widths
+    const colWidths = [
+      { wch: 10 }, // User ID
+      { wch: 20 }, // Name
+      { wch: 15 }, // Month
+      ...monthDays.map(() => ({ wch: 8 })), // Days
+      { wch: 12 }, // Total Present
+      { wch: 12 }  // Total Absent
+    ];
+    worksheet['!cols'] = colWidths;
+    
+    // Create workbook and append worksheet
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Attendance');
+    
+    // Export to file
+    const fileName = `Attendance_${name}_${trainerId}_${monthName}_${year}.xlsx`;
+    XLSX.writeFile(workbook, fileName);
   };
 
   const getAttendanceValue = (userId, day) => {
@@ -183,6 +260,7 @@ export default function PTAttendanceTable({ trainerId, name }) {
       <Inpage_header 
         className="text-2xl md:text-3xl font-bold mb-6" 
         title={`PT Attendance of ${name} - ${trainerId}`} 
+        onExport={handleExportToExcel}
       />
       
       <div className="mt-4 flex justify-between items-center">
