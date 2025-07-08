@@ -105,18 +105,22 @@ remove blacklist and note if nothing else add the details
 price along the plan name in the add member form
 > completed
 
+add exp date along with the plane name in the memebers lit box
+> completed
+
 each plan name expiry date and balance no of days in the member profile
+> completed
+
+remove trainer name and add any other data
+> completed
 
 not expired banner option plan selection plan name -  edit amount balance, discount
+> completed
 
 individual detail transaction report
 
-remove trainer name and add any other data
-
 detail transaction edit - amount, discount balance 
 detail transaction edit - restrict edit in the user id and plan name
-
-add exp date along with the plane name in the memebers lit box
 
 navigation
 src\components\Inpage_header_3dot.jsx

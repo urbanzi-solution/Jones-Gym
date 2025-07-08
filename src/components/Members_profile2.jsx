@@ -2,11 +2,14 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { FaLocationDot } from "react-icons/fa6";
-import { SiTrainerroad } from "react-icons/si";
+import { SiWhatsapp } from "react-icons/si";
 import { FaPhoneAlt } from "react-icons/fa";
 import { BsWhatsapp } from "react-icons/bs";
 
 export default function Members_profile2({ member }) {
+  
+  // console.log(member);
+
   // Format joining date
   const formattedJoiningDate = new Date(member.joining_date).toLocaleDateString('en-GB', {
     day: '2-digit',
@@ -50,7 +53,7 @@ export default function Members_profile2({ member }) {
         </div>
         <div className='grid grid-cols-2 gap-4 md:gap-8 md:text-2xl'>
             <h2 className="flex gap-2 items-center"><FaLocationDot className="text-[#FFDD4A]"/> {member.location}</h2>
-            <h2 className="flex gap-2 items-center"><SiTrainerroad className="text-[#FFDD4A]"/> Trainer Name</h2>
+            <h2 className="flex gap-2 items-center"><SiWhatsapp className="text-[#FFDD4A]"/> {member.whatsapp_no}</h2>
             <h2 className="flex gap-2 items-center"><FaPhoneAlt className="text-[#FFDD4A]"/> {member.phone_no}</h2>
             <h2 className="flex gap-2 items-center"><span className="text-[#FFDD4A] font-semibold">J.D</span> {formattedJoiningDate}</h2>
         </div>

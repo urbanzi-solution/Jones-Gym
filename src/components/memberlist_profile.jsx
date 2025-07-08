@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo } from "react";
 import { FaRegCheckCircle } from "react-icons/fa";
 import Renew_form from "./Renew_form";
 import { GrClose } from "react-icons/gr";
-import Balance_form from "./Balance_form";
+import BalanceEditForm from "./Balance_form";
 
 export default function MemberlistProfile({ member }) {
   const [renewBox, setRenewBox] = useState(false);
@@ -26,18 +26,16 @@ export default function MemberlistProfile({ member }) {
     const fetchMembershipPlans = async () => {
       try {
         const response = await fetch('/api/fetch_membership_plans');
-        console.log("fetched response", response);
 
         if (!response.ok) {
           throw new Error('Failed to fetch membership plans');
         }
         const result = await response.json();
-        console.log("fetched data", result);
+        // console.log("fetched data", result);
         
-        // Handle the API response structure: { success: true, data: [...] }
         if (result.success && result.data) {
           const userPlans = result.data.filter(plan => plan.user_id === member.user_id);
-          console.log("filtered user plans", userPlans);
+          // console.log("filtered user plans", userPlans);
           setMembershipPlans(userPlans);
         } else {
           console.error('API returned unsuccessful response:', result);
@@ -60,70 +58,82 @@ export default function MemberlistProfile({ member }) {
       : 'Basic Gym';
   }, [membershipPlans]);
 
-  // Calculate expiration details using useMemo to ensure it updates when membershipPlans changes
-  const { daysUntilExpiry, isExpired, formattedExpiry } = useMemo(() => {
-    let daysUntilExpiry = 0;
-    let isExpired = true;
-    let formattedExpiry = 'N/A';
-
+  // Calculate expiration details for each plan using useMemo
+  const planExpirations = useMemo(() => {
     if (membershipPlans.length > 0) {
-      // Find the plan with the latest expiry date
-      const latestPlan = membershipPlans.reduce((latest, plan) => {
-        const planDate = new Date(plan.exp_date);
-        return !latest || planDate > new Date(latest.exp_date) ? plan : latest;
-      }, null);
-
-      if (latestPlan) {
-        const expiryDate = new Date(latestPlan.exp_date);
+      return membershipPlans.map(plan => {
+        const expiryDate = new Date(plan.exp_date);
         const today = new Date();
         
         // Calculate days until expiry
-        daysUntilExpiry = Math.max(
+        const daysUntilExpiry = Math.max(
           0,
           Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24))
         );
         
-        isExpired = expiryDate < today;
-        
         // Format expiry date
-        formattedExpiry = expiryDate.toLocaleDateString('en-GB', {
+        const formattedExpiry = expiryDate.toLocaleDateString('en-GB', {
           day: '2-digit',
           month: '2-digit',
           year: 'numeric',
         }).split('/').join('-');
-      }
+
+        return {
+          planName: plan.plan_name,
+          daysUntilExpiry,
+          formattedExpiry,
+          isExpired: expiryDate < today
+        };
+      });
     } else if (!loading) {
-      // Fallback to original calculation only if data has been loaded but no plans found
+      // Fallback for when no plans are found
       const joiningDate = new Date(member.joining_date);
       const expiryDate = new Date(joiningDate);
       expiryDate.setFullYear(joiningDate.getFullYear() + 1);
       const today = new Date();
       
-      daysUntilExpiry = Math.max(
+      const daysUntilExpiry = Math.max(
         0,
         Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24))
       );
       
-      isExpired = expiryDate < today;
-      
-      formattedExpiry = expiryDate.toLocaleDateString('en-GB', {
+      const formattedExpiry = expiryDate.toLocaleDateString('en-GB', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
       }).split('/').join('-');
+
+      return [{
+        planName: 'Basic Gym',
+        daysUntilExpiry,
+        formattedExpiry,
+        isExpired: expiryDate < today
+      }];
     }
-
-    // Console log expiration details
-    console.log("Expiration Details:", {
-      daysUntilExpiry,
-      formattedExpiry,
-      isExpired,
-      membershipPlansCount: membershipPlans.length,
-      loading
-    });
-
-    return { daysUntilExpiry, isExpired, formattedExpiry };
+    return [];
   }, [membershipPlans, member.joining_date, loading]);
+
+  // Determine overall expiration status and count expired plans for the button
+  const { daysUntilExpiry, isExpired, formattedExpiry, expiredPlansCount } = useMemo(() => {
+    if (planExpirations.length > 0) {
+      // Count expired plans
+      const expiredPlansCount = planExpirations.filter(plan => plan.isExpired).length;
+      
+      // Find the plan with the latest expiry date
+      const latestPlan = planExpirations.reduce((latest, plan) => {
+        const planDate = new Date(plan.formattedExpiry.split('-').reverse().join('-'));
+        return !latest || planDate > new Date(latest.formattedExpiry.split('-').reverse().join('-')) ? plan : latest;
+      }, null);
+      
+      return {
+        daysUntilExpiry: latestPlan.daysUntilExpiry,
+        isExpired: expiredPlansCount > 0, // Consider expired if any plan is expired
+        formattedExpiry: latestPlan.formattedExpiry,
+        expiredPlansCount
+      };
+    }
+    return { daysUntilExpiry: 0, isExpired: true, formattedExpiry: 'N/A', expiredPlansCount: 1 };
+  }, [planExpirations]);
 
   return (
     <div className="relative grid grid-cols-1 md:grid-cols-2 p-4 md:p-6 lg:p-10 gap-4 md:gap-10">
@@ -131,7 +141,6 @@ export default function MemberlistProfile({ member }) {
       <div className="relative">
         <img
           className="object-cover w-full h-full rounded-lg aspect-[3/4] md:max-h-80 lg:max-h-150"
-          // src="/images/user2.jpg"
           src={member.user_id ? `/images/user_pic/${member.user_id}.png` : "/images/user1.jpg"}
           alt="User profile"
         />
@@ -149,7 +158,7 @@ export default function MemberlistProfile({ member }) {
             onClick={toggleBalanceBox}
             className={`w-full ${isExpired ? 'bg-red-500' : 'bg-[#71CA35]'} flex gap-2 justify-center items-center rounded-lg text-black font-semibold px-4 py-2 text-xl md:text-3xl md:py-4`}
           >
-            {isExpired ? 'Expired' : 'Not Expired'} <FaRegCheckCircle />
+            {isExpired ? `${expiredPlansCount} Plan${expiredPlansCount > 1 ? 's' : ''} Expired` : 'Not Expired'} <FaRegCheckCircle />
           </button>
           
           {/* Balance Form Modal */}
@@ -162,16 +171,23 @@ export default function MemberlistProfile({ member }) {
                   size={28}
                 />
               </div>
-              <Balance_form />
+              {/* <Balance_form /> */}
+              <BalanceEditForm user_id={member.user_id} membershipPlans={membershipPlans} />
             </div>
           )}
         </div>
 
         {/* Membership Info */}
         <div className="bg-[#FFDD4A] text-black px-4 py-2 rounded-lg gap-2 flex flex-col items-center md:py-4">
-          <h3 className="text-xl font-semibold md:text-2xl">{loading ? 'Loading...' : planNames}</h3>
-          <p className="text-sm md:text-lg">Expiry in {daysUntilExpiry} Days</p>
-          <p className="text-sm font-semibold md:text-lg">{formattedExpiry}</p>
+          {loading ? (
+            <h3 className="text-xl font-semibold md:text-2xl">Loading...</h3>
+          ) : (
+            planExpirations.map((plan, index) => (
+              <p key={index} className="text-sm md:text-lg font-semibold">
+                {plan.planName}: {plan.daysUntilExpiry} Days Remaining, Expires {plan.formattedExpiry}
+              </p>
+            ))
+          )}
         </div>
 
         {/* Renew Button */}

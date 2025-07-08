@@ -12,7 +12,7 @@ export default function Member_addpage() {
       try {
         const response = await fetch('/api/members');
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         if (data.plans && data.trainers) {
           setAvailablePlans(data.plans);
           setTrainers(data.trainers);

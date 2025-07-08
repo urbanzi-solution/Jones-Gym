@@ -1,79 +1,165 @@
 "use client";
+import { useState, useEffect } from 'react';
 
-import { useState } from 'react';
-
-export default function BalanceEditForm() {
-  // Demo balance amount (not editable)
-  const initialBalance = 5000;
-  
-  // Editable fields state
+export default function Balance_form({ user_id, membershipPlans }) {
+  const [selectedPlan, setSelectedPlan] = useState(membershipPlans[0]?.plan_name || '');
+  const [newAmountReceived, setNewAmountReceived] = useState(0);
   const [formData, setFormData] = useState({
-    amountPaid: 0,
-    discount: 0,
-    balance: initialBalance // Calculated field
+    amountPaid: membershipPlans[0]?.amount || 0,
+    discount: membershipPlans[0]?.discount || 0,
+    bill_no: membershipPlans[0]?.bill_no || '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState({ text: '', type: '' });
 
-  // Handle field changes
+  // Calculate balance dynamically
+  const balance = Math.max(0, formData.amountPaid - formData.discount - newAmountReceived);
+  
+  // Calculate total amount received (original + new)
+  const totalAmountReceived = formData.amountPaid + newAmountReceived;
+
+  useEffect(() => {
+    const plan = membershipPlans.find(p => p.plan_name === selectedPlan);
+    if (plan) {
+      setFormData({
+        amountPaid: plan.amount || 0,
+        discount: plan.discount || 0,
+        bill_no: plan.bill_no || '',
+      });
+      setMessage({ text: '', type: '' }); // Clear message when plan changes
+    }
+  }, [selectedPlan, membershipPlans]);
+
+  const handlePlanChange = (e) => {
+    setSelectedPlan(e.target.value);
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const numValue = parseFloat(value) || 0;
-    
-    setFormData(prev => {
-      const newData = {
+    const numValue = name === 'bill_no' ? value : parseFloat(value) || 0;
+
+    if (name === 'newAmountReceived') {
+      setNewAmountReceived(numValue);
+    } else {
+      setFormData(prev => ({
         ...prev,
         [name]: numValue
-      };
-      
-      // Auto-calculate balance
-      newData.balance = Math.max(0, initialBalance - newData.amountPaid - newData.discount);
-      
-      return newData;
-    });
+      }));
+    }
+    setMessage({ text: '', type: '' }); // Clear message on input change
   };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    alert('Balance updated successfully!');
+    setIsSubmitting(true);
+    setMessage({ text: '', type: '' });
+
+    try {
+      const response = await fetch('/api/edit_amount', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id,
+          selectedPlan,
+          bill_no: formData.bill_no,
+          totalAmountReceived: totalAmountReceived,
+          discount: formData.discount,
+          balance: balance,
+        }),
+      });
+
+      if (response.ok) {
+        console.log('Form submitted:', { 
+          selectedPlan, 
+          bill_no: formData.bill_no,
+          ...formData, 
+          newAmountReceived,
+          totalAmountReceived,
+          balance
+        });
+        setMessage({ text: 'Balance updated successfully!', type: 'success' });
+        // Refresh to member profile page after a short delay to show success message
+        setTimeout(() => {
+          window.location.href = `/member-profile?member_id=${user_id}`;
+        }, 1000);
+      } else {
+        throw new Error('Failed to update balance');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setMessage({ text: 'Failed to update balance. Please try again.', type: 'error' });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  // Handle cancel
   const handleCancel = () => {
+    const plan = membershipPlans.find(p => p.plan_name === selectedPlan) || membershipPlans[0] || {};
     setFormData({
-      amountPaid: 0,
-      discount: 0,
-      balance: initialBalance
+      amountPaid: plan.amount || 0,
+      discount: plan.discount || 0,
+      bill_no: plan.bill_no || '',
     });
+    setNewAmountReceived(0);
+    setMessage({ text: '', type: '' }); // Clear message on cancel
   };
 
-  // Handle write off (console only)
   const handleWriteOff = () => {
-    console.log('Write off initiated for balance:', formData.balance);
-    alert('Write off logged to console');
+    console.log('Write off initiated for balance:', balance);
+    setMessage({ text: 'Write off logged to console', type: 'success' });
   };
 
   return (
     <div className="p-4 sm:p-6 border-t border-[#3E3A3D]">
       <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-gray-300">Edit Balance</h2>
       
+      {message.text && (
+        <div className={`mb-4 p-3 rounded-lg text-sm sm:text-base ${
+          message.type === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
+        }`}>
+          {message.text}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit}>
-        {/* Non-editable balance display */}
         <div className="mb-3 sm:mb-4">
           <label className="block text-sm font-medium mb-1 text-gray-400">
-            Current Balance (₹)
+            Select the plan
+          </label>
+          <select 
+            value={selectedPlan}
+            onChange={handlePlanChange}
+            className="w-full p-2 sm:p-3 bg-[#2E2A2D] border border-[#3E3A3D] rounded-lg text-sm sm:text-base"
+          >
+            {membershipPlans.map((plan) => (
+              <option key={plan.plan_name} value={plan.plan_name}>
+                {plan.plan_name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="mb-3 sm:mb-4">
+          <label htmlFor="bill_no" className="block text-sm font-medium mb-1 text-gray-300">
+            Bill Number
           </label>
           <input
-            value={initialBalance.toFixed(2)}
+            type="text"
+            id="bill_no"
+            name="bill_no"
+            value={formData.bill_no}
+            onChange={handleChange}
+            placeholder="Enter bill number"
+            className="w-full p-2 sm:p-3 bg-[#232024] border border-[#3E3A3D] rounded-lg text-sm sm:text-base"
             readOnly
-            className="w-full p-2 sm:p-3 bg-[#2E2A2D] border border-[#3E3A3D] rounded-lg cursor-not-allowed text-sm sm:text-base"
           />
         </div>
 
-        {/* Amount Paid */}
         <div className="mb-3 sm:mb-4">
           <label htmlFor="amountPaid" className="block text-sm font-medium mb-1 text-gray-300">
-            Amount Paid (₹) *
+            Amount Already Received (₹) *
           </label>
           <input
             type="number"
@@ -82,44 +168,64 @@ export default function BalanceEditForm() {
             value={formData.amountPaid}
             onChange={handleChange}
             placeholder="Enter amount paid"
-            max={initialBalance}
             className="w-full p-2 sm:p-3 bg-[#232024] border border-[#3E3A3D] rounded-lg text-sm sm:text-base"
             required
+            readOnly
           />
         </div>
 
-        {/* Discount */}
+        <div className="mb-3 sm:mb-4">
+          <label className="block text-sm font-medium mb-1 text-gray-400">
+            Total Amount Received (₹)
+          </label>
+          <input
+            value={totalAmountReceived}
+            readOnly
+            className="w-full p-2 sm:p-3 bg-[#232024] border border-[#3E3A3D] rounded-lg text-sm sm:text-base text-gray-400"
+          />
+        </div>
+
         <div className="mb-3 sm:mb-4">
           <label htmlFor="discount" className="block text-sm font-medium mb-1 text-gray-300">
             Discount (₹)
           </label>
           <input
-            type="number"
+            type="text"
             id="discount"
             name="discount"
             placeholder="Enter discount"
             value={formData.discount}
             onChange={handleChange}
-            max={initialBalance - formData.amountPaid}
             className="w-full p-2 sm:p-3 bg-[#232024] border border-[#3E3A3D] rounded-lg text-sm sm:text-base"
           />
         </div>
 
-        {/* Calculated New Balance */}
         <div className="mb-4 sm:mb-6">
           <label className="block text-sm font-medium mb-1 text-gray-400">
-            New Balance (₹)
+            Balance Amount (₹)
           </label>
           <input
-            value={formData.balance.toFixed(2)}
+            value={balance}
             readOnly
-            className={`w-full p-2 sm:p-3 border rounded-lg cursor-not-allowed text-sm sm:text-base ${
-              formData.balance > 0 ? 'bg-red-900/20 border-red-700' : 'bg-green-900/20 border-green-700'
-            }`}
+            className="w-full p-2 sm:p-3 bg-[#232024] border border-[#3E3A3D] rounded-lg text-sm sm:text-base text-gray-400"
           />
         </div>
 
-        {/* Action Buttons */}
+        <div className="mb-3 sm:mb-4">
+          <label htmlFor="newAmountReceived" className="block text-sm font-medium mb-1 text-gray-300">
+            New Amount Received (₹)
+          </label>
+          <input
+            type="text"
+            id="newAmountReceived"
+            name="newAmountReceived"
+            value={newAmountReceived}
+            onChange={handleChange}
+            placeholder="Enter new amount received"
+            className="w-full p-2 sm:p-3 bg-[#232024] border border-[#3E3A3D] rounded-lg text-sm sm:text-base"
+          />
+        </div>
+
         <div className="flex flex-col sm:flex-row justify-between gap-3">
           <div className="order-2 sm:order-1 flex justify-center sm:justify-start">
             <button
@@ -141,9 +247,12 @@ export default function BalanceEditForm() {
             </button>
             <button
               type="submit"
-              className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base"
+              disabled={isSubmitting}
+              className={`w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base ${
+                isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
             >
-              Save Changes
+              {isSubmitting ? 'Saving...' : 'Save Changes'}
             </button>
           </div>
         </div>
