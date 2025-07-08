@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 export default function EditTransactionData({ transaction, onSave, onCancel }) {
   const [formData, setFormData] = useState({
     user_id: '',
-    name: '',
     bill_no: '',
     plan_name: '',
     date: '',
@@ -20,7 +19,6 @@ export default function EditTransactionData({ transaction, onSave, onCancel }) {
     if (transaction) {
       setFormData({
         user_id: transaction.user_id || '',
-        name: transaction.name || '',
         bill_no: transaction.bill_no || '',
         plan_name: transaction.plan_name || '',
         date: transaction.date ? new Date(transaction.date).toISOString().split('T')[0] : '',
@@ -95,20 +93,6 @@ export default function EditTransactionData({ transaction, onSave, onCancel }) {
           name="user_id"
           className="w-full p-2 bg-[#232024] border border-[#3E3A3D] rounded text-white"
           value={formData.user_id}
-          onChange={handleChange}
-          disabled={isSubmitting}
-          readOnly
-        />
-      </div>
-      
-      {/* Name Field */}
-      <div>
-        <label className="block text-gray-300 mb-1">User Name</label>
-        <input
-          type="text"
-          name="name"
-          className="w-full p-2 bg-[#232024] border border-[#3E3A3D] rounded text-white"
-          value={formData.name}
           onChange={handleChange}
           disabled={isSubmitting}
           readOnly

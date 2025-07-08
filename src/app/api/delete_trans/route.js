@@ -7,12 +7,12 @@ export async function DELETE(request) {
     const { bill_no } = await request.json();
     
     // Validate required field
-    if (!bill_no || typeof bill_no !== 'string' || bill_no.length !== 6) {
-      return Response.json(
-        { success: false, message: 'Valid 6-character bill number is required' },
-        { status: 400 }
-      );
-    }
+    // if (!bill_no || typeof bill_no !== 'string' || bill_no.length !== 6) {
+    //   return Response.json(
+    //     { success: false, message: 'Valid 6-character bill number is required' },
+    //     { status: 400 }
+    //   );
+    // }
 
     client = await getClient();
     

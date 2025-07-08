@@ -5,9 +5,9 @@ export default function Memberlist_boxes({ members, filters }) {
   const [membershipPlans, setMembershipPlans] = useState([]);
   const [remarkData, setRemarkData] = useState({});
   const currentDate = new Date();
-  const currentDateOnly = currentDate.toISOString().split('T')[0]; // e.g., '2025-07-01'
+  const currentDateOnly = currentDate.toISOString().split('T')[0]; // e.g., '2025-07-09'
 
-  console.log("membershipPlans",membershipPlans);
+  console.log("membershipPlans", membershipPlans);
 
   // Helper function to get date only (YYYY-MM-DD)
   const getDateOnly = (date) => {
@@ -32,7 +32,6 @@ export default function Memberlist_boxes({ members, filters }) {
         }
         const data = await response.json();
         setMembershipPlans(data.data);
-        // console.log("setMembershipPlans",setMembershipPlans);
       } catch (error) {
         console.error('Error fetching membership plans:', error);
       }
@@ -214,9 +213,6 @@ export default function Memberlist_boxes({ members, filters }) {
                 <span className="flex flex-col gap-1 text-sm sm:text-xl lg:text-2xl">
                   <h3 className="font-semibold">{member.name || "Member name"}</h3>
                   <h4>{member.user_id || "member_id"}</h4>
-                  {/* <p className={isExpired ? "text-red-600" : "text-green-600"}>
-                    {expiryDateOnly || "01-01-2000"}
-                  </p> */}
                   {memberRemark !== 'No Remarks' && (
                     <p className="text-yellow-600">
                       Note: {memberRemark}
@@ -230,23 +226,29 @@ export default function Memberlist_boxes({ members, filters }) {
                 </span>
               </div>
               <span className="flex flex-col gap-2 items-end justify-center text-[10px] sm:text-lg lg:text-xl">
-                <p
+                {/* <p
                   className={`px-2 py-1 rounded-full border border-white text-center ${
                     isExpired ? "bg-red-600" : "bg-green-600"
                   }`}
                 >
                   {isExpired ? "Expired" : "Not Expired"}
-                </p>
+                </p> */}
                 {membershipPlans
                   .filter((plan) => plan.user_id === member.user_id)
-                  .map((plan, index) => (
-                    <p
-                      key={`${plan.user_id}-${plan.plan_name}-${index}`}
-                      className="bg-[#232024] px-2 py-1 rounded-full border border-white text-center"
-                    >
-                      {plan.plan_name || "Basic Gym"} ({getDateOnly(plan.exp_date) || "01-01-2000"})
-                    </p>
-                  ))}
+                  .map((plan, index) => {
+                    const planExpiryDateOnly = getDateOnly(plan.exp_date) || "01-01-2000";
+                    const isPlanExpired = planExpiryDateOnly < currentDateOnly;
+                    return (
+                      <p
+                        key={`${plan.user_id}-${plan.plan_name}-${index}`}
+                        className={`px-2 py-1 rounded-full border border-white text-center ${
+                          isPlanExpired ? "bg-red-600" : "bg-green-600"
+                        }`}
+                      >
+                        {plan.plan_name || "Basic Gym"} ({planExpiryDateOnly})
+                      </p>
+                    );
+                  })}
               </span>
             </a>
           );

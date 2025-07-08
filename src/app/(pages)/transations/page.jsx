@@ -10,7 +10,7 @@ export default function Page() {
 
   return (
     <div>
-      <Inpage_header title='Transations' />
+      <Inpage_header title='Transations of' />
       <Detailed_transations userId={userId} />
       <div className="h-20"></div>
     </div>

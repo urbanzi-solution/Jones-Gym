@@ -118,9 +118,11 @@ not expired banner option plan selection plan name -  edit amount balance, disco
 > completed
 
 individual detail transaction report
+> completed
 
 detail transaction edit - amount, discount balance 
 detail transaction edit - restrict edit in the user id and plan name
+> completed
 
 navigation
 src\components\Inpage_header_3dot.jsx
