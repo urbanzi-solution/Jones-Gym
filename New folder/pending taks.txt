@@ -100,10 +100,12 @@ check the pt attendance where the user plan is PT
 > completed
 
 remove blacklist and note if nothing else add the details
+> completed
 
 price along the plan name in the add member form
+> completed
 
-each plane name expiry date and balance no of days in the member profile
+each plan name expiry date and balance no of days in the member profile
 
 not expired banner option plan selection plan name -  edit amount balance, discount
 

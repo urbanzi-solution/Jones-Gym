@@ -507,7 +507,7 @@ export default function Member_addpage() {
                     <option value="">Select Plan</option>
                     {availablePlans.map((planName) => (
                       <option key={planName.plan_name} value={planName.plan_name}>
-                        {planName.plan_name}
+                        {planName.plan_name} - ${planName.amount}
                       </option>
                     ))}
                   </select>
