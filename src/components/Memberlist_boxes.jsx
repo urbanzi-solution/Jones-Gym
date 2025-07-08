@@ -214,9 +214,9 @@ export default function Memberlist_boxes({ members, filters }) {
                 <span className="flex flex-col gap-1 text-sm sm:text-xl lg:text-2xl">
                   <h3 className="font-semibold">{member.name || "Member name"}</h3>
                   <h4>{member.user_id || "member_id"}</h4>
-                  <p className={isExpired ? "text-red-600" : "text-green-600"}>
+                  {/* <p className={isExpired ? "text-red-600" : "text-green-600"}>
                     {expiryDateOnly || "01-01-2000"}
-                  </p>
+                  </p> */}
                   {memberRemark !== 'No Remarks' && (
                     <p className="text-yellow-600">
                       Note: {memberRemark}
@@ -240,21 +240,12 @@ export default function Memberlist_boxes({ members, filters }) {
                 {membershipPlans
                   .filter((plan) => plan.user_id === member.user_id)
                   .map((plan, index) => (
-                    <div
+                    <p
                       key={`${plan.user_id}-${plan.plan_name}-${index}`}
-                      className="flex flex-col items-end"
+                      className="bg-[#232024] px-2 py-1 rounded-full border border-white text-center"
                     >
-                      <p
-                        className="bg-[#232024] px-2 py-1 rounded-full border border-white text-center mb-1"
-                      >
-                        {plan.plan_name || "Basic Gym"}
-                      </p>
-                      <p
-                        className="bg-[#232024] px-2 py-1 rounded-full border border-white text-center"
-                      >
-                        Expires: {getDateOnly(plan.exp_date) || "01-01-2000"}
-                      </p>
-                    </div>
+                      {plan.plan_name || "Basic Gym"} ({getDateOnly(plan.exp_date) || "01-01-2000"})
+                    </p>
                   ))}
               </span>
             </a>
