@@ -14,7 +14,6 @@ export default function PlanFormSection() {
     const updatedPlans = [...plans];
     updatedPlans[index][field] = value;
     
-    // Recalculate balance when amount or discount changes
     if (field === 'amount' || field === 'discount') {
       const amount = parseFloat(updatedPlans[index].amount) || 0;
       const discount = parseFloat(updatedPlans[index].discount) || 0;

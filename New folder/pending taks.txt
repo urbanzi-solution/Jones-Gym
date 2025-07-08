@@ -87,3 +87,37 @@ attendance table export
 gallery export
 
 notification popup and natification functions and updates
+
+----------------------------------------------------------------------
+
+remove add membership from the member profile options
+> completed
+
+no of count int he staff list, staff profile
+> completed
+
+check the pt attendance where the user plan is PT
+> completed
+
+remove blacklist and note if nothing else add the details
+
+price along the plan name in the add member form
+
+each plane name expiry date and balance no of days in the member profile
+
+not expired banner option plan selection plan name -  edit amount balance, discount
+
+individual detail transaction report
+
+remove trainer name and add any other data
+
+detail transaction edit - amount, discount balance 
+detail transaction edit - restrict edit in the user id and plan name
+
+add exp date along with the plane name in the memebers lit box
+
+navigation
+src\components\Inpage_header_3dot.jsx
+src\components\Inpage_header.jsx
+
+lazy loading in the images img tags

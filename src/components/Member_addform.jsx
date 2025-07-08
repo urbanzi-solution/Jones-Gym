@@ -595,7 +595,7 @@ export default function Member_addpage() {
                   </label>
                   <select
                     id={`trainer-${index}`}
-                    value={plan.trainer}
+                    value={plan.trainer_id}
                     onChange={(e) => handlePlanChange(index, 'trainer', e.target.value)}
                     className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] appearance-none"
                   >

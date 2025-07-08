@@ -217,18 +217,22 @@ export default function Memberlist_boxes({ members, filters }) {
                   <p className={isExpired ? "text-red-600" : "text-green-600"}>
                     {expiryDateOnly || "01-01-2000"}
                   </p>
-                  <p className={memberRemark === 'No Remarks' ? "text-white" : "text-yellow-600"}>
-                    Note: {memberRemark}
-                  </p>
-                  <p className={memberBlacklistStatus === 'Black-listed' ? "text-red-600" : "text-green-600"}>
-                    Blacklist Status: {memberBlacklistStatus}
-                  </p>
+                  {memberRemark !== 'No Remarks' && (
+                    <p className="text-yellow-600">
+                      Note: {memberRemark}
+                    </p>
+                  )}
+                  {memberBlacklistStatus === 'Black-listed' && (
+                    <p className="text-red-600">
+                      Blacklist Status: {memberBlacklistStatus}
+                    </p>
+                  )}
                 </span>
               </div>
               <span className="flex flex-col gap-2 items-end justify-center text-[10px] sm:text-lg lg:text-xl">
                 <p
                   className={`px-2 py-1 rounded-full border border-white text-center ${
-                    isExpired ? "bg-red-800" : "bg-green-800"
+                    isExpired ? "bg-red-600" : "bg-green-600"
                   }`}
                 >
                   {isExpired ? "Expired" : "Not Expired"}
@@ -236,27 +240,23 @@ export default function Memberlist_boxes({ members, filters }) {
                 {membershipPlans
                   .filter((plan) => plan.user_id === member.user_id)
                   .map((plan, index) => (
-                    <p
+                    <div
                       key={`${plan.user_id}-${plan.plan_name}-${index}`}
-                      className="bg-[#232024] px-2 py-1 rounded-full border border-white text-center"
+                      className="flex flex-col items-end"
                     >
-                      {plan.plan_name || "Basic Gym"}
-                    </p>
+                      <p
+                        className="bg-[#232024] px-2 py-1 rounded-full border border-white text-center mb-1"
+                      >
+                        {plan.plan_name || "Basic Gym"}
+                      </p>
+                      <p
+                        className="bg-[#232024] px-2 py-1 rounded-full border border-white text-center"
+                      >
+                        Expires: {getDateOnly(plan.exp_date) || "01-01-2000"}
+                      </p>
+                    </div>
                   ))}
               </span>
-
-              {/* <span className="flex flex-col gap-2 items-end justify-center text-[10px] sm:text-lg lg:text-xl">
-                <p
-                  className={`px-2 py-1 rounded-full border border-white text-center ${
-                    isExpired ? "bg-red-800" : "bg-green-800"
-                  }`}
-                >
-                  {isExpired ? "Expired" : "Not Expired"}
-                </p>
-                <p className="bg-[#232024] px-2 py-1 rounded-full border border-white text-center">
-                  {memberPlan?.plan_name || "Basic Gym"}
-                </p>
-              </span> */}
             </a>
           );
         })
