@@ -93,7 +93,7 @@ export default function RenewalFormSection({ user_id }) {
         discount: formData.discount ? parseInt(formData.discount) : null,
         balance: formData.balance ? parseInt(formData.balance) : null,
         trans_type: formData.transaction_type,
-        trainer: formData.trainer_name,
+        trainer: formData.trainer_id,
         date: currentDate,
         exp_date: formData.expiry_date
       };
