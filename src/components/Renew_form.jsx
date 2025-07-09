@@ -267,7 +267,7 @@ export default function RenewalFormSection({ user_id }) {
               <select
                 id="trainer_name"
                 name="trainer_name"
-                value={formData.trainer_name}
+                value={formData.trainer_id}
                 onChange={handleChange}
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] appearance-none"
               >
