@@ -10,7 +10,7 @@ export default function RenewalFormSection({ user_id }) {
     discount: '',
     balance: 0,
     transaction_type: '',
-    trainer_name: '',
+    trainer_id: '', // Changed from trainer_name to trainer_id
     expiry_date: ''
   });
   const [plans, setPlans] = useState([]);
@@ -61,7 +61,7 @@ export default function RenewalFormSection({ user_id }) {
     }
   }, [formData.plan, plans]);
 
-  // Calculate balance whenever amount or discount changes
+  // Handle form changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => {
@@ -71,8 +71,7 @@ export default function RenewalFormSection({ user_id }) {
         const planAmount = selectedPlan ? parseFloat(selectedPlan.amount) : 0;
         const amount = parseFloat(newData.amount) || 0;
         const discount = parseFloat(newData.discount) || 0;
-        const sum = amount + discount;
-        newData.balance = Math.max(0, planAmount - sum).toFixed(2);
+        newData.balance = Math.max(0, planAmount - (amount + discount)).toFixed(2); // Fixed calculation
       }
       return newData;
     });
@@ -89,11 +88,11 @@ export default function RenewalFormSection({ user_id }) {
         user_id,
         plan_name: formData.plan,
         bill_no: formData.bill_no,
-        amount: formData.amount ? parseInt(formData.amount) : null,
-        discount: formData.discount ? parseInt(formData.discount) : null,
-        balance: formData.balance ? parseInt(formData.balance) : null,
+        amount: formData.amount ? parseFloat(formData.amount) : null, // Changed to parseFloat
+        discount: formData.discount ? parseFloat(formData.discount) : null, // Changed to parseFloat
+        balance: formData.balance ? parseFloat(formData.balance) : null, // Changed to parseFloat
         trans_type: formData.transaction_type,
-        trainer: formData.trainer_id,
+        trainer_id: formData.trainer_id, // Changed to trainer_id
         date: currentDate,
         exp_date: formData.expiry_date
       };
@@ -120,7 +119,7 @@ export default function RenewalFormSection({ user_id }) {
         discount: '',
         balance: 0,
         transaction_type: '',
-        trainer_name: '',
+        trainer_id: '', // Changed to trainer_id
         expiry_date: ''
       });
       // Refresh the page
@@ -138,7 +137,7 @@ export default function RenewalFormSection({ user_id }) {
       discount: '',
       balance: 0,
       transaction_type: '',
-      trainer_name: '',
+      trainer_id: '', // Changed to trainer_id
       expiry_date: ''
     });
   };
@@ -259,21 +258,21 @@ export default function RenewalFormSection({ user_id }) {
                 <option value="Other">Other</option>
               </select>
             </div>
-            
+
             <div>
               <label htmlFor="trainer_name" className="block text-sm font-medium mb-1 text-gray-300">
                 Trainer for the Member
               </label>
               <select
                 id="trainer_name"
-                name="trainer_name"
+                name="trainer_id" // Changed to trainer_id
                 value={formData.trainer_id}
                 onChange={handleChange}
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] appearance-none"
               >
                 <option value="">Select Trainer</option>
                 {trainers.map((trainer) => (
-                  <option key={trainer.trainer_id} value={trainer.name}>
+                  <option key={trainer.trainer_id} value={trainer.trainer_id}>
                     {trainer.name}
                   </option>
                 ))}
@@ -305,7 +304,7 @@ export default function RenewalFormSection({ user_id }) {
           </button>
           <button 
             type="submit"
-            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition Játransition-colors"
           >
             Save Renewal
           </button>
