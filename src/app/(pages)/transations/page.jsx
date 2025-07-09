@@ -1,5 +1,5 @@
 'use client';
-import Inpage_header from "@/components/Inpage_header"
+// import Inpage_header from "@/components/Inpage_header"
 import Detailed_transations from "@/components/Detailed_transations"
 import { useSearchParams } from 'next/navigation'
 
@@ -10,7 +10,7 @@ export default function Page() {
 
   return (
     <div>
-      <Inpage_header title='Transations of' />
+      {/* <Inpage_header title='Transations of' /> */}
       <Detailed_transations userId={userId} />
       <div className="h-20"></div>
     </div>
