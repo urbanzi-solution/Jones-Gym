@@ -10,7 +10,7 @@ export default function RenewalFormSection({ user_id }) {
     discount: '',
     balance: 0,
     transaction_type: '',
-    trainer_id: '', // Changed from trainer_name to trainer_id
+    trainer_id: '',
     expiry_date: ''
   });
   const [plans, setPlans] = useState([]);
@@ -23,13 +23,11 @@ export default function RenewalFormSection({ user_id }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch plans
         const plansResponse = await fetch('/api/fetch_plans');
         if (!plansResponse.ok) throw new Error('Failed to fetch plans');
         const plansData = await plansResponse.json();
         setPlans(plansData);
 
-        // Fetch trainers
         const trainersResponse = await fetch('/api/fetch_trainers');
         if (!trainersResponse.ok) throw new Error('Failed to fetch trainers');
         const trainersData = await trainersResponse.json();
@@ -41,7 +39,7 @@ export default function RenewalFormSection({ user_id }) {
     fetchData();
   }, []);
 
-  // Update amount and expiry_date when plan changes
+  // Update amount, expiry_date, and balance when plan changes
   useEffect(() => {
     if (formData.plan) {
       const selectedPlan = plans.find(plan => plan.name === formData.plan);
@@ -51,12 +49,21 @@ export default function RenewalFormSection({ user_id }) {
         expiryDate.setDate(expiryDate.getDate() + parseInt(selectedPlan.duration));
         const expiryDateFormatted = expiryDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
 
-        setFormData(prev => ({
-          ...prev,
-          amount: selectedPlan.amount.toString(),
-          expiry_date: expiryDateFormatted,
-          balance: Math.max(0, selectedPlan.amount - (parseFloat(prev.discount) || 0)).toFixed(2)
-        }));
+        setFormData(prev => {
+          const planAmount = parseFloat(selectedPlan.amount);
+          const discount = parseFloat(prev.discount) || 0;
+          // Plan amount = amount + discount, so amount = planAmount - discount
+          const amount = (planAmount - discount).toString();
+          // Balance is 0 when amount + discount = plan amount
+          const balance = 0; // Since amount + discount = plan amount
+
+          return {
+            ...prev,
+            amount,
+            expiry_date: expiryDateFormatted,
+            balance: balance.toFixed(2)
+          };
+        });
       }
     }
   }, [formData.plan, plans]);
@@ -66,13 +73,19 @@ export default function RenewalFormSection({ user_id }) {
     const { name, value } = e.target;
     setFormData((prev) => {
       const newData = { ...prev, [name]: value };
+      const selectedPlan = plans.find(plan => plan.name === newData.plan);
+      const planAmount = selectedPlan ? parseFloat(selectedPlan.amount) : 0;
+      const discount = parseFloat(newData.discount) || 0;
+      const amount = parseFloat(newData.amount) || (planAmount - discount);
+
+      // Ensure plan amount = amount + discount
+      // Balance adjusts: increases when discount decreases or amount decreases
+      // decreases when discount increases or amount increases
       if (name === 'amount' || name === 'discount') {
-        const selectedPlan = plans.find(plan => plan.name === newData.plan);
-        const planAmount = selectedPlan ? parseFloat(selectedPlan.amount) : 0;
-        const amount = parseFloat(newData.amount) || 0;
-        const discount = parseFloat(newData.discount) || 0;
-        newData.balance = Math.max(0, planAmount - (amount + discount)).toFixed(2); // Fixed calculation
+        // Calculate balance: balance = plan amount - (amount + discount)
+        newData.balance = Math.max(0, planAmount - (amount + discount)).toFixed(2);
       }
+
       return newData;
     });
   };
@@ -83,16 +96,16 @@ export default function RenewalFormSection({ user_id }) {
     setSuccess(null);
 
     try {
-      const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+      const currentDate = new Date().toISOString().split('T')[0];
       const dataToSubmit = {
         user_id,
         plan_name: formData.plan,
         bill_no: formData.bill_no,
-        amount: formData.amount ? parseFloat(formData.amount) : null, // Changed to parseFloat
-        discount: formData.discount ? parseFloat(formData.discount) : null, // Changed to parseFloat
-        balance: formData.balance ? parseFloat(formData.balance) : null, // Changed to parseFloat
+        amount: formData.amount ? parseFloat(formData.amount) : null,
+        discount: formData.discount ? parseFloat(formData.discount) : null,
+        balance: formData.balance ? parseFloat(formData.balance) : null,
         trans_type: formData.transaction_type,
-        trainer_id: formData.trainer_id, // Changed to trainer_id
+        trainer_id: formData.trainer_id,
         date: currentDate,
         exp_date: formData.expiry_date
       };
@@ -111,7 +124,6 @@ export default function RenewalFormSection({ user_id }) {
 
       const result = await response.json();
       setSuccess('Renewal saved successfully!');
-      // Reset form
       setFormData({
         bill_no: '',
         plan: '',
@@ -119,10 +131,9 @@ export default function RenewalFormSection({ user_id }) {
         discount: '',
         balance: 0,
         transaction_type: '',
-        trainer_id: '', // Changed to trainer_id
+        trainer_id: '',
         expiry_date: ''
       });
-      // Refresh the page
       router.refresh();
     } catch (err) {
       setError(err.message);
@@ -137,7 +148,7 @@ export default function RenewalFormSection({ user_id }) {
       discount: '',
       balance: 0,
       transaction_type: '',
-      trainer_id: '', // Changed to trainer_id
+      trainer_id: '',
       expiry_date: ''
     });
   };
@@ -265,7 +276,7 @@ export default function RenewalFormSection({ user_id }) {
               </label>
               <select
                 id="trainer_name"
-                name="trainer_id" // Changed to trainer_id
+                name="trainer_id"
                 value={formData.trainer_id}
                 onChange={handleChange}
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] appearance-none"
@@ -304,7 +315,7 @@ export default function RenewalFormSection({ user_id }) {
           </button>
           <button 
             type="submit"
-            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition Játransition-colors"
+            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             Save Renewal
           </button>
