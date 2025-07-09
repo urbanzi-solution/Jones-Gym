@@ -51,6 +51,7 @@ export default async function DashboardStaff() {
               <img
                 src={member.hasImage ? `/images/trainer_pic/${member.trainer_id}.png` : "/images/user1.jpg"}
                 alt={member.name || 'Staff member'}
+                loading='lazy'
                 className="rounded-full object-cover border-2 border-white shadow-md w-16 h-16 sm:w-32 sm:h-32 lg:w-50 lg:h-50"
               />
               <span className="mt-2 text-xs sm:text-sm lg:text-xl">{member.trainer_id || '123'}</span>

@@ -257,6 +257,7 @@ export default function Balance_form({ user_id, membershipPlans }) {
           </div>
         </div>
       </form>
+      <div className='h-20 xl:h-10'></div>
     </div>
   );
 }

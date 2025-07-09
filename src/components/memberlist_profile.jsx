@@ -140,6 +140,7 @@ export default function MemberlistProfile({ member }) {
       {/* Profile Image Section */}
       <div className="relative">
         <img
+          loading="lazy"
           className="object-cover w-full h-full rounded-lg aspect-[3/4] md:max-h-80 lg:max-h-150"
           src={member.user_id ? `/images/user_pic/${member.user_id}.png` : "/images/user1.jpg"}
           alt="User profile"

@@ -6,6 +6,7 @@ export default function Staff_profile({ trainer }) {
     <div className="grid grid-cols-2 p-4 md:p-6 lg:p-10 gap-4 md:gap-10">
       <div className="relative">
         <img
+          loading="lazy"
           className="object-cover w-full h-full rounded-lg aspect-[3/4] md:max-h-80 lg:max-h-150"
           // src={trainer?.image_url || '/images/user2.jpg'}
           src={trainer.trainer_id ? `/images/trainer_pic/${trainer.trainer_id}.png` : "/images/user1.jpg"}

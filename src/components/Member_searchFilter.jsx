@@ -225,7 +225,7 @@ export default function MemberSearchFilter({ setFilters }) {
 
         {/* Expanded Filter Panel */}
         {showFilters && (
-          <div className="absolute top-full left-0 right-0 z-50 bg-[#0a0a0a] rounded-xl shadow-lg mt-2 p-4 text-center border border-[#6e6e6e]">
+          <div className="absolute top-full left-0 right-0 z-51 bg-[#0a0a0a] rounded-xl shadow-lg mt-2 p-4 text-center border border-[#6e6e6e]">
             <div className="flex justify-between items-center mb-4 border-b pb-2">
               <h2 className="text-lg font-medium">Filter Members</h2>
               <GrClose
@@ -362,7 +362,7 @@ export default function MemberSearchFilter({ setFilters }) {
                 Apply Filters
               </button>
             </div>
-            <div className="h-20 md:hidden"></div>
+            <div className="h-10"></div>
           </div>
         )}
       </div>

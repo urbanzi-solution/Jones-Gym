@@ -321,6 +321,8 @@ export default function RenewalFormSection({ user_id }) {
           </button>
         </div>
       </form>
+      <div className='h-20 xl:h-10'>
+      </div>
     </div>
   );
 }

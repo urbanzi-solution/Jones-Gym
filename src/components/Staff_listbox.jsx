@@ -14,6 +14,7 @@ export default function Staff_listbox({ staff }) {
         >
           <div className="flex gap-3 items-center sm:gap-5 lg:gap-10">
             <img
+              loading="lazy"
               className="w-16 h-16 sm:w-32 sm:h-32 lg:w-40 lg:h-40 object-cover border-2 rounded-full"
               src={member.trainer_id ? `/images/trainer_pic/${member.trainer_id}.png` : "/images/user1.jpg"}
               alt="Staff Member"

@@ -13,6 +13,7 @@ export default async function GalleryImage() {
           href={`/member-profile?member_id=${member.user_id || 'unknown'}`}
         >
           <img 
+            loading="lazy"
             className="w-full aspect-[3/4] object-cover" 
             src={member.user_id ? `/images/user_pic/${member.user_id}.png` : "/images/user1.jpg"}
             alt={member.name || "User profile"}
