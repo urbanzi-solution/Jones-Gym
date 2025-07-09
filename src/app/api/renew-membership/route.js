@@ -4,7 +4,7 @@ export async function POST(request) {
   try {
     const client = await getClient();
     const data = await request.json();
-    const { user_id, plan_name, bill_no, amount, discount, balance, trans_type, trainer, date, exp_date } = data;
+    const { user_id, plan_name, bill_no, amount, discount, balance, trans_type, trainer_id, date, exp_date } = data;
 
     console.log('Received data:', data);
 
@@ -43,7 +43,7 @@ export async function POST(request) {
       parsedDiscount,
       parsedBalance,
       trans_type || null,
-      trainer || null,
+      trainer_id || null,
       date || null,
       exp_date || null
     ];
