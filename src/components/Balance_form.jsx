@@ -12,22 +12,24 @@ export default function Balance_form({ user_id, membershipPlans }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState({ text: '', type: '' });
 
-  // Calculate balance dynamically
-  const balance = Math.max(0, formData.amountPaid - formData.discount - newAmountReceived);
+  // Calculate total plan amount (assumed to be the total cost of the plan)
+  const selectedPlanData = membershipPlans.find(p => p.plan_name === selectedPlan) || {};
+  const totalPlanAmount = (selectedPlanData.amount || 0) + (selectedPlanData.discount || 0) + (selectedPlanData.balance || 0);
+
+  // Calculate balance dynamically: totalPlanAmount - amountPaid - discount - newAmountReceived
+  const balance = Math.max(0, totalPlanAmount - (formData.amountPaid || 0) - (formData.discount || 0) - (newAmountReceived || 0));
   
   // Calculate total amount received (original + new)
-  const totalAmountReceived = formData.amountPaid + newAmountReceived;
+  const totalAmountReceived = (formData.amountPaid || 0) + (newAmountReceived || 0);
 
   useEffect(() => {
-    const plan = membershipPlans.find(p => p.plan_name === selectedPlan);
-    if (plan) {
-      setFormData({
-        amountPaid: plan.amount || 0,
-        discount: plan.discount || 0,
-        bill_no: plan.bill_no || '',
-      });
-      setMessage({ text: '', type: '' }); // Clear message when plan changes
-    }
+    const plan = membershipPlans.find(p => p.plan_name === selectedPlan) || membershipPlans[0] || {};
+    setFormData({
+      amountPaid: plan.amount || 0,
+      discount: plan.discount || 0,
+      bill_no: plan.bill_no || '',
+    });
+    setMessage({ text: '', type: '' });
   }, [selectedPlan, membershipPlans]);
 
   const handlePlanChange = (e) => {
@@ -46,7 +48,7 @@ export default function Balance_form({ user_id, membershipPlans }) {
         [name]: numValue
       }));
     }
-    setMessage({ text: '', type: '' }); // Clear message on input change
+    setMessage({ text: '', type: '' });
   };
 
   const handleSubmit = async (e) => {
@@ -64,9 +66,9 @@ export default function Balance_form({ user_id, membershipPlans }) {
           user_id,
           selectedPlan,
           bill_no: formData.bill_no,
-          totalAmountReceived: totalAmountReceived,
+          totalAmountReceived,
           discount: formData.discount,
-          balance: balance,
+          balance,
         }),
       });
 
@@ -80,7 +82,6 @@ export default function Balance_form({ user_id, membershipPlans }) {
           balance
         });
         setMessage({ text: 'Balance updated successfully!', type: 'success' });
-        // Refresh to member profile page after a short delay to show success message
         setTimeout(() => {
           window.location.href = `/member-profile?member_id=${user_id}`;
         }, 1000);
@@ -103,13 +104,18 @@ export default function Balance_form({ user_id, membershipPlans }) {
       bill_no: plan.bill_no || '',
     });
     setNewAmountReceived(0);
-    setMessage({ text: '', type: '' }); // Clear message on cancel
+    setMessage({ text: '', type: '' });
   };
 
   const handleWriteOff = () => {
     console.log('Write off initiated for balance:', balance);
     setMessage({ text: 'Write off logged to console', type: 'success' });
   };
+
+  // Validate membershipPlans
+  if (!membershipPlans || membershipPlans.length === 0) {
+    return <div className="p-4 sm:p-6 text-gray-300">No membership plans available.</div>;
+  }
 
   return (
     <div className="p-4 sm:p-6 border-t border-[#3E3A3D]">
@@ -190,7 +196,7 @@ export default function Balance_form({ user_id, membershipPlans }) {
             Discount (₹)
           </label>
           <input
-            type="text"
+            type="number"
             id="discount"
             name="discount"
             placeholder="Enter discount"
@@ -216,7 +222,7 @@ export default function Balance_form({ user_id, membershipPlans }) {
             New Amount Received (₹)
           </label>
           <input
-            type="text"
+            type="number"
             id="newAmountReceived"
             name="newAmountReceived"
             value={newAmountReceived}

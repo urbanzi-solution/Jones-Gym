@@ -490,7 +490,9 @@ export default function DetailedTransactions() {
                 </td>
                 <td className="p-3 py-6 bg-[#404346] text-white group-hover:bg-[#505356] relative">
                   <div className="dropdown">
-                    <button className="text-white hover:text-gray-300">
+                    <button 
+                    className="text-white hover:text-gray-300"
+                    >
                       <FaEllipsisV />
                     </button>
                     <div className="dropdown-menu absolute right-0 mt-2 w-48 bg-[#404346] rounded-md shadow-lg z-10 hidden group-hover:block">

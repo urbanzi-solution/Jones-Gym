@@ -12,7 +12,8 @@ export default async function Members({ searchParams }) {
   oneYearAgo.setFullYear(currentDate.getFullYear() - 1);
 
   const queryString = inactiveFilter
-    ? 'SELECT * FROM user_data WHERE joining_date < $1'
+    ? 'SELECT * FROM user_data'
+    // ? 'SELECT * FROM user_data WHERE joining_date < $1'
     : 'SELECT * FROM user_data';
   const queryParams = inactiveFilter ? [oneYearAgo.toISOString()] : [];
 
