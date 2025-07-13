@@ -1,16 +1,9 @@
 {
   "/(pages)/member-profile/page": "app/(pages)/member-profile/page.js",
-  "/(pages)/members/page": "app/(pages)/members/page.js",
   "/(pages)/page": "app/(pages)/page.js",
-  "/(pages)/report-transations/page": "app/(pages)/report-transations/page.js",
-  "/(pages)/reports/page": "app/(pages)/reports/page.js",
-  "/(pages)/transations/page": "app/(pages)/transations/page.js",
-  "/_not-found/page": "app/_not-found/page.js",
   "/api/fetch_membership_plans/route": "app/api/fetch_membership_plans/route.js",
   "/api/fetch_plans/route": "app/api/fetch_plans/route.js",
   "/api/fetch_remark_blcklist/route": "app/api/fetch_remark_blcklist/route.js",
   "/api/fetch_trainers/route": "app/api/fetch_trainers/route.js",
-  "/api/fetch_transactions/route": "app/api/fetch_transactions/route.js",
-  "/api/notification/route": "app/api/notification/route.js",
-  "/api/renew-membership/route": "app/api/renew-membership/route.js"
+  "/api/notification/route": "app/api/notification/route.js"
 }

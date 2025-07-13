@@ -6,7 +6,9 @@ export default function RenewalFormSection({ user_id }) {
   const [formData, setFormData] = useState({
     bill_no: '',
     plan: '',
+    days:'',
     amount: '',
+    totalAmount:'',
     discount: '',
     balance: 0,
     transaction_type: '',
@@ -46,20 +48,18 @@ export default function RenewalFormSection({ user_id }) {
       if (selectedPlan) {
         const currentDate = new Date();
         const expiryDate = new Date(currentDate);
+        const days = parseInt(formData.days) || parseInt(selectedPlan.duration);
         expiryDate.setDate(expiryDate.getDate() + parseInt(selectedPlan.duration));
         const expiryDateFormatted = expiryDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
 
         setFormData(prev => {
-          const planAmount = parseFloat(selectedPlan.amount);
-          const discount = parseFloat(prev.discount) || 0;
-          // Plan amount = amount + discount, so amount = planAmount - discount
-          const amount = (planAmount - discount).toString();
-          // Balance is 0 when amount + discount = plan amount
-          const balance = 0; // Since amount + discount = plan amount
+          const totalAmount = selectedPlan.amount;
+          const balance = 0;
 
           return {
             ...prev,
-            amount,
+            days: prev.days || selectedPlan.duration,
+            totalAmount,
             expiry_date: expiryDateFormatted,
             balance: balance.toFixed(2)
           };
@@ -73,19 +73,22 @@ export default function RenewalFormSection({ user_id }) {
     const { name, value } = e.target;
     setFormData((prev) => {
       const newData = { ...prev, [name]: value };
-      const selectedPlan = plans.find(plan => plan.name === newData.plan);
-      const planAmount = selectedPlan ? parseFloat(selectedPlan.amount) : 0;
+      const totalAmount = parseFloat(newData.totalAmount) || 0;
       const discount = parseFloat(newData.discount) || 0;
-      const amount = parseFloat(newData.amount) || (planAmount - discount);
+      const amount = parseFloat(newData.amount) || 0;
+      const days = parseInt(newData.days) || 0;
 
-      // Ensure plan amount = amount + discount
-      // Balance adjusts: increases when discount decreases or amount decreases
-      // decreases when discount increases or amount increases
-      if (name === 'amount' || name === 'discount') {
-        // Calculate balance: balance = plan amount - (amount + discount)
-        newData.balance = Math.max(0, planAmount - (amount + discount)).toFixed(2);
+      if (name === 'totalAmount' || name === 'amount' || name === 'discount' || name === 'days') {
+        newData.balance = Math.max(0, totalAmount - (amount + discount)).toFixed(2);
+        if (days > 0) {
+          const currentDate = new Date();
+          const expiryDate = new Date(currentDate);
+          expiryDate.setDate(expiryDate.getDate() + days);
+          newData.expiry_date = expiryDate.toISOString().split('T')[0];
+        } else {
+          newData.expiry_date = '';
+        }
       }
-
       return newData;
     });
   };
@@ -201,11 +204,45 @@ export default function RenewalFormSection({ user_id }) {
             </div>
 
             <div>
+              <label htmlFor="renewal-days" className="block text-sm font-medium mb-1 text-gray-300">
+                Enter the days *
+              </label>
+              <input
+                type="number"
+                id="days"
+                name="days"
+                value={formData.days}
+                onChange={handleChange}
+                placeholder="Enter the days"
+                min="0"
+                className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="renewal-totalAmount" className="block text-sm font-medium mb-1 text-gray-300">
+                Total Amount *
+              </label>
+              <input
+                type="number"
+                id="totalAmount"
+                name="totalAmount"
+                value={formData.totalAmount}
+                onChange={handleChange}
+                placeholder="Enter total amount"
+                min="0"
+                className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
+                required
+              />
+            </div>
+
+            <div>
               <label htmlFor="renewal-amount" className="block text-sm font-medium mb-1 text-gray-300">
                 Amount (₹) *
               </label>
               <input
-                type="number"
+                type="text"
                 id="renewal-amount"
                 name="amount"
                 value={formData.amount}
@@ -216,6 +253,11 @@ export default function RenewalFormSection({ user_id }) {
                 required
               />
             </div>
+
+          </div>
+
+          {/* Right Column */}
+          <div className="space-y-4">
 
             <div>
               <label htmlFor="renewal-discount" className="block text-sm font-medium mb-1 text-gray-300">
@@ -232,10 +274,7 @@ export default function RenewalFormSection({ user_id }) {
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
               />
             </div>
-          </div>
 
-          {/* Right Column */}
-          <div className="space-y-4">
             <div>
               <label htmlFor="renewal-balance" className="block text-sm font-medium mb-1 text-gray-300">
                 Balance (₹)
