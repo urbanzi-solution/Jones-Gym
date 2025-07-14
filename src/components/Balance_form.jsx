@@ -11,22 +11,17 @@ export default function Balance_form({ user_id, membershipPlans }) {
     trainer: membershipPlans[0]?.trainer || '',
   });
 
-  console.log("formData", formData)
+  // console.log("formData", formData)
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState({ text: '', type: '' });
   const [trainers, setTrainers] = useState([]);
 
-  console.log("consoling the membershipPlans data from Balance_form:", membershipPlans);
-
-  // Calculate total plan amount (assumed to be the total cost of the plan)
   const selectedPlanData = membershipPlans.find(p => p.plan_name === selectedPlan) || {};
   const totalPlanAmount = (selectedPlanData.amount || 0) + (selectedPlanData.discount || 0) + (selectedPlanData.balance || 0);
 
-  // Calculate balance dynamically: totalPlanAmount - amountPaid - discount - newAmountReceived
   const balance = Math.max(0, totalPlanAmount - (formData.amountPaid || 0) - (formData.discount || 0) - (newAmountReceived || 0));
   
-  // Calculate total amount received (original + new)
   const totalAmountReceived = (formData.amountPaid || 0) + (newAmountReceived || 0);
 
   // Fetch trainers from API

@@ -1712,20 +1712,16 @@ function Balance_form({ user_id, membershipPlans }) {
         bill_no: membershipPlans[0]?.bill_no || '',
         trainer: membershipPlans[0]?.trainer || ''
     });
-    console.log("formData", formData);
+    // console.log("formData", formData)
     const [isSubmitting, setIsSubmitting] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
     const [message, setMessage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])({
         text: '',
         type: ''
     });
     const [trainers, setTrainers] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
-    console.log("consoling the membershipPlans data from Balance_form:", membershipPlans);
-    // Calculate total plan amount (assumed to be the total cost of the plan)
     const selectedPlanData = membershipPlans.find((p)=>p.plan_name === selectedPlan) || {};
     const totalPlanAmount = (selectedPlanData.amount || 0) + (selectedPlanData.discount || 0) + (selectedPlanData.balance || 0);
-    // Calculate balance dynamically: totalPlanAmount - amountPaid - discount - newAmountReceived
     const balance = Math.max(0, totalPlanAmount - (formData.amountPaid || 0) - (formData.discount || 0) - (newAmountReceived || 0));
-    // Calculate total amount received (original + new)
     const totalAmountReceived = (formData.amountPaid || 0) + (newAmountReceived || 0);
     // Fetch trainers from API
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
@@ -1870,7 +1866,7 @@ function Balance_form({ user_id, membershipPlans }) {
             children: "No membership plans available."
         }, void 0, false, {
             fileName: "[project]/src/components/Balance_form.jsx",
-            lineNumber: 153,
+            lineNumber: 148,
             columnNumber: 12
         }, this);
     }
@@ -1882,7 +1878,7 @@ function Balance_form({ user_id, membershipPlans }) {
                 children: "Edit Balance"
             }, void 0, false, {
                 fileName: "[project]/src/components/Balance_form.jsx",
-                lineNumber: 158,
+                lineNumber: 153,
                 columnNumber: 7
             }, this),
             message.text && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1890,7 +1886,7 @@ function Balance_form({ user_id, membershipPlans }) {
                 children: message.text
             }, void 0, false, {
                 fileName: "[project]/src/components/Balance_form.jsx",
-                lineNumber: 161,
+                lineNumber: 156,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -1904,7 +1900,7 @@ function Balance_form({ user_id, membershipPlans }) {
                                 children: "Select the plan"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 170,
+                                lineNumber: 165,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1916,18 +1912,18 @@ function Balance_form({ user_id, membershipPlans }) {
                                         children: plan.plan_name
                                     }, plan.plan_name, false, {
                                         fileName: "[project]/src/components/Balance_form.jsx",
-                                        lineNumber: 179,
+                                        lineNumber: 174,
                                         columnNumber: 15
                                     }, this))
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 173,
+                                lineNumber: 168,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Balance_form.jsx",
-                        lineNumber: 169,
+                        lineNumber: 164,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1939,7 +1935,7 @@ function Balance_form({ user_id, membershipPlans }) {
                                 children: "Bill Number"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 187,
+                                lineNumber: 182,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1953,13 +1949,13 @@ function Balance_form({ user_id, membershipPlans }) {
                                 readOnly: true
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 190,
+                                lineNumber: 185,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Balance_form.jsx",
-                        lineNumber: 186,
+                        lineNumber: 181,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1970,7 +1966,7 @@ function Balance_form({ user_id, membershipPlans }) {
                                 children: "Select the trainer"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 203,
+                                lineNumber: 198,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1989,7 +1985,7 @@ function Balance_form({ user_id, membershipPlans }) {
                                             ]
                                         }, plan.trainer, true, {
                                             fileName: "[project]/src/components/Balance_form.jsx",
-                                            lineNumber: 213,
+                                            lineNumber: 208,
                                             columnNumber: 15
                                         }, this)),
                                     trainers.map((trainer)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2001,19 +1997,19 @@ function Balance_form({ user_id, membershipPlans }) {
                                             ]
                                         }, trainer.trainer_id, true, {
                                             fileName: "[project]/src/components/Balance_form.jsx",
-                                            lineNumber: 218,
+                                            lineNumber: 213,
                                             columnNumber: 15
                                         }, this))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 206,
+                                lineNumber: 201,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Balance_form.jsx",
-                        lineNumber: 202,
+                        lineNumber: 197,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2025,7 +2021,7 @@ function Balance_form({ user_id, membershipPlans }) {
                                 children: "Amount Already Received (₹) *"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 226,
+                                lineNumber: 221,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2040,13 +2036,13 @@ function Balance_form({ user_id, membershipPlans }) {
                                 readOnly: true
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 229,
+                                lineNumber: 224,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Balance_form.jsx",
-                        lineNumber: 225,
+                        lineNumber: 220,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2057,7 +2053,7 @@ function Balance_form({ user_id, membershipPlans }) {
                                 children: "Total Amount Received (₹)"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 243,
+                                lineNumber: 238,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2066,13 +2062,13 @@ function Balance_form({ user_id, membershipPlans }) {
                                 className: "w-full p-2 sm:p-3 bg-[#232024] border border-[#3E3A3D] rounded-lg text-sm sm:text-base text-gray-400"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 246,
+                                lineNumber: 241,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Balance_form.jsx",
-                        lineNumber: 242,
+                        lineNumber: 237,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2084,7 +2080,7 @@ function Balance_form({ user_id, membershipPlans }) {
                                 children: "Discount (₹)"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 254,
+                                lineNumber: 249,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2097,13 +2093,13 @@ function Balance_form({ user_id, membershipPlans }) {
                                 className: "w-full p-2 sm:p-3 bg-[#232024] border border-[#3E3A3D] rounded-lg text-sm sm:text-base"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 257,
+                                lineNumber: 252,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Balance_form.jsx",
-                        lineNumber: 253,
+                        lineNumber: 248,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2114,7 +2110,7 @@ function Balance_form({ user_id, membershipPlans }) {
                                 children: "Balance Amount (₹)"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 269,
+                                lineNumber: 264,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2123,13 +2119,13 @@ function Balance_form({ user_id, membershipPlans }) {
                                 className: "w-full p-2 sm:p-3 bg-[#232024] border border-[#3E3A3D] rounded-lg text-sm sm:text-base text-gray-400"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 272,
+                                lineNumber: 267,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Balance_form.jsx",
-                        lineNumber: 268,
+                        lineNumber: 263,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2141,7 +2137,7 @@ function Balance_form({ user_id, membershipPlans }) {
                                 children: "New Amount Received (₹)"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 280,
+                                lineNumber: 275,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2154,13 +2150,13 @@ function Balance_form({ user_id, membershipPlans }) {
                                 className: "w-full p-2 sm:p-3 bg-[#232024] border border-[#3E3A3D] rounded-lg text-sm sm:text-base"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 283,
+                                lineNumber: 278,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Balance_form.jsx",
-                        lineNumber: 279,
+                        lineNumber: 274,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2175,12 +2171,12 @@ function Balance_form({ user_id, membershipPlans }) {
                                     children: "Write Off"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/Balance_form.jsx",
-                                    lineNumber: 296,
+                                    lineNumber: 291,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 295,
+                                lineNumber: 290,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2193,7 +2189,7 @@ function Balance_form({ user_id, membershipPlans }) {
                                         children: "Cancel"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Balance_form.jsx",
-                                        lineNumber: 306,
+                                        lineNumber: 301,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2203,38 +2199,38 @@ function Balance_form({ user_id, membershipPlans }) {
                                         children: isSubmitting ? 'Saving...' : 'Save Changes'
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Balance_form.jsx",
-                                        lineNumber: 313,
+                                        lineNumber: 308,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 305,
+                                lineNumber: 300,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Balance_form.jsx",
-                        lineNumber: 294,
+                        lineNumber: 289,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/Balance_form.jsx",
-                lineNumber: 168,
+                lineNumber: 163,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "h-20 xl:h-10"
             }, void 0, false, {
                 fileName: "[project]/src/components/Balance_form.jsx",
-                lineNumber: 325,
+                lineNumber: 320,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/Balance_form.jsx",
-        lineNumber: 157,
+        lineNumber: 152,
         columnNumber: 5
     }, this);
 }
