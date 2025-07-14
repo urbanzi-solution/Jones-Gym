@@ -318,6 +318,7 @@ export default function Member_addpage() {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* left side column */}
           <div className="space-y-4">
             <div>
               <label htmlFor="gym_id" className="block text-sm font-medium mb-1 text-gray-300">
@@ -411,6 +412,11 @@ export default function Member_addpage() {
               />
             </div>
 
+            
+          </div>
+
+          {/* Right side column */}
+          <div className="space-y-4">
             <div>
               <label htmlFor="location" className="block text-sm font-medium mb-1 text-gray-300">
                 Location *
@@ -425,9 +431,7 @@ export default function Member_addpage() {
                 required
               />
             </div>
-          </div>
 
-          <div className="space-y-4">
             <div>
               <label htmlFor="phone_no" className="block text-sm font-medium mb-1 text-gray-300">
                 Phone Number *
