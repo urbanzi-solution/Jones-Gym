@@ -1975,27 +1975,27 @@ function Balance_form({ user_id, membershipPlans }) {
                                 onChange: handleChange,
                                 className: "w-full p-2 sm:p-3 bg-[#2E2A2D] border border-[#3E3A3D] rounded-lg text-sm sm:text-base",
                                 children: [
-                                    membershipPlans.map((plan)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                    membershipPlans.map((plan, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                             value: plan.trainer,
                                             children: [
                                                 plan.trainer,
-                                                "  (",
+                                                " (",
                                                 plan.plan_name,
                                                 ")"
                                             ]
-                                        }, plan.trainer, true, {
+                                        }, `plan-${index}-${plan.trainer}`, true, {
                                             fileName: "[project]/src/components/Balance_form.jsx",
                                             lineNumber: 208,
                                             columnNumber: 15
                                         }, this)),
-                                    trainers.map((trainer)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                    trainers.map((trainer, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                             value: trainer.trainer_id,
                                             children: [
                                                 trainer.trainer_id,
                                                 " - ",
                                                 trainer.name
                                             ]
-                                        }, trainer.trainer_id, true, {
+                                        }, `trainer-${index}-${trainer.trainer_id}`, true, {
                                             fileName: "[project]/src/components/Balance_form.jsx",
                                             lineNumber: 213,
                                             columnNumber: 15

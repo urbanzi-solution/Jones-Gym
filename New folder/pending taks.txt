@@ -11,6 +11,7 @@ additional data field in add member and membership plan
 > completed
 
 assign trainer in the expire banner
+> completed
 
 2 month expired plan drop functions, plan name duplication expiration update in member profile
 
