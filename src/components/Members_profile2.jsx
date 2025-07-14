@@ -5,6 +5,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import { SiWhatsapp } from "react-icons/si";
 import { FaPhoneAlt } from "react-icons/fa";
 import { BsWhatsapp } from "react-icons/bs";
+import { FaWeightHanging } from "react-icons/fa6";
 
 export default function Members_profile2({ member }) {
   
@@ -52,10 +53,13 @@ export default function Members_profile2({ member }) {
           </p>
         </div>
         <div className='grid grid-cols-2 gap-4 md:gap-8 md:text-2xl'>
-            <h2 className="flex gap-2 items-center"><FaLocationDot className="text-[#FFDD4A]"/> {member.location}</h2>
-            <h2 className="flex gap-2 items-center"><SiWhatsapp className="text-[#FFDD4A]"/> {member.whatsapp_no}</h2>
-            <h2 className="flex gap-2 items-center"><FaPhoneAlt className="text-[#FFDD4A]"/> {member.phone_no}</h2>
-            <h2 className="flex gap-2 items-center"><span className="text-[#FFDD4A] font-semibold">J.D</span> {formattedJoiningDate}</h2>
+          <h2 className="flex gap-2 items-center"><span className="text-[#FFDD4A] font-semibold">J.D</span> {formattedJoiningDate}</h2>
+          <h2 className="flex gap-2 items-center"><FaWeightHanging className="text-[#FFDD4A]"/> {member.weight}</h2>
+          <h2 className="flex gap-2 items-center"><FaLocationDot className="text-[#FFDD4A]"/> {member.location}</h2>
+          <h2 className="flex gap-2 items-center"><span className="text-[#FFDD4A] font-semibold"> Description </span>{member.about}</h2>
+          <h2 className="flex gap-2 items-center"><SiWhatsapp className="text-[#FFDD4A]"/> {member.whatsapp_no}</h2>
+          <h2 className="flex gap-2 items-center"><FaPhoneAlt className="text-[#FFDD4A]"/> {member.phone_no}</h2>
+          
         </div>
         <div className='grid grid-cols-2 gap-4 md:gap-8 lg:gap-12 md:text-2xl mt-10 md:mt-15'>
             <a

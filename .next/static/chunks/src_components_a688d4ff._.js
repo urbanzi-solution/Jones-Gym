@@ -1758,13 +1758,17 @@ function Balance_form({ user_id, membershipPlans }) {
     const [formData, setFormData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
         amountPaid: membershipPlans[0]?.amount || 0,
         discount: membershipPlans[0]?.discount || 0,
-        bill_no: membershipPlans[0]?.bill_no || ''
+        bill_no: membershipPlans[0]?.bill_no || '',
+        trainer: membershipPlans[0]?.trainer || ''
     });
+    console.log("formData", formData);
     const [isSubmitting, setIsSubmitting] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [message, setMessage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
         text: '',
         type: ''
     });
+    const [trainers, setTrainers] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
+    console.log("consoling the membershipPlans data from Balance_form:", membershipPlans);
     // Calculate total plan amount (assumed to be the total cost of the plan)
     const selectedPlanData = membershipPlans.find((p)=>p.plan_name === selectedPlan) || {};
     const totalPlanAmount = (selectedPlanData.amount || 0) + (selectedPlanData.discount || 0) + (selectedPlanData.balance || 0);
@@ -1772,6 +1776,37 @@ function Balance_form({ user_id, membershipPlans }) {
     const balance = Math.max(0, totalPlanAmount - (formData.amountPaid || 0) - (formData.discount || 0) - (newAmountReceived || 0));
     // Calculate total amount received (original + new)
     const totalAmountReceived = (formData.amountPaid || 0) + (newAmountReceived || 0);
+    // Fetch trainers from API
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "Balance_form.useEffect": ()=>{
+            const fetchTrainers = {
+                "Balance_form.useEffect.fetchTrainers": async ()=>{
+                    try {
+                        const response = await fetch('/api/fetch_trainers', {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        if (response.ok) {
+                            const data = await response.json();
+                            setTrainers(data); // Expecting array of { trainer_id, name }
+                            console.log("Fetched trainers:", data);
+                        } else {
+                            throw new Error('Failed to fetch trainers');
+                        }
+                    } catch (error) {
+                        console.error('Error fetching trainers:', error);
+                        setMessage({
+                            text: 'Failed to load trainers. Please try again.',
+                            type: 'error'
+                        });
+                    }
+                }
+            }["Balance_form.useEffect.fetchTrainers"];
+            fetchTrainers();
+        }
+    }["Balance_form.useEffect"], []);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "Balance_form.useEffect": ()=>{
             const plan = membershipPlans.find({
@@ -1780,8 +1815,10 @@ function Balance_form({ user_id, membershipPlans }) {
             setFormData({
                 amountPaid: plan.amount || 0,
                 discount: plan.discount || 0,
-                bill_no: plan.bill_no || ''
+                bill_no: plan.bill_no || '',
+                trainer: plan.trainer || ''
             });
+            setNewAmountReceived(0);
             setMessage({
                 text: '',
                 type: ''
@@ -1796,7 +1833,7 @@ function Balance_form({ user_id, membershipPlans }) {
     };
     const handleChange = (e)=>{
         const { name, value } = e.target;
-        const numValue = name === 'bill_no' ? value : parseFloat(value) || 0;
+        const numValue = name === 'bill_no' || name === 'trainer' ? value : parseFloat(value) || 0;
         if (name === 'newAmountReceived') {
             setNewAmountReceived(numValue);
         } else {
@@ -1829,13 +1866,15 @@ function Balance_form({ user_id, membershipPlans }) {
                     bill_no: formData.bill_no,
                     totalAmountReceived,
                     discount: formData.discount,
-                    balance
+                    balance,
+                    trainer: formData.trainer
                 })
             });
             if (response.ok) {
                 console.log('Form submitted:', {
                     selectedPlan,
                     bill_no: formData.bill_no,
+                    trainer: formData.trainer,
                     ...formData,
                     newAmountReceived,
                     totalAmountReceived,
@@ -1888,7 +1927,7 @@ function Balance_form({ user_id, membershipPlans }) {
             children: "No membership plans available."
         }, void 0, false, {
             fileName: "[project]/src/components/Balance_form.jsx",
-            lineNumber: 117,
+            lineNumber: 153,
             columnNumber: 12
         }, this);
     }
@@ -1900,7 +1939,7 @@ function Balance_form({ user_id, membershipPlans }) {
                 children: "Edit Balance"
             }, void 0, false, {
                 fileName: "[project]/src/components/Balance_form.jsx",
-                lineNumber: 122,
+                lineNumber: 158,
                 columnNumber: 7
             }, this),
             message.text && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1908,7 +1947,7 @@ function Balance_form({ user_id, membershipPlans }) {
                 children: message.text
             }, void 0, false, {
                 fileName: "[project]/src/components/Balance_form.jsx",
-                lineNumber: 125,
+                lineNumber: 161,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -1922,7 +1961,7 @@ function Balance_form({ user_id, membershipPlans }) {
                                 children: "Select the plan"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 134,
+                                lineNumber: 170,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1934,18 +1973,18 @@ function Balance_form({ user_id, membershipPlans }) {
                                         children: plan.plan_name
                                     }, plan.plan_name, false, {
                                         fileName: "[project]/src/components/Balance_form.jsx",
-                                        lineNumber: 143,
+                                        lineNumber: 179,
                                         columnNumber: 15
                                     }, this))
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 137,
+                                lineNumber: 173,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Balance_form.jsx",
-                        lineNumber: 133,
+                        lineNumber: 169,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1957,7 +1996,7 @@ function Balance_form({ user_id, membershipPlans }) {
                                 children: "Bill Number"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 151,
+                                lineNumber: 187,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1971,13 +2010,67 @@ function Balance_form({ user_id, membershipPlans }) {
                                 readOnly: true
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 154,
+                                lineNumber: 190,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Balance_form.jsx",
-                        lineNumber: 150,
+                        lineNumber: 186,
+                        columnNumber: 9
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "mb-3 sm:mb-4",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                className: "block text-sm font-medium mb-1 text-gray-400",
+                                children: "Select the trainer"
+                            }, void 0, false, {
+                                fileName: "[project]/src/components/Balance_form.jsx",
+                                lineNumber: 203,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
+                                name: "trainer",
+                                value: formData.trainer || '',
+                                onChange: handleChange,
+                                className: "w-full p-2 sm:p-3 bg-[#2E2A2D] border border-[#3E3A3D] rounded-lg text-sm sm:text-base",
+                                children: [
+                                    membershipPlans.map((plan)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                            value: plan.trainer,
+                                            children: [
+                                                plan.trainer,
+                                                "  (",
+                                                plan.plan_name,
+                                                ")"
+                                            ]
+                                        }, plan.trainer, true, {
+                                            fileName: "[project]/src/components/Balance_form.jsx",
+                                            lineNumber: 213,
+                                            columnNumber: 15
+                                        }, this)),
+                                    trainers.map((trainer)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                            value: trainer.trainer_id,
+                                            children: [
+                                                trainer.trainer_id,
+                                                " - ",
+                                                trainer.name
+                                            ]
+                                        }, trainer.trainer_id, true, {
+                                            fileName: "[project]/src/components/Balance_form.jsx",
+                                            lineNumber: 218,
+                                            columnNumber: 15
+                                        }, this))
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/components/Balance_form.jsx",
+                                lineNumber: 206,
+                                columnNumber: 11
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/components/Balance_form.jsx",
+                        lineNumber: 202,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1989,7 +2082,7 @@ function Balance_form({ user_id, membershipPlans }) {
                                 children: "Amount Already Received (₹) *"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 167,
+                                lineNumber: 226,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2004,13 +2097,13 @@ function Balance_form({ user_id, membershipPlans }) {
                                 readOnly: true
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 170,
+                                lineNumber: 229,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Balance_form.jsx",
-                        lineNumber: 166,
+                        lineNumber: 225,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2021,7 +2114,7 @@ function Balance_form({ user_id, membershipPlans }) {
                                 children: "Total Amount Received (₹)"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 184,
+                                lineNumber: 243,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2030,13 +2123,13 @@ function Balance_form({ user_id, membershipPlans }) {
                                 className: "w-full p-2 sm:p-3 bg-[#232024] border border-[#3E3A3D] rounded-lg text-sm sm:text-base text-gray-400"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 187,
+                                lineNumber: 246,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Balance_form.jsx",
-                        lineNumber: 183,
+                        lineNumber: 242,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2048,7 +2141,7 @@ function Balance_form({ user_id, membershipPlans }) {
                                 children: "Discount (₹)"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 195,
+                                lineNumber: 254,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2061,13 +2154,13 @@ function Balance_form({ user_id, membershipPlans }) {
                                 className: "w-full p-2 sm:p-3 bg-[#232024] border border-[#3E3A3D] rounded-lg text-sm sm:text-base"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 198,
+                                lineNumber: 257,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Balance_form.jsx",
-                        lineNumber: 194,
+                        lineNumber: 253,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2078,7 +2171,7 @@ function Balance_form({ user_id, membershipPlans }) {
                                 children: "Balance Amount (₹)"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 210,
+                                lineNumber: 269,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2087,13 +2180,13 @@ function Balance_form({ user_id, membershipPlans }) {
                                 className: "w-full p-2 sm:p-3 bg-[#232024] border border-[#3E3A3D] rounded-lg text-sm sm:text-base text-gray-400"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 213,
+                                lineNumber: 272,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Balance_form.jsx",
-                        lineNumber: 209,
+                        lineNumber: 268,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2105,7 +2198,7 @@ function Balance_form({ user_id, membershipPlans }) {
                                 children: "New Amount Received (₹)"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 221,
+                                lineNumber: 280,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2118,13 +2211,13 @@ function Balance_form({ user_id, membershipPlans }) {
                                 className: "w-full p-2 sm:p-3 bg-[#232024] border border-[#3E3A3D] rounded-lg text-sm sm:text-base"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 224,
+                                lineNumber: 283,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Balance_form.jsx",
-                        lineNumber: 220,
+                        lineNumber: 279,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2139,12 +2232,12 @@ function Balance_form({ user_id, membershipPlans }) {
                                     children: "Write Off"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/Balance_form.jsx",
-                                    lineNumber: 237,
+                                    lineNumber: 296,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 236,
+                                lineNumber: 295,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2157,7 +2250,7 @@ function Balance_form({ user_id, membershipPlans }) {
                                         children: "Cancel"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Balance_form.jsx",
-                                        lineNumber: 247,
+                                        lineNumber: 306,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2167,42 +2260,42 @@ function Balance_form({ user_id, membershipPlans }) {
                                         children: isSubmitting ? 'Saving...' : 'Save Changes'
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Balance_form.jsx",
-                                        lineNumber: 254,
+                                        lineNumber: 313,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/Balance_form.jsx",
-                                lineNumber: 246,
+                                lineNumber: 305,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Balance_form.jsx",
-                        lineNumber: 235,
+                        lineNumber: 294,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/Balance_form.jsx",
-                lineNumber: 132,
+                lineNumber: 168,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "h-20 xl:h-10"
             }, void 0, false, {
                 fileName: "[project]/src/components/Balance_form.jsx",
-                lineNumber: 266,
+                lineNumber: 325,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/Balance_form.jsx",
-        lineNumber: 121,
+        lineNumber: 157,
         columnNumber: 5
     }, this);
 }
-_s(Balance_form, "3jMtvwq48YFawB1oTmecPT23z4o=");
+_s(Balance_form, "j0Uuy9QyLLFolepglRIvdNMErQ8=");
 _c = Balance_form;
 var _c;
 __turbopack_context__.k.register(_c, "Balance_form");
@@ -2609,6 +2702,7 @@ var _s = __turbopack_context__.k.signature();
 ;
 ;
 ;
+;
 function Members_profile2({ member }) {
     _s();
     // console.log(member);
@@ -2664,7 +2758,7 @@ function Members_profile2({ member }) {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Members_profile2.jsx",
-                        lineNumber: 49,
+                        lineNumber: 50,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2675,13 +2769,13 @@ function Members_profile2({ member }) {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Members_profile2.jsx",
-                        lineNumber: 50,
+                        lineNumber: 51,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/Members_profile2.jsx",
-                lineNumber: 48,
+                lineNumber: 49,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2690,20 +2784,75 @@ function Members_profile2({ member }) {
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
                         className: "flex gap-2 items-center",
                         children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                className: "text-[#FFDD4A] font-semibold",
+                                children: "J.D"
+                            }, void 0, false, {
+                                fileName: "[project]/src/components/Members_profile2.jsx",
+                                lineNumber: 56,
+                                columnNumber: 51
+                            }, this),
+                            " ",
+                            formattedJoiningDate
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/components/Members_profile2.jsx",
+                        lineNumber: 56,
+                        columnNumber: 11
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                        className: "flex gap-2 items-center",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa6$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FaWeightHanging"], {
+                                className: "text-[#FFDD4A]"
+                            }, void 0, false, {
+                                fileName: "[project]/src/components/Members_profile2.jsx",
+                                lineNumber: 57,
+                                columnNumber: 51
+                            }, this),
+                            " ",
+                            member.weight
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/components/Members_profile2.jsx",
+                        lineNumber: 57,
+                        columnNumber: 11
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                        className: "flex gap-2 items-center",
+                        children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa6$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FaLocationDot"], {
                                 className: "text-[#FFDD4A]"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Members_profile2.jsx",
-                                lineNumber: 55,
-                                columnNumber: 53
+                                lineNumber: 58,
+                                columnNumber: 51
                             }, this),
                             " ",
                             member.location
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Members_profile2.jsx",
-                        lineNumber: 55,
-                        columnNumber: 13
+                        lineNumber: 58,
+                        columnNumber: 11
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                        className: "flex gap-2 items-center",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                className: "text-[#FFDD4A] font-semibold",
+                                children: " Description "
+                            }, void 0, false, {
+                                fileName: "[project]/src/components/Members_profile2.jsx",
+                                lineNumber: 59,
+                                columnNumber: 51
+                            }, this),
+                            member.about
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/components/Members_profile2.jsx",
+                        lineNumber: 59,
+                        columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
                         className: "flex gap-2 items-center",
@@ -2712,16 +2861,16 @@ function Members_profile2({ member }) {
                                 className: "text-[#FFDD4A]"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Members_profile2.jsx",
-                                lineNumber: 56,
-                                columnNumber: 53
+                                lineNumber: 60,
+                                columnNumber: 51
                             }, this),
                             " ",
                             member.whatsapp_no
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Members_profile2.jsx",
-                        lineNumber: 56,
-                        columnNumber: 13
+                        lineNumber: 60,
+                        columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
                         className: "flex gap-2 items-center",
@@ -2730,40 +2879,21 @@ function Members_profile2({ member }) {
                                 className: "text-[#FFDD4A]"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Members_profile2.jsx",
-                                lineNumber: 57,
-                                columnNumber: 53
+                                lineNumber: 61,
+                                columnNumber: 51
                             }, this),
                             " ",
                             member.phone_no
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Members_profile2.jsx",
-                        lineNumber: 57,
-                        columnNumber: 13
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                        className: "flex gap-2 items-center",
-                        children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                className: "text-[#FFDD4A] font-semibold",
-                                children: "J.D"
-                            }, void 0, false, {
-                                fileName: "[project]/src/components/Members_profile2.jsx",
-                                lineNumber: 58,
-                                columnNumber: 53
-                            }, this),
-                            " ",
-                            formattedJoiningDate
-                        ]
-                    }, void 0, true, {
-                        fileName: "[project]/src/components/Members_profile2.jsx",
-                        lineNumber: 58,
-                        columnNumber: 13
+                        lineNumber: 61,
+                        columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/Members_profile2.jsx",
-                lineNumber: 54,
+                lineNumber: 55,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2776,13 +2906,13 @@ function Members_profile2({ member }) {
                             "WhatsApp ",
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$bs$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["BsWhatsapp"], {}, void 0, false, {
                                 fileName: "[project]/src/components/Members_profile2.jsx",
-                                lineNumber: 65,
+                                lineNumber: 69,
                                 columnNumber: 24
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Members_profile2.jsx",
-                        lineNumber: 61,
+                        lineNumber: 65,
                         columnNumber: 13
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
@@ -2792,25 +2922,25 @@ function Members_profile2({ member }) {
                             "Call ",
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FaPhoneAlt"], {}, void 0, false, {
                                 fileName: "[project]/src/components/Members_profile2.jsx",
-                                lineNumber: 71,
+                                lineNumber: 75,
                                 columnNumber: 20
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Members_profile2.jsx",
-                        lineNumber: 67,
+                        lineNumber: 71,
                         columnNumber: 13
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/Members_profile2.jsx",
-                lineNumber: 60,
+                lineNumber: 64,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/Members_profile2.jsx",
-        lineNumber: 47,
+        lineNumber: 48,
         columnNumber: 5
     }, this);
 }

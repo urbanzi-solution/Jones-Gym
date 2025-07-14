@@ -3,10 +3,10 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request) {
   try {
-    const { user_id, selectedPlan, bill_no, totalAmountReceived, discount, balance } = await request.json();
+    const { user_id, selectedPlan, bill_no, totalAmountReceived, discount, balance, trainer } = await request.json();
 
     // Validate input data
-    if (!user_id || !selectedPlan || !bill_no || totalAmountReceived == null || discount == null || balance == null) {
+    if (!user_id || !selectedPlan || !bill_no || totalAmountReceived == null || discount == null || balance == null || trainer == null) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -19,12 +19,13 @@ export async function POST(request) {
         SET 
           amount = $1,
           discount = $2,
-          balance = $3
+          balance = $3,
+          trainer = $7
         WHERE user_id = $4 AND plan_name = $5 AND bill_no = $6
         RETURNING *;
       `;
       
-      const values = [totalAmountReceived, discount, balance, user_id, selectedPlan, bill_no];
+      const values = [totalAmountReceived, discount, balance, user_id, selectedPlan, bill_no, trainer];
       
       const result = await client.query(queryText, values);
       

@@ -9,7 +9,9 @@ export async function POST(request) {
       gym_id,
       full_name,
       gender,
+      weight,
       dob,
+      about,
       location,
       phone,
       whatsapp,
@@ -31,12 +33,14 @@ export async function POST(request) {
         user_id,
         name,
         gender,
+        weight,
         date_of_birth,
+        about,
         location,
         phone_no,
         whatsapp_no,
         joining_date
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       RETURNING *
     `;
     
@@ -44,7 +48,9 @@ export async function POST(request) {
       gym_id,
       full_name,
       gender,
+      weight,
       dob,
+      about,
       location,
       phone,
       whatsapp,

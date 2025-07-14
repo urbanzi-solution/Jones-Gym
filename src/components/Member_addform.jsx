@@ -29,7 +29,9 @@ export default function Member_addpage() {
     gym_id: '',
     fullName: '',
     gender: '',
+    weight:'',
     dob: '',
+    about:'',
     location: '',
     phone_no: '',
     whatsapp_no: '',
@@ -224,7 +226,9 @@ export default function Member_addpage() {
         gym_id: formData.gym_id,
         full_name: formData.fullName,
         gender: formData.gender,
+        weight: formData.weight,
         dob: formData.dob,
+        about: formData.about,
         location: formData.location,
         phone: formData.phone_no,
         whatsapp: formData.whatsapp_no,
@@ -364,6 +368,21 @@ export default function Member_addpage() {
             </div>
 
             <div>
+              <label htmlFor="weight" className="block text-sm font-medium mb-1 text-gray-300">
+                Weight *
+              </label>
+              <input
+                type="number"
+                id="weight"
+                value={formData.weight}
+                onChange={handleChange}
+                placeholder="Enter the weight"
+                className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                required
+              />
+            </div>
+
+            <div>
               <label htmlFor="dob" className="block text-sm font-medium mb-1 text-gray-300">
                 Date of Birth *
               </label>
@@ -372,6 +391,21 @@ export default function Member_addpage() {
                 id="dob"
                 value={formData.dob}
                 onChange={handleChange}
+                className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="about" className="block text-sm font-medium mb-1 text-gray-300">
+                About / Description *
+              </label>
+              <input
+                type="text"
+                id="about"
+                value={formData.about}
+                onChange={handleChange}
+                placeholder="Enter the Description"
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 required
               />

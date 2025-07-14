@@ -5,10 +5,12 @@
 ```sql
 CREATE TABLE user_data (
   user_id VARCHAR(10),
-  name VARCHAR(255),
+  name VARCHAR(30),
   gender VARCHAR(50),
+  weight varchar(3),
   date_of_birth DATE,
-  location VARCHAR(255),
+  about varchar(150),
+  location VARCHAR(100),
   phone_no VARCHAR(20),
   whatsapp_no VARCHAR(20),
   joining_date DATE
@@ -16,18 +18,18 @@ CREATE TABLE user_data (
 ```
 
 ```sql
-INSERT INTO user_data (user_id, name, gender, date_of_birth, location, phone_no, whatsapp_no, joining_date)
+INSERT INTO user_data (user_id, name, gender, weight, date_of_birth, about, location, phone_no, whatsapp_no, joining_date)
 VALUES
-('USR001', 'John Smith', 'Male', '1985-03-15', 'New York, USA', '+12125551234', '+12125551234', '2020-01-10'),
-('USR002', 'Emily Johnson', 'Female', '1992-07-22', 'London, UK', '+442071234567', '+442071234567', '2020-02-15'),
-('USR003', 'Michael Brown', 'Male', '1988-11-05', 'Toronto, Canada', '+14165551234', '+14165551234', '2020-03-20'),
-('USR004', 'Sarah Williams', 'Female', '1995-05-30', 'Sydney, Australia', '+61212345678', '+61212345678', '2020-04-25'),
-('USR005', 'David Lee', 'Male', '1990-09-12', 'Singapore', '+6565123456', '+6565123456', '2020-05-30'),
-('USR006', 'Jennifer Davis', 'Female', '1987-01-18', 'Berlin, Germany', '+493012345678', '+493012345678', '2020-06-10'),
-('USR007', 'Robert Wilson', 'Male', '1983-12-25', 'Paris, France', '+33123456789', '+33123456789', '2020-07-15'),
-('USR008', 'Lisa Miller', 'Female', '1993-04-08', 'Tokyo, Japan', '+81312345678', '+81312345678', '2020-08-20'),
-('USR009', 'James Taylor', 'Male', '1991-08-14', 'Mumbai, India', '+912212345678', '+912212345678', '2020-09-25'),
-('USR010', 'Maria Garcia', 'Female', '1986-06-20', 'Mexico City, Mexico', '+525512345678', '+525512345678', '2020-10-30');
+('USR001', 'John Smith', 'Male', '56', '1985-03-15', 'weight loss', 'New York, USA', '+12125551234', '+12125551234', '2020-01-10'),
+('USR002', 'Emily Johnson', 'Female', '63', '1992-07-22', 'lean gain', 'London, UK', '+442071234567', '+442071234567', '2020-02-15'),
+('USR003', 'Michael Brown', 'Male', '80', '1988-11-05', 'bulking', 'Toronto, Canada', '+14165551234', '+14165551234', '2020-03-20'),
+('USR004', 'Sarah Williams', 'Female', '45', '1995-05-30', 'lean mass gain', 'Sydney, Australia', '+61212345678', '+61212345678', '2020-04-25'),
+('USR005', 'David Lee', 'Male', '50', '1990-09-12', 'lean mass gain', 'Singapore', '+6565123456', '+6565123456', '2020-05-30'),
+('USR006', 'Jennifer Davis', 'Female', '70', '1987-01-18', 'bulking','Berlin, Germany', '+493012345678', '+493012345678', '2020-06-10'),
+('USR007', 'Robert Wilson', 'Male', '52', '1983-12-25', 'weight loss', 'Paris, France', '+33123456789', '+33123456789', '2020-07-15'),
+('USR008', 'Lisa Miller', 'Female', '55', '1993-04-08', 'stamina', 'Tokyo, Japan', '+81312345678', '+81312345678', '2020-08-20'),
+('USR009', 'James Taylor', 'Male', '63', '1991-08-14', 'weight loss', 'Mumbai, India', '+912212345678', '+912212345678', '2020-09-25'),
+('USR010', 'Maria Garcia', 'Female', '60', '1986-06-20', 'flexibility', 'Mexico City, Mexico', '+525512345678', '+525512345678', '2020-10-30');
 ```
 
 ### trainers table

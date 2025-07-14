@@ -8,9 +8,16 @@ export default function Balance_form({ user_id, membershipPlans }) {
     amountPaid: membershipPlans[0]?.amount || 0,
     discount: membershipPlans[0]?.discount || 0,
     bill_no: membershipPlans[0]?.bill_no || '',
+    trainer: membershipPlans[0]?.trainer || '',
   });
+
+  console.log("formData", formData)
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState({ text: '', type: '' });
+  const [trainers, setTrainers] = useState([]);
+
+  console.log("consoling the membershipPlans data from Balance_form:", membershipPlans);
 
   // Calculate total plan amount (assumed to be the total cost of the plan)
   const selectedPlanData = membershipPlans.find(p => p.plan_name === selectedPlan) || {};
@@ -22,13 +29,40 @@ export default function Balance_form({ user_id, membershipPlans }) {
   // Calculate total amount received (original + new)
   const totalAmountReceived = (formData.amountPaid || 0) + (newAmountReceived || 0);
 
+  // Fetch trainers from API
+  useEffect(() => {
+    const fetchTrainers = async () => {
+      try {
+        const response = await fetch('/api/fetch_trainers', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setTrainers(data); // Expecting array of { trainer_id, name }
+          console.log("Fetched trainers:", data);
+        } else {
+          throw new Error('Failed to fetch trainers');
+        }
+      } catch (error) {
+        console.error('Error fetching trainers:', error);
+        setMessage({ text: 'Failed to load trainers. Please try again.', type: 'error' });
+      }
+    };
+    fetchTrainers();
+  }, [])
+
   useEffect(() => {
     const plan = membershipPlans.find(p => p.plan_name === selectedPlan) || membershipPlans[0] || {};
     setFormData({
       amountPaid: plan.amount || 0,
       discount: plan.discount || 0,
       bill_no: plan.bill_no || '',
+      trainer: plan.trainer || '',
     });
+    setNewAmountReceived(0);
     setMessage({ text: '', type: '' });
   }, [selectedPlan, membershipPlans]);
 
@@ -38,7 +72,7 @@ export default function Balance_form({ user_id, membershipPlans }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const numValue = name === 'bill_no' ? value : parseFloat(value) || 0;
+    const numValue = name === 'bill_no' || name === 'trainer' ? value : parseFloat(value) || 0;
 
     if (name === 'newAmountReceived') {
       setNewAmountReceived(numValue);
@@ -68,7 +102,8 @@ export default function Balance_form({ user_id, membershipPlans }) {
           bill_no: formData.bill_no,
           totalAmountReceived,
           discount: formData.discount,
-          balance,
+          balance, 
+          trainer: formData.trainer,
         }),
       });
 
@@ -76,6 +111,7 @@ export default function Balance_form({ user_id, membershipPlans }) {
         console.log('Form submitted:', { 
           selectedPlan, 
           bill_no: formData.bill_no,
+          trainer: formData.trainer,
           ...formData, 
           newAmountReceived,
           totalAmountReceived,
@@ -161,6 +197,29 @@ export default function Balance_form({ user_id, membershipPlans }) {
             className="w-full p-2 sm:p-3 bg-[#232024] border border-[#3E3A3D] rounded-lg text-sm sm:text-base"
             readOnly
           />
+        </div>
+
+        <div className="mb-3 sm:mb-4">
+          <label className="block text-sm font-medium mb-1 text-gray-400">
+            Select the trainer
+          </label>
+          <select 
+            name="trainer"
+            value={formData.trainer || ''} // Bind to formData.trainer to reflect the selected plan's trainer
+            onChange={handleChange}
+            className="w-full p-2 sm:p-3 bg-[#2E2A2D] border border-[#3E3A3D] rounded-lg text-sm sm:text-base"
+          >
+            {membershipPlans.map((plan) => (
+              <option key={plan.trainer} value={plan.trainer}>
+                {plan.trainer}  ({plan.plan_name}) 
+              </option>
+              ))}
+            {trainers.map((trainer) => (
+              <option key={trainer.trainer_id} value={trainer.trainer_id}>
+                {trainer.trainer_id} - {trainer.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="mb-3 sm:mb-4">

@@ -1,135 +1,29 @@
-
-----------------------------------------------------------------------
-
-regular promting
-
-.env.local and lib/db.js are all set for the connection with the neon db and also use import getclient for the process in the route file
-
-----------------------------------------------------------------------
-Pending tasks
-----------------------------------------------------------------------
-
-dashboard - Active Plans Banner in dashboard
+add days and total amount in renew plan - amount discount balance calculation int renew plan
 > completed
 
-member profile - data in member profile 1 in member component 
-member profile - validity through, expiry data, day counts plan banner change
+add days calculation in add member and renew plan
 > completed
 
-expiry data in members page
-dashboard - General Banner in dashboard expiry update and linking
-dashboard - General Banner in dashboard
+Add wieght field in add member and membership plan
 > completed
 
-member page - Filters
-member page - Active and inactive in member page with expiry date
+additional data field in add member and membership plan
 > completed
 
-Block and remark table
-Block and remark member page, member list
-Block and remark in the member profile
-> completed
+assign trainer in the expire banner
 
-member profile - option button actions and add remark for the member
-member profile - edit data, blacklist member with remark, remark add membership
-> completed
+2 month expired plan drop functions, plan name duplication expiration update in member profile
 
-member profile - add remark in the user profile 
-> completed
+create aditional page with trainer on PT filter for admininstrator login
 
-member list - note remark
-> completed
+-------
 
-----------------------------------------------------------------------
+disable sunday in PT attendance, sunday, holidays days, admin single marking (update)
 
-staff profile - basic gym pt, related plans and member count in the staff profile
-> completed
+login logout - normal user / administrator
 
-staff page - Export in staff page
-member page - Export in member page
-> completed
+disable date/day option in PT attendance, sunday holidays days, admin single marking (update)
 
-transaction page - export transaction
-> completed
+terminate all bouwser (update)
 
-----------------------------------------------------------------------
-
-report-transations page - filters in detail transaction, today, yesterday, 2 day before, calender
-> completed
-
-detailed transaction page - edit and delete
-> completed
-
-see all plan - edit plans
-> completed
-
-see all plan - edit plans, mark as inactive and mark as active
-> completed
-
-----------------------------------------------------------------------
-
-membership_plans and transations reconstructions, changes in the code where reflects that
-input, add member, renew plan corresponding route.js,
-detailed report, member transactions, report page
-route.js which passes fetch and insert to these tables 
-> completed
-
-save image - member profile, staff profile, member list, staff list
-> completed
-
-staff profile - pt attendance and staff attandece in staff profile 
-> completed
-
-attendance table filter
-
-attendance table export
-
-gallery export
-
-notification popup and natification functions and updates
-
-----------------------------------------------------------------------
-
-remove add membership from the member profile options
-> completed
-
-no of count int he staff list, staff profile
-> completed
-
-check the pt attendance where the user plan is PT
-> completed
-
-remove blacklist and note if nothing else add the details
-> completed
-
-price along the plan name in the add member form
-> completed
-
-add exp date along with the plane name in the memebers lit box
-> completed
-
-each plan name expiry date and balance no of days in the member profile
-> completed
-
-remove trainer name and add any other data
-> completed
-
-not expired banner option plan selection plan name -  edit amount balance, discount
-> completed
-
-individual detail transaction report
-> completed
-
-detail transaction edit - amount, discount balance 
-detail transaction edit - restrict edit in the user id and plan name
-> completed
-
-memberlist filter
-
-
-
-navigation
-src\components\Inpage_header_3dot.jsx
-src\components\Inpage_header.jsx
-
-lazy loading in the images img tags
+notification (update)
