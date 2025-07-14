@@ -2327,6 +2327,7 @@ function MemberlistProfile({ member }) {
     const [balanceBox, setBalanceBox] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [membershipPlans, setMembershipPlans] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true);
+    // console.log("membershipPlans", membershipPlans);
     const toggleRenewBox = ()=>{
         setRenewBox(!renewBox);
         if (balanceBox) setBalanceBox(false);
@@ -2436,11 +2437,17 @@ function MemberlistProfile({ member }) {
     const { daysUntilExpiry, isExpired, formattedExpiry, expiredPlansCount } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
         "MemberlistProfile.useMemo": ()=>{
             if (planExpirations.length > 0) {
-                // Count expired plans
+                // Count expired plans that are less than 60 days old
                 const expiredPlansCount = planExpirations.filter({
-                    "MemberlistProfile.useMemo": (plan)=>plan.isExpired
+                    "MemberlistProfile.useMemo": (plan)=>{
+                        if (!plan.isExpired) return false;
+                        const expiryDate = new Date(plan.formattedExpiry.split('-').reverse().join('-'));
+                        const currentDate = new Date();
+                        const diffTime = currentDate - expiryDate;
+                        const diffDays = diffTime / (1000 * 60 * 60 * 24);
+                        return diffDays < 60;
+                    }
                 }["MemberlistProfile.useMemo"]).length;
-                // Find the plan with the latest expiry date
                 const latestPlan = planExpirations.reduce({
                     "MemberlistProfile.useMemo.latestPlan": (latest, plan)=>{
                         const planDate = new Date(plan.formattedExpiry.split('-').reverse().join('-'));
@@ -2464,6 +2471,8 @@ function MemberlistProfile({ member }) {
     }["MemberlistProfile.useMemo"], [
         planExpirations
     ]);
+    // console.log("formattedExpiry",formattedExpiry);
+    // console.log("expiredPlansCount",expiredPlansCount);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "relative grid grid-cols-1 md:grid-cols-2 p-4 md:p-6 lg:p-10 gap-4 md:gap-10",
         children: [
@@ -2477,7 +2486,7 @@ function MemberlistProfile({ member }) {
                         alt: "User profile"
                     }, void 0, false, {
                         fileName: "[project]/src/components/memberlist_profile.jsx",
-                        lineNumber: 142,
+                        lineNumber: 155,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2491,7 +2500,7 @@ function MemberlistProfile({ member }) {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/memberlist_profile.jsx",
-                                lineNumber: 149,
+                                lineNumber: 162,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2499,19 +2508,19 @@ function MemberlistProfile({ member }) {
                                 children: member.name
                             }, void 0, false, {
                                 fileName: "[project]/src/components/memberlist_profile.jsx",
-                                lineNumber: 150,
+                                lineNumber: 163,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/memberlist_profile.jsx",
-                        lineNumber: 148,
+                        lineNumber: 161,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/memberlist_profile.jsx",
-                lineNumber: 141,
+                lineNumber: 154,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2528,13 +2537,13 @@ function MemberlistProfile({ member }) {
                                     " ",
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FaRegCheckCircle"], {}, void 0, false, {
                                         fileName: "[project]/src/components/memberlist_profile.jsx",
-                                        lineNumber: 162,
+                                        lineNumber: 175,
                                         columnNumber: 114
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/memberlist_profile.jsx",
-                                lineNumber: 158,
+                                lineNumber: 171,
                                 columnNumber: 11
                             }, this),
                             balanceBox && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2548,12 +2557,12 @@ function MemberlistProfile({ member }) {
                                             size: 28
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/memberlist_profile.jsx",
-                                            lineNumber: 169,
+                                            lineNumber: 182,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/memberlist_profile.jsx",
-                                        lineNumber: 168,
+                                        lineNumber: 181,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Balance_form$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -2561,19 +2570,19 @@ function MemberlistProfile({ member }) {
                                         membershipPlans: membershipPlans
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/memberlist_profile.jsx",
-                                        lineNumber: 176,
+                                        lineNumber: 189,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/memberlist_profile.jsx",
-                                lineNumber: 167,
+                                lineNumber: 180,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/memberlist_profile.jsx",
-                        lineNumber: 157,
+                        lineNumber: 170,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2583,25 +2592,32 @@ function MemberlistProfile({ member }) {
                             children: "Loading..."
                         }, void 0, false, {
                             fileName: "[project]/src/components/memberlist_profile.jsx",
-                            lineNumber: 184,
+                            lineNumber: 197,
                             columnNumber: 13
-                        }, this) : planExpirations.map((plan, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                        }, this) : planExpirations.filter((plan)=>!plan.isExpired && plan.daysUntilExpiry <= 60).length > 0 ? planExpirations.filter((plan)=>!plan.isExpired && plan.daysUntilExpiry <= 60).map((plan, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                 className: "text-sm md:text-lg font-semibold",
                                 children: [
                                     plan.planName,
-                                    ": ",
+                                    " - ",
                                     plan.daysUntilExpiry,
                                     " Days Remaining, Expires ",
                                     plan.formattedExpiry
                                 ]
                             }, index, true, {
                                 fileName: "[project]/src/components/memberlist_profile.jsx",
-                                lineNumber: 187,
-                                columnNumber: 15
-                            }, this))
+                                lineNumber: 203,
+                                columnNumber: 19
+                            }, this)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                            className: "text-sm md:text-lg font-semibold",
+                            children: "No plans expiring within 2 months"
+                        }, void 0, false, {
+                            fileName: "[project]/src/components/memberlist_profile.jsx",
+                            lineNumber: 208,
+                            columnNumber: 15
+                        }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/memberlist_profile.jsx",
-                        lineNumber: 182,
+                        lineNumber: 195,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2613,7 +2629,7 @@ function MemberlistProfile({ member }) {
                                 children: "Renew"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/memberlist_profile.jsx",
-                                lineNumber: 196,
+                                lineNumber: 217,
                                 columnNumber: 11
                             }, this),
                             renewBox && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2627,43 +2643,43 @@ function MemberlistProfile({ member }) {
                                             size: 28
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/memberlist_profile.jsx",
-                                            lineNumber: 207,
+                                            lineNumber: 228,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/memberlist_profile.jsx",
-                                        lineNumber: 206,
+                                        lineNumber: 227,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Renew_form$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
                                         user_id: member.user_id
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/memberlist_profile.jsx",
-                                        lineNumber: 213,
+                                        lineNumber: 234,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/memberlist_profile.jsx",
-                                lineNumber: 205,
+                                lineNumber: 226,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/memberlist_profile.jsx",
-                        lineNumber: 195,
+                        lineNumber: 216,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/memberlist_profile.jsx",
-                lineNumber: 155,
+                lineNumber: 168,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/memberlist_profile.jsx",
-        lineNumber: 139,
+        lineNumber: 152,
         columnNumber: 5
     }, this);
 }

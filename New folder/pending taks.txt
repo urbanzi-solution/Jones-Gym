@@ -14,12 +14,15 @@ assign trainer in the expire banner
 > completed
 
 2 month expired plan drop functions, plan name duplication expiration update in member profile
+> completed
 
 create aditional page with trainer on PT filter for admininstrator login
 
+disable sunday in PT attendance
+
 -------
 
-disable sunday in PT attendance, sunday, holidays days, admin single marking (update)
+disable holidays days in PT attendance, admin single marking (update)
 
 login logout - normal user / administrator
 

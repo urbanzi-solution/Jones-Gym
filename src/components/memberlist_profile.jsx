@@ -11,6 +11,8 @@ export default function MemberlistProfile({ member }) {
   const [membershipPlans, setMembershipPlans] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // console.log("membershipPlans", membershipPlans);
+
   const toggleRenewBox = () => {
     setRenewBox(!renewBox);
     if (balanceBox) setBalanceBox(false);
@@ -116,10 +118,18 @@ export default function MemberlistProfile({ member }) {
   // Determine overall expiration status and count expired plans for the button
   const { daysUntilExpiry, isExpired, formattedExpiry, expiredPlansCount } = useMemo(() => {
     if (planExpirations.length > 0) {
-      // Count expired plans
-      const expiredPlansCount = planExpirations.filter(plan => plan.isExpired).length;
+      // Count expired plans that are less than 60 days old
+      const expiredPlansCount = planExpirations.filter(plan => {
+        if (!plan.isExpired) return false;
+        
+        const expiryDate = new Date(plan.formattedExpiry.split('-').reverse().join('-'));
+        const currentDate = new Date();
+        const diffTime = currentDate - expiryDate;
+        const diffDays = diffTime / (1000 * 60 * 60 * 24);
+        
+        return diffDays < 60;
+      }).length;
       
-      // Find the plan with the latest expiry date
       const latestPlan = planExpirations.reduce((latest, plan) => {
         const planDate = new Date(plan.formattedExpiry.split('-').reverse().join('-'));
         return !latest || planDate > new Date(latest.formattedExpiry.split('-').reverse().join('-')) ? plan : latest;
@@ -127,13 +137,16 @@ export default function MemberlistProfile({ member }) {
       
       return {
         daysUntilExpiry: latestPlan.daysUntilExpiry,
-        isExpired: expiredPlansCount > 0, // Consider expired if any plan is expired
+        isExpired: expiredPlansCount > 0,
         formattedExpiry: latestPlan.formattedExpiry,
         expiredPlansCount
       };
     }
     return { daysUntilExpiry: 0, isExpired: true, formattedExpiry: 'N/A', expiredPlansCount: 1 };
   }, [planExpirations]);
+
+    // console.log("formattedExpiry",formattedExpiry);
+    // console.log("expiredPlansCount",expiredPlansCount);
 
   return (
     <div className="relative grid grid-cols-1 md:grid-cols-2 p-4 md:p-6 lg:p-10 gap-4 md:gap-10">
@@ -183,11 +196,19 @@ export default function MemberlistProfile({ member }) {
           {loading ? (
             <h3 className="text-xl font-semibold md:text-2xl">Loading...</h3>
           ) : (
-            planExpirations.map((plan, index) => (
-              <p key={index} className="text-sm md:text-lg font-semibold">
-                {plan.planName}: {plan.daysUntilExpiry} Days Remaining, Expires {plan.formattedExpiry}
+            planExpirations.filter(plan => !plan.isExpired && plan.daysUntilExpiry <= 60).length > 0 ? (
+              planExpirations
+                .filter(plan => !plan.isExpired && plan.daysUntilExpiry <= 60)
+                .map((plan, index) => (
+                  <p key={index} className="text-sm md:text-lg font-semibold">
+                    {plan.planName} - {plan.daysUntilExpiry} Days Remaining, Expires {plan.formattedExpiry}
+                  </p>
+                ))
+            ) : (
+              <p className="text-sm md:text-lg font-semibold">
+                No plans expiring within 2 months
               </p>
-            ))
+            )
           )}
         </div>
 
