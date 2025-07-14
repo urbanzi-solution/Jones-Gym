@@ -2,10 +2,15 @@
   "/(pages)/member-profile/page": "app/(pages)/member-profile/page.js",
   "/(pages)/members/page": "app/(pages)/members/page.js",
   "/(pages)/page": "app/(pages)/page.js",
+  "/(pages)/pt-attendance/page": "app/(pages)/pt-attendance/page.js",
+  "/(pages)/staff-profile/page": "app/(pages)/staff-profile/page.js",
+  "/(pages)/staff/page": "app/(pages)/staff/page.js",
   "/_not-found/page": "app/_not-found/page.js",
+  "/api/fetch_attendance/route": "app/api/fetch_attendance/route.js",
   "/api/fetch_membership_plans/route": "app/api/fetch_membership_plans/route.js",
   "/api/fetch_plans/route": "app/api/fetch_plans/route.js",
   "/api/fetch_remark_blcklist/route": "app/api/fetch_remark_blcklist/route.js",
   "/api/fetch_trainers/route": "app/api/fetch_trainers/route.js",
+  "/api/fetch_trainers_plans/route": "app/api/fetch_trainers_plans/route.js",
   "/api/notification/route": "app/api/notification/route.js"
 }

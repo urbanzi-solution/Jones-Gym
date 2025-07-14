@@ -19,6 +19,7 @@ assign trainer in the expire banner
 create aditional page with trainer on PT filter for admininstrator login
 
 disable sunday in PT attendance
+> completed
 
 -------
 

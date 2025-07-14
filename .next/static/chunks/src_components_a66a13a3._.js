@@ -949,8 +949,12 @@ function Memberlist_boxes({ members, filters }) {
                         children: membershipPlans.filter((plan)=>plan.user_id === member.user_id).map((plan, index)=>{
                             const planExpiryDateOnly = getDateOnly(plan.exp_date) || "01-01-2000";
                             const isPlanExpired = planExpiryDateOnly < currentDateOnly;
-                            // Determine if the plan should be displayed based on filter status
-                            const shouldDisplay = isFiltersEmpty || filters.status?.toLowerCase() === "active" && !isPlanExpired || filters.status?.toLowerCase() === "inactive" && isPlanExpired || !filters.status;
+                            // Calculate days difference between expiry date and today
+                            const expiryDate = new Date(planExpiryDateOnly);
+                            const currentDate = new Date(currentDateOnly);
+                            const daysDifference = Math.floor((currentDate - expiryDate) / (1000 * 60 * 60 * 24));
+                            // Determine if the plan should be displayed based on filter status and expiry date
+                            const shouldDisplay = (daysDifference <= 60 || !isPlanExpired) && (isFiltersEmpty || filters.status?.toLowerCase() === "active" && !isPlanExpired || filters.status?.toLowerCase() === "inactive" && isPlanExpired || !filters.status);
                             return shouldDisplay ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                 className: `px-2 py-1 rounded-full border border-white text-center ${isPlanExpired ? "bg-red-600" : "bg-green-600"}`,
                                 children: [
@@ -961,7 +965,7 @@ function Memberlist_boxes({ members, filters }) {
                                 ]
                             }, `${plan.user_id}-${plan.plan_name}-${index}`, true, {
                                 fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                                lineNumber: 257,
+                                lineNumber: 263,
                                 columnNumber: 23
                             }, this) : null;
                         })
@@ -981,7 +985,7 @@ function Memberlist_boxes({ members, filters }) {
             children: "No members found."
         }, void 0, false, {
             fileName: "[project]/src/components/Memberlist_boxes.jsx",
-            lineNumber: 272,
+            lineNumber: 278,
             columnNumber: 9
         }, this)
     }, void 0, false, {

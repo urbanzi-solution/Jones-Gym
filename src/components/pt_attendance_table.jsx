@@ -332,77 +332,22 @@ export default function PTAttendanceTable({ trainerId, name }) {
             <tr>
               <th className="py-3 px-4 text-left sticky left-0 bg-[#2B2E32] z-10">User ID</th>
               <th className="py-3 px-4 text-left sticky left-20 bg-[#2B2E32] z-10">Name</th>
-              {monthDays.map(day => (
-                <th key={day} className="py-3 px-2 text-center min-w-[60px]">
-                  {day}
-                </th>
-              ))}
+              {monthDays.map(day => {
+                const date = new Date(new Date().getFullYear(), selectedMonth, day);
+                if (date.getDay() !== 0) { // 0 represents Sunday
+                  return (
+                    <th key={day} className="py-3 px-2 text-center min-w-[60px]">
+                      {day}
+                    </th>
+                  );
+                }
+                return null;
+              })}
               <th className="py-3 px-4 text-center bg-[#2B2E32] z-10">Total Present</th>
               <th className="py-3 px-4 text-center bg-[#2B2E32] z-10">Total Absent</th>
             </tr>
           </thead>
-          {/* <tbody className="bg-gray-800 overflow-y-scroll">
-            {loading ? (
-              <tr>
-                <td colSpan={monthDays.length + 4} className="py-3 px-4 text-center text-gray-500">
-                  Loading...
-                </td>
-              </tr>
-            ) : error ? (
-              <tr>
-                <td colSpan={monthDays.length + 4} className="py-3 px-4 text-center text-red-500">
-                  {error}
-                </td>
-              </tr>
-            ) : selectedMonth < 0 ? (
-              <tr>
-                <td colSpan={monthDays.length + 4} className="py-3 px-4 text-center text-gray-500">
-                  Please select a month
-                </td>
-              </tr>
-            ) : attendanceData.length > 0 ? (
-              attendanceData.map((record) => {
-                const { presentDays, absentDays } = calculateTotals(record.user_id);
-                
-                return (
-                  <tr key={`${record.user_id}-${record.bill_no}`} className="border-b hover:bg-gray-900">
-                    <td className="py-3 px-4 font-medium sticky left-0 bg-[#2B2E32] z-10 border-r">
-                      {record.user_id}
-                    </td>
-                    <td className="py-3 px-4 font-medium sticky left-20 bg-[#2B2E32] z-10 border-r">
-                      {record.name}
-                    </td>
-                    {monthDays.map(day => (
-                      <td key={day} className="py-2 px-2 text-center">
-                        <select
-                          value={getAttendanceValue(record.user_id, day)}
-                          onChange={(e) => handleAttendanceChange(record.user_id, day, e.target.value)}
-                          className="w-full px-1 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          disabled={selectedMonth < 0}
-                        >
-                          <option value="">-</option>
-                          <option value="P" className="text-green-600">P</option>
-                          <option value="A" className="text-red-600">A</option>
-                        </select>
-                      </td>
-                    ))}
-                    <td className="py-3 px-4 font-medium text-center bg-[#2B2E32] z-10 border-l text-green-400">
-                      {presentDays}
-                    </td>
-                    <td className="py-3 px-4 font-medium text-center bg-[#2B2E32] z-10 border-l text-red-400">
-                      {absentDays}
-                    </td>
-                  </tr>
-                );
-              })
-            ) : (
-              <tr>
-                <td colSpan={monthDays.length + 4} className="py-3 px-4 text-center text-gray-500">
-                  No attendance records found for this trainer
-                </td>
-              </tr>
-            )}
-          </tbody> */}
+
           <tbody className="bg-gray-800 overflow-y-scroll">
             {loading ? (
               <tr>

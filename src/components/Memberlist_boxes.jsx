@@ -247,11 +247,17 @@ export default function Memberlist_boxes({ members, filters }) {
                   .map((plan, index) => {
                     const planExpiryDateOnly = getDateOnly(plan.exp_date) || "01-01-2000";
                     const isPlanExpired = planExpiryDateOnly < currentDateOnly;
-                    // Determine if the plan should be displayed based on filter status
-                    const shouldDisplay = isFiltersEmpty || (
-                      (filters.status?.toLowerCase() === "active" && !isPlanExpired) ||
-                      (filters.status?.toLowerCase() === "inactive" && isPlanExpired) ||
-                      !filters.status
+                    // Calculate days difference between expiry date and today
+                    const expiryDate = new Date(planExpiryDateOnly);
+                    const currentDate = new Date(currentDateOnly);
+                    const daysDifference = Math.floor((currentDate - expiryDate) / (1000 * 60 * 60 * 24));
+                    // Determine if the plan should be displayed based on filter status and expiry date
+                    const shouldDisplay = (daysDifference <= 60 || !isPlanExpired) && (
+                      isFiltersEmpty || (
+                        (filters.status?.toLowerCase() === "active" && !isPlanExpired) ||
+                        (filters.status?.toLowerCase() === "inactive" && isPlanExpired) ||
+                        !filters.status
+                      )
                     );
                     return shouldDisplay ? (
                       <p

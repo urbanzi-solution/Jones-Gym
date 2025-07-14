@@ -1,6 +1,6 @@
 'use client';
-import { useSearchParams } from 'next/navigation';
 import PTAttendanceTable from '@/components/pt_attendance_table';
+import { useSearchParams } from 'next/navigation';
 
 export default function PTAttendance() {
   const searchParams = useSearchParams();
