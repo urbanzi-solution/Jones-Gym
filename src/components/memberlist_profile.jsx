@@ -206,7 +206,7 @@ export default function MemberlistProfile({ member }) {
                 ))
             ) : (
               <p className="text-sm md:text-lg font-semibold">
-                No plans expiring within 2 months
+                No plans
               </p>
             )
           )}
@@ -231,7 +231,7 @@ export default function MemberlistProfile({ member }) {
                   size={28}
                 />
               </div>
-              <Renew_form user_id={member.user_id} />
+              <Renew_form user_id={member.user_id} membershipPlans={membershipPlans}/>
             </div>
           )}
         </div>

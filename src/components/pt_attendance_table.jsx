@@ -332,17 +332,11 @@ export default function PTAttendanceTable({ trainerId, name }) {
             <tr>
               <th className="py-3 px-4 text-left sticky left-0 bg-[#2B2E32] z-10">User ID</th>
               <th className="py-3 px-4 text-left sticky left-20 bg-[#2B2E32] z-10">Name</th>
-              {monthDays.map(day => {
-                const date = new Date(new Date().getFullYear(), selectedMonth, day);
-                if (date.getDay() !== 0) { // 0 represents Sunday
-                  return (
-                    <th key={day} className="py-3 px-2 text-center min-w-[60px]">
-                      {day}
-                    </th>
-                  );
-                }
-                return null;
-              })}
+              {monthDays.map(day => (
+                <th key={day} className="py-3 px-2 text-center min-w-[60px]">
+                  {day}
+                </th>
+              ))}
               <th className="py-3 px-4 text-center bg-[#2B2E32] z-10">Total Present</th>
               <th className="py-3 px-4 text-center bg-[#2B2E32] z-10">Total Absent</th>
             </tr>
@@ -390,24 +384,43 @@ export default function PTAttendanceTable({ trainerId, name }) {
                       <td className="py-3 px-4 font-medium sticky left-20 bg-[#2B2E32] z-10 border-r">
                         {record.name}
                       </td>
-                      {monthDays.map((day) => (
-                        <td key={day} className="py-2 px-2 text-center">
-                          <select
-                            value={getAttendanceValue(record.user_id, day)}
-                            onChange={(e) => handleAttendanceChange(record.user_id, day, e.target.value)}
-                            className="w-full px-1 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            disabled={selectedMonth < 0}
-                          >
-                            <option value="">-</option>
-                            <option value="P" className="text-green-600">
-                              P
-                            </option>
-                            <option value="A" className="text-red-600">
-                              A
-                            </option>
-                          </select>
-                        </td>
-                      ))}
+                      {monthDays.map((day) => {
+                        const date = new Date(new Date().getFullYear(), selectedMonth, day);
+                        const isSunday = date.getDay() === 0;
+                        return (
+                          <td key={day} className="py-2 px-2 text-center">
+                            <select
+                              value={getAttendanceValue(record.user_id, day)}
+                              onChange={(e) => handleAttendanceChange(record.user_id, day, e.target.value)}
+                              className={`w-full px-1 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                ["A", "S"].includes(getAttendanceValue(record.user_id, day)) 
+                                  ? "bg-red-700 text-white" 
+                                  : getAttendanceValue(record.user_id, day) === "P" 
+                                    ? "bg-green-700 text-white" 
+                                    : ""
+                              }`}
+
+                              disabled={selectedMonth < 0}
+                            >
+                              {isSunday ? (
+                                // <option clasName="" value="S">S</option>
+                                <option value="S" className="text-black">S</option>
+                              ) : (
+                                <>
+                                  <option value="">-</option>
+                                  <option value="P" className="text-black">
+                                    P
+                                  </option>
+                                  <option value="A" className="text-black">
+                                    A
+                                  </option>
+                                  
+                                </>
+                              )}
+                            </select>
+                          </td>
+                        );
+                      })}
                       <td className="py-3 px-4 font-medium text-center bg-[#2B2E32] z-10 border-l text-green-400">
                         {presentDays}
                       </td>

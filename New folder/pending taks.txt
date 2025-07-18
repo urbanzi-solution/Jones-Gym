@@ -21,7 +21,32 @@ create aditional page with trainer on PT filter for admininstrator login
 disable sunday in PT attendance
 > completed
 
+Correction
 -------
+
+no plans in member profile 
+> completed
+
+expire banner trainer section 1 commenting
+> completed
+
+pt attendance > sunday
+> completed
+
+plan drop if the same plan exist in the member list
+> completed
+
+plan drop if the same plan exist in the member profile
+> completed
+
+renew plan existing plan validation
+> completed
+
+Blacklisted user no plans and blacklist banner in member list
+
+-------
+
+pt attendance > sunday red
 
 disable holidays days in PT attendance, admin single marking (update)
 

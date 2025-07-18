@@ -474,26 +474,20 @@ function PTAttendanceTable({ trainerId, name }) {
                                         lineNumber: 334,
                                         columnNumber: 15
                                     }, this),
-                                    monthDays.map((day)=>{
-                                        const date = new Date(new Date().getFullYear(), selectedMonth, day);
-                                        if (date.getDay() !== 0) {
-                                            return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                className: "py-3 px-2 text-center min-w-[60px]",
-                                                children: day
-                                            }, day, false, {
-                                                fileName: "[project]/src/components/pt_attendance_table.jsx",
-                                                lineNumber: 339,
-                                                columnNumber: 21
-                                            }, this);
-                                        }
-                                        return null;
-                                    }),
+                                    monthDays.map((day)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
+                                            className: "py-3 px-2 text-center min-w-[60px]",
+                                            children: day
+                                        }, day, false, {
+                                            fileName: "[project]/src/components/pt_attendance_table.jsx",
+                                            lineNumber: 336,
+                                            columnNumber: 17
+                                        }, this)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
                                         className: "py-3 px-4 text-center bg-[#2B2E32] z-10",
                                         children: "Total Present"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/pt_attendance_table.jsx",
-                                        lineNumber: 346,
+                                        lineNumber: 340,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -501,7 +495,7 @@ function PTAttendanceTable({ trainerId, name }) {
                                         children: "Total Absent"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/pt_attendance_table.jsx",
-                                        lineNumber: 347,
+                                        lineNumber: 341,
                                         columnNumber: 15
                                     }, this)
                                 ]
@@ -524,12 +518,12 @@ function PTAttendanceTable({ trainerId, name }) {
                                     children: "Loading..."
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/pt_attendance_table.jsx",
-                                    lineNumber: 354,
+                                    lineNumber: 348,
                                     columnNumber: 17
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/pt_attendance_table.jsx",
-                                lineNumber: 353,
+                                lineNumber: 347,
                                 columnNumber: 15
                             }, this) : error ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -538,12 +532,12 @@ function PTAttendanceTable({ trainerId, name }) {
                                     children: error
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/pt_attendance_table.jsx",
-                                    lineNumber: 360,
+                                    lineNumber: 354,
                                     columnNumber: 17
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/pt_attendance_table.jsx",
-                                lineNumber: 359,
+                                lineNumber: 353,
                                 columnNumber: 15
                             }, this) : selectedMonth < 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -552,12 +546,12 @@ function PTAttendanceTable({ trainerId, name }) {
                                     children: "Please select a month"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/pt_attendance_table.jsx",
-                                    lineNumber: 366,
+                                    lineNumber: 360,
                                     columnNumber: 17
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/pt_attendance_table.jsx",
-                                lineNumber: 365,
+                                lineNumber: 359,
                                 columnNumber: 15
                             }, this) : attendanceData.length > 0 ? (()=>{
                                 const ptMembers = attendanceData.filter((record)=>record.plan_name === "PT");
@@ -569,12 +563,12 @@ function PTAttendanceTable({ trainerId, name }) {
                                             children: "No member has taken PT under this trainer"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/pt_attendance_table.jsx",
-                                            lineNumber: 376,
+                                            lineNumber: 370,
                                             columnNumber: 23
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/pt_attendance_table.jsx",
-                                        lineNumber: 375,
+                                        lineNumber: 369,
                                         columnNumber: 21
                                     }, this);
                                 }
@@ -588,7 +582,7 @@ function PTAttendanceTable({ trainerId, name }) {
                                                 children: record.user_id
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/pt_attendance_table.jsx",
-                                                lineNumber: 387,
+                                                lineNumber: 381,
                                                 columnNumber: 23
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -596,60 +590,78 @@ function PTAttendanceTable({ trainerId, name }) {
                                                 children: record.name
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/pt_attendance_table.jsx",
-                                                lineNumber: 390,
+                                                lineNumber: 384,
                                                 columnNumber: 23
                                             }, this),
-                                            monthDays.map((day)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                            monthDays.map((day)=>{
+                                                const date = new Date(new Date().getFullYear(), selectedMonth, day);
+                                                const isSunday = date.getDay() === 0;
+                                                return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                     className: "py-2 px-2 text-center",
                                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
                                                         value: getAttendanceValue(record.user_id, day),
                                                         onChange: (e)=>handleAttendanceChange(record.user_id, day, e.target.value),
-                                                        className: "w-full px-1 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500",
+                                                        className: `w-full px-1 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${[
+                                                            "A",
+                                                            "S"
+                                                        ].includes(getAttendanceValue(record.user_id, day)) ? "bg-red-700 text-white" : getAttendanceValue(record.user_id, day) === "P" ? "bg-green-700 text-white" : ""}`,
                                                         disabled: selectedMonth < 0,
-                                                        children: [
-                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
-                                                                value: "",
-                                                                children: "-"
-                                                            }, void 0, false, {
-                                                                fileName: "[project]/src/components/pt_attendance_table.jsx",
-                                                                lineNumber: 401,
-                                                                columnNumber: 29
-                                                            }, this),
-                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
-                                                                value: "P",
-                                                                className: "text-green-600",
-                                                                children: "P"
-                                                            }, void 0, false, {
-                                                                fileName: "[project]/src/components/pt_attendance_table.jsx",
-                                                                lineNumber: 402,
-                                                                columnNumber: 29
-                                                            }, this),
-                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
-                                                                value: "A",
-                                                                className: "text-red-600",
-                                                                children: "A"
-                                                            }, void 0, false, {
-                                                                fileName: "[project]/src/components/pt_attendance_table.jsx",
-                                                                lineNumber: 405,
-                                                                columnNumber: 29
-                                                            }, this)
-                                                        ]
-                                                    }, void 0, true, {
+                                                        children: isSunday ? // <option clasName="" value="S">S</option>
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                                            value: "S",
+                                                            className: "text-black",
+                                                            children: "S"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/components/pt_attendance_table.jsx",
+                                                            lineNumber: 407,
+                                                            columnNumber: 33
+                                                        }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
+                                                            children: [
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                                                    value: "",
+                                                                    children: "-"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/components/pt_attendance_table.jsx",
+                                                                    lineNumber: 410,
+                                                                    columnNumber: 35
+                                                                }, this),
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                                                    value: "P",
+                                                                    className: "text-black",
+                                                                    children: "P"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/components/pt_attendance_table.jsx",
+                                                                    lineNumber: 411,
+                                                                    columnNumber: 35
+                                                                }, this),
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                                                    value: "A",
+                                                                    className: "text-black",
+                                                                    children: "A"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/components/pt_attendance_table.jsx",
+                                                                    lineNumber: 414,
+                                                                    columnNumber: 35
+                                                                }, this)
+                                                            ]
+                                                        }, void 0, true)
+                                                    }, void 0, false, {
                                                         fileName: "[project]/src/components/pt_attendance_table.jsx",
-                                                        lineNumber: 395,
-                                                        columnNumber: 27
+                                                        lineNumber: 392,
+                                                        columnNumber: 29
                                                     }, this)
                                                 }, day, false, {
                                                     fileName: "[project]/src/components/pt_attendance_table.jsx",
-                                                    lineNumber: 394,
-                                                    columnNumber: 25
-                                                }, this)),
+                                                    lineNumber: 391,
+                                                    columnNumber: 27
+                                                }, this);
+                                            }),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                 className: "py-3 px-4 font-medium text-center bg-[#2B2E32] z-10 border-l text-green-400",
                                                 children: presentDays
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/pt_attendance_table.jsx",
-                                                lineNumber: 411,
+                                                lineNumber: 424,
                                                 columnNumber: 23
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -657,13 +669,13 @@ function PTAttendanceTable({ trainerId, name }) {
                                                 children: absentDays
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/pt_attendance_table.jsx",
-                                                lineNumber: 414,
+                                                lineNumber: 427,
                                                 columnNumber: 23
                                             }, this)
                                         ]
                                     }, `${record.user_id}-${record.bill_no}`, true, {
                                         fileName: "[project]/src/components/pt_attendance_table.jsx",
-                                        lineNumber: 386,
+                                        lineNumber: 380,
                                         columnNumber: 21
                                     }, this);
                                 });
@@ -674,17 +686,17 @@ function PTAttendanceTable({ trainerId, name }) {
                                     children: "No member has taken PT under this trainer"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/pt_attendance_table.jsx",
-                                    lineNumber: 423,
+                                    lineNumber: 436,
                                     columnNumber: 17
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/pt_attendance_table.jsx",
-                                lineNumber: 422,
+                                lineNumber: 435,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/pt_attendance_table.jsx",
-                            lineNumber: 351,
+                            lineNumber: 345,
                             columnNumber: 11
                         }, this)
                     ]

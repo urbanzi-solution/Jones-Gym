@@ -204,11 +204,12 @@ export default function Balance_form({ user_id, membershipPlans }) {
             onChange={handleChange}
             className="w-full p-2 sm:p-3 bg-[#2E2A2D] border border-[#3E3A3D] rounded-lg text-sm sm:text-base"
           >
-            {membershipPlans.map((plan, index) => (
+            {/*{membershipPlans.map((plan, index) => (
               <option key={`plan-${index}-${plan.trainer}`} value={plan.trainer}>
                 {plan.trainer} ({plan.plan_name}) 
               </option>
-            ))}
+            ))}*/}
+
             {trainers.map((trainer, index) => (
               <option key={`trainer-${index}-${trainer.trainer_id}`} value={trainer.trainer_id}>
                 {trainer.trainer_id} - {trainer.name}

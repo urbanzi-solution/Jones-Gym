@@ -2,7 +2,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function RenewalFormSection({ user_id }) {
+export default function RenewalFormSection({ user_id, membershipPlans}) {
+  console.log(membershipPlans)
   const [formData, setFormData] = useState({
     bill_no: '',
     plan: '',
@@ -93,13 +94,34 @@ export default function RenewalFormSection({ user_id }) {
     });
   };
 
-  const handleSubmit = async (e) => {
+    const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
 
     try {
-      const currentDate = new Date().toISOString().split('T')[0];
+      const currentDate = new Date();
+      const currentDateString = currentDate.toISOString().split('T')[0];
+
+      // Check if the selected plan exists in membershipPlans
+      const selectedPlan = membershipPlans.find(
+        (plan) => plan.plan_name === formData.plan
+      );
+
+      if (selectedPlan && selectedPlan.exp_date) {
+        const expiryDate = new Date(selectedPlan.exp_date);
+        if (expiryDate > currentDate) {
+          // Calculate remaining days
+          const timeDifference = expiryDate - currentDate;
+          const remainingDays = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+          
+          setError(
+            `Sorry, the plan already exists and will expire on ${expiryDate.toLocaleDateString()} (${remainingDays} days remaining)`
+          );
+          return;
+        }
+      }
+
       const dataToSubmit = {
         user_id,
         plan_name: formData.plan,
@@ -109,7 +131,7 @@ export default function RenewalFormSection({ user_id }) {
         balance: formData.balance ? parseFloat(formData.balance) : null,
         trans_type: formData.transaction_type,
         trainer_id: formData.trainer_id,
-        date: currentDate,
+        date: currentDateString,
         exp_date: formData.expiry_date
       };
 

@@ -242,34 +242,56 @@ export default function Memberlist_boxes({ members, filters }) {
                 </span>
               </div>
               <span className="flex flex-col gap-2 items-end justify-center text-[10px] sm:text-lg lg:text-xl">
-                {membershipPlans
-                  .filter((plan) => plan.user_id === member.user_id)
-                  .map((plan, index) => {
-                    const planExpiryDateOnly = getDateOnly(plan.exp_date) || "01-01-2000";
-                    const isPlanExpired = planExpiryDateOnly < currentDateOnly;
-                    // Calculate days difference between expiry date and today
-                    const expiryDate = new Date(planExpiryDateOnly);
-                    const currentDate = new Date(currentDateOnly);
-                    const daysDifference = Math.floor((currentDate - expiryDate) / (1000 * 60 * 60 * 24));
-                    // Determine if the plan should be displayed based on filter status and expiry date
-                    const shouldDisplay = (daysDifference <= 60 || !isPlanExpired) && (
-                      isFiltersEmpty || (
-                        (filters.status?.toLowerCase() === "active" && !isPlanExpired) ||
-                        (filters.status?.toLowerCase() === "inactive" && isPlanExpired) ||
-                        !filters.status
-                      )
-                    );
-                    return shouldDisplay ? (
+                {memberBlacklistStatus === 'Black-listed' ? (
+                  <p className="px-2 py-1 rounded-full border border-white text-center bg-red-600">
+                    This member is Blacklisted
+                  </p>
+                ) : (
+                  membershipPlans
+                    .filter((plan) => plan.user_id === member.user_id)
+                    .reduce((uniquePlans, plan) => {
+                      const planExpiryDateOnly = getDateOnly(plan.exp_date) || "01-01-2000";
+                      const isPlanExpired = planExpiryDateOnly < currentDateOnly;
+                      // Calculate days difference between expiry date and today
+                      const expiryDate = new Date(planExpiryDateOnly);
+                      const currentDate = new Date(currentDateOnly);
+                      const daysDifference = Math.floor((currentDate - expiryDate) / (1000 * 60 * 60 * 24));
+                      // Determine if the plan should be displayed based on filter status and expiry date
+                      const shouldDisplay = (daysDifference <= 60 || !isPlanExpired) && (
+                        isFiltersEmpty || (
+                          (filters.status?.toLowerCase() === "active" && !isPlanExpired) ||
+                          (filters.status?.toLowerCase() === "inactive" && isPlanExpired) ||
+                          !filters.status
+                        )
+                      );
+
+                      // Check for duplicate plan_name
+                      const existingPlan = uniquePlans.find(p => p.plan_name === plan.plan_name);
+                      if (shouldDisplay) {
+                        if (existingPlan) {
+                          // If plan_name exists, keep the active one (not expired) or the one with the later expiry date
+                          if (!isPlanExpired && (existingPlan.isPlanExpired || new Date(planExpiryDateOnly) > new Date(existingPlan.planExpiryDateOnly))) {
+                            const index = uniquePlans.indexOf(existingPlan);
+                            uniquePlans[index] = { ...plan, isPlanExpired, planExpiryDateOnly };
+                          }
+                        } else {
+                          // Add new plan if no duplicate
+                          uniquePlans.push({ ...plan, isPlanExpired, planExpiryDateOnly });
+                        }
+                      }
+                      return uniquePlans;
+                    }, [])
+                    .map((plan, index) => (
                       <p
                         key={`${plan.user_id}-${plan.plan_name}-${index}`}
                         className={`px-2 py-1 rounded-full border border-white text-center ${
-                          isPlanExpired ? "bg-red-600" : "bg-green-600"
+                          plan.isPlanExpired ? "bg-red-600" : "bg-green-600"
                         }`}
                       >
-                        {plan.plan_name || "Basic Gym"} ({planExpiryDateOnly})
+                        {plan.plan_name || "Basic Gym"} ({plan.planExpiryDateOnly})
                       </p>
-                    ) : null;
-                  })}
+                    ))
+                )}
               </span>
             </a>
           );
