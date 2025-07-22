@@ -20,6 +20,7 @@ export default function DetailedTransactions({ userId }) {
   const [selectedOption, setSelectedOption] = useState('Today');
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showCustomDate, setShowCustomDate] = useState(false);
+  const [openDropdownBillNo, setOpenDropdownBillNo] = useState(null); // NEW
 
   // Fetch transactions from the API and filter by userId
   useEffect(() => {
@@ -85,6 +86,7 @@ export default function DetailedTransactions({ userId }) {
   const handleEdit = (transaction) => {
     setSelectedTransaction(transaction);
     setIsModalOpen(true);
+    setOpenDropdownBillNo(null);
   };
 
   // Function to handle delete action
@@ -119,6 +121,8 @@ export default function DetailedTransactions({ userId }) {
     } catch (error) {
       console.error('Delete error:', error);
       alert(error.message || 'Error deleting transaction');
+    } finally {
+      setOpenDropdownBillNo(null);
     }
   };
 
@@ -260,6 +264,7 @@ export default function DetailedTransactions({ userId }) {
   const closeAll = () => {
     setIsDropdownOpen(false);
     setIsCalendarOpen(false);
+    setOpenDropdownBillNo(null);
   };
 
   const options = [
@@ -389,9 +394,8 @@ export default function DetailedTransactions({ userId }) {
             </div>
           )}
         </div>
-
         {/* Click outside to close */}
-        {(isDropdownOpen || isCalendarOpen) && (
+        {(isDropdownOpen || isCalendarOpen || openDropdownBillNo) && (
           <div 
             className="fixed inset-0 z-10 bg-transparent" 
             onClick={closeAll}
@@ -423,47 +427,57 @@ export default function DetailedTransactions({ userId }) {
             </thead>
             <tbody>
               {transactions.map((transaction) => (
-                <tr key={transaction.bill_no} className="group text-sm">
-                  <td className="p-3 py-6 bg-[#404346] text-white group-hover:bg-[#505356] border-r">
+                <tr key={transaction.bill_no} className="text-sm">
+                  <td className="p-3 py-6 bg-[#404346] text-white border-r">
                     {transaction.bill_no}
                   </td>
-                  <td className="p-3 py-6 bg-[#404346] text-white group-hover:bg-[#505356] border-r">
+                  <td className="p-3 py-6 bg-[#404346] text-white border-r">
                     {transaction.plan_name}
                   </td>
-                  <td className="p-3 py-6 bg-[#404346] text-white border-r group-hover:bg-[#505356]">
+                  <td className="p-3 py-6 bg-[#404346] text-white border-r">
                     {new Date(transaction.date).toISOString().split('T')[0]}
                   </td>
-                  <td className="p-3 py-6 bg-[#404346] text-white group-hover:bg-[#505356] border-r">
+                  <td className="p-3 py-6 bg-[#404346] text-white border-r">
                     ${transaction.amount}
                   </td>
-                  <td className="p-3 py-6 bg-[#404346] text-white group-hover:bg-[#505356] border-r">
+                  <td className="p-3 py-6 bg-[#404346] text-white border-r">
                     ${transaction.discount}
                   </td>
-                  <td className="p-3 py-6 bg-[#404346] text-white group-hover:bg-[#505356] border-r">
+                  <td className="p-3 py-6 bg-[#404346] text-white border-r">
                     ${transaction.balance}
                   </td>
-                  <td className="p-3 py-6 bg-[#404346] text-white group-hover:bg-[#505356] border-r">
+                  <td className="p-3 py-6 bg-[#404346] text-white border-r">
                     {transaction.trans_type}
                   </td>
-                  <td className="p-3 py-6 bg-[#404346] text-white group-hover:bg-[#505356] relative">
+                  <td className="p-3 py-6 bg-[#404346] text-white relative">
                     <div className="dropdown">
-                      <button className="text-white hover:text-gray-300">
+                      <button
+                        className="text-white hover:text-gray-300"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenDropdownBillNo(
+                            openDropdownBillNo === transaction.bill_no ? null : transaction.bill_no
+                          );
+                        }}
+                      >
                         <FaEllipsisV />
                       </button>
-                      <div className="dropdown-menu absolute right-0 mt-2 w-48 bg-[#404346] rounded-md shadow-lg z-10 hidden group-hover:block">
-                        <button
-                          onClick={() => handleEdit(transaction)}
-                          className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-[#505356]"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDelete(transaction.bill_no)}
-                          className="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-[#505356]"
-                        >
-                          Delete
-                        </button>
-                      </div>
+                      {openDropdownBillNo === transaction.bill_no && (
+                        <div className="dropdown-menu absolute right-0 mt-2 w-48 bg-[#404346] rounded-md shadow-lg z-20">
+                          <button
+                            onClick={() => handleEdit(transaction)}
+                            className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-[#505356]"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(transaction.bill_no)}
+                            className="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-[#505356]"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </td>
                 </tr>

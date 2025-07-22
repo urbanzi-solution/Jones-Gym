@@ -1324,7 +1324,7 @@ function DetailedTransactions() {
                                                         className: "text-white hover:text-gray-300",
                                                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FaEllipsisV"], {}, void 0, false, {
                                                             fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                                            lineNumber: 494,
+                                                            lineNumber: 496,
                                                             columnNumber: 23
                                                         }, this)
                                                     }, void 0, false, {
@@ -1341,7 +1341,7 @@ function DetailedTransactions() {
                                                                 children: "Edit"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                                                lineNumber: 497,
+                                                                lineNumber: 499,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1350,13 +1350,13 @@ function DetailedTransactions() {
                                                                 children: "Delete"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                                                lineNumber: 503,
+                                                                lineNumber: 505,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                                        lineNumber: 496,
+                                                        lineNumber: 498,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
@@ -1402,17 +1402,17 @@ function DetailedTransactions() {
                         onCancel: ()=>setIsEditModalOpen(false)
                     }, void 0, false, {
                         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                        lineNumber: 523,
+                        lineNumber: 525,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                    lineNumber: 522,
+                    lineNumber: 524,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                lineNumber: 521,
+                lineNumber: 523,
                 columnNumber: 9
             }, this)
         ]

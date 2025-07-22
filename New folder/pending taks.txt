@@ -46,6 +46,14 @@ Blacklisted user no plans and blacklist banner in member list
 
 -------
 
+add form days and exp date calculations 
+
+login page
+
+close button in renew form and balance form
+
+-------
+
 pt attendance > sunday red
 
 disable holidays days in PT attendance, admin single marking (update)
@@ -57,3 +65,7 @@ disable date/day option in PT attendance, sunday holidays days, admin single mar
 terminate all bouwser (update)
 
 notification (update)
+
+write off in expire banner (update)
+
+write off in recent transaction in member profile (update)

@@ -385,7 +385,7 @@ export default function Member_addpage() {
 
             <div>
               <label htmlFor="dob" className="block text-sm font-medium mb-1 text-gray-300">
-                Date of Birth *
+                Date of Birth
               </label>
               <input
                 type="date"
@@ -393,13 +393,13 @@ export default function Member_addpage() {
                 value={formData.dob}
                 onChange={handleChange}
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                required
+                // required
               />
             </div>
 
             <div>
               <label htmlFor="about" className="block text-sm font-medium mb-1 text-gray-300">
-                About / Description *
+                About / Description
               </label>
               <input
                 type="text"
@@ -408,7 +408,7 @@ export default function Member_addpage() {
                 onChange={handleChange}
                 placeholder="Enter the Description"
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                required
+                // required
               />
             </div>
 
@@ -478,7 +478,7 @@ export default function Member_addpage() {
 
             <div>
               <label className="block text-sm font-medium mb-1 text-gray-300">
-                Profile Picture (Optional)
+                Profile Picture *
               </label>
               <div className="flex items-center justify-center w-full">
                 <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-[#3E3A3D] rounded-lg cursor-pointer bg-[#232024] hover:bg-[#2E2A2D]">
@@ -506,6 +506,7 @@ export default function Member_addpage() {
                     onChange={handleChange}
                     className="hidden"
                     accept="image/*"
+                    required
                   />
                 </label>
               </div>

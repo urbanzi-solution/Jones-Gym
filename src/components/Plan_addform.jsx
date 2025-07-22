@@ -89,7 +89,7 @@ export default function PlanAddPage() {
             {/* Plan Description */}
             <div>
               <label htmlFor="description" className="block text-sm font-medium mb-1 text-gray-300">
-                Description
+                Description *
               </label>
               <textarea
                 id="description"
@@ -97,6 +97,7 @@ export default function PlanAddPage() {
                 placeholder="Describe the plan features"
                 rows={3}
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
+                required
               />
             </div>
           </div>

@@ -191,7 +191,7 @@ export default function RenewalFormSection({ user_id, membershipPlans}) {
           <div className="space-y-4">
             <div>
               <label htmlFor="bill_no" className="block text-sm font-medium mb-1 text-gray-300">
-                Bill No
+                Bill No *
               </label>
               <input
                 type="text"
@@ -201,6 +201,7 @@ export default function RenewalFormSection({ user_id, membershipPlans}) {
                 onChange={handleChange}
                 placeholder="Enter bill number"
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
+                required
               />
             </div>
 
@@ -283,7 +284,7 @@ export default function RenewalFormSection({ user_id, membershipPlans}) {
 
             <div>
               <label htmlFor="renewal-discount" className="block text-sm font-medium mb-1 text-gray-300">
-                Discount (₹)
+                Discount (₹) *
               </label>
               <input
                 type="number"
@@ -294,12 +295,13 @@ export default function RenewalFormSection({ user_id, membershipPlans}) {
                 placeholder="Enter discount"
                 min="0"
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
+                required
               />
             </div>
 
             <div>
               <label htmlFor="renewal-balance" className="block text-sm font-medium mb-1 text-gray-300">
-                Balance (₹)
+                Balance (₹) *
               </label>
               <input
                 type="number"
@@ -308,12 +310,13 @@ export default function RenewalFormSection({ user_id, membershipPlans}) {
                 value={formData.balance}
                 readOnly
                 className="p-4 w-full bg-[#2E2A2D] rounded-lg border border-[#3E3A3D] cursor-not-allowed"
+                required
               />
             </div>
 
             <div>
               <label htmlFor="transaction_type" className="block text-sm font-medium mb-1 text-gray-300">
-                Transaction Type
+                Transaction Type *
               </label>
               <select
                 id="transaction_type"
@@ -321,6 +324,7 @@ export default function RenewalFormSection({ user_id, membershipPlans}) {
                 value={formData.transaction_type}
                 onChange={handleChange}
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] appearance-none"
+                required
               >
                 <option value="">Select Type</option>
                 <option value="GPay">GPay</option>

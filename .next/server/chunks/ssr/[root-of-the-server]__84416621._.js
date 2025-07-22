@@ -521,7 +521,7 @@ function Member_addpage() {
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                                 htmlFor: "dob",
                                                 className: "block text-sm font-medium mb-1 text-gray-300",
-                                                children: "Date of Birth *"
+                                                children: "Date of Birth"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_addform.jsx",
                                                 lineNumber: 387,
@@ -532,8 +532,7 @@ function Member_addpage() {
                                                 id: "dob",
                                                 value: formData.dob,
                                                 onChange: handleChange,
-                                                className: "p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500",
-                                                required: true
+                                                className: "p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_addform.jsx",
                                                 lineNumber: 390,
@@ -550,7 +549,7 @@ function Member_addpage() {
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                                 htmlFor: "about",
                                                 className: "block text-sm font-medium mb-1 text-gray-300",
-                                                children: "About / Description *"
+                                                children: "About / Description"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_addform.jsx",
                                                 lineNumber: 401,
@@ -562,8 +561,7 @@ function Member_addpage() {
                                                 value: formData.about,
                                                 onChange: handleChange,
                                                 placeholder: "Enter the Description",
-                                                className: "p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500",
-                                                required: true
+                                                className: "p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_addform.jsx",
                                                 lineNumber: 404,

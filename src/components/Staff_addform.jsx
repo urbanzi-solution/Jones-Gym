@@ -113,13 +113,13 @@ export default function member_addpage() {
             {/* Gym ID */}
             <div>
               <label htmlFor="gymID" className="block text-sm font-medium mb-1 text-gray-300">
-                Gym ID *
+                Trainer ID *
               </label>
               <input
                 type="text"
                 id="gymID"
                 name="gymID"
-                placeholder="Enter gym ID"
+                placeholder="Enter trainer ID"
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
                 required
               />
@@ -161,7 +161,7 @@ export default function member_addpage() {
             {/* Date of Birth */}
             <div>
               <label htmlFor="dob" className="block text-sm font-medium mb-1 text-gray-300">
-                Date of Birth
+                Date of Birth *
               </label>
               <div>
                 <input
@@ -169,6 +169,7 @@ export default function member_addpage() {
                   id="dob"
                   name="dob"
                   className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
+                  required
                 />
               </div>
             </div>
@@ -217,13 +218,14 @@ export default function member_addpage() {
                 name="whatsapp"
                 placeholder="Enter WhatsApp number"
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
+                required
               />
             </div>
 
             {/* Joining date */}
             <div>
               <label htmlFor="joiningdate" className="block text-sm font-medium mb-1 text-gray-300">
-                Joining date
+                Joining date *
               </label>
               <div>
                 <input
@@ -231,6 +233,7 @@ export default function member_addpage() {
                   id="joiningdate"
                   name="joiningdate"
                   className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
+                  required
                 />
               </div>
             </div>
