@@ -35,7 +35,7 @@ set push_choice=
 set /p push_choice="Push to origin/master? (y/n): "
 if /i "!push_choice!"=="y" (
     git push origin master || (
-        echo Error: Failed to push to origin/master.
+        echo Error: Failed to push to origin/main.
         pause
         exit /b 1
     )
