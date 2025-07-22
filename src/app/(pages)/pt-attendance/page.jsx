@@ -2,6 +2,8 @@
 import PTAttendanceTable from '@/components/pt_attendance_table';
 import { useSearchParams } from 'next/navigation';
 
+export const dynamic = 'force-dynamic'
+
 export default function PTAttendance() {
   const searchParams = useSearchParams();
   const trainerId = searchParams.get('trainer_id');

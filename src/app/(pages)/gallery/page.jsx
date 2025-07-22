@@ -2,6 +2,7 @@ import Inpage_header from "@/components/Inpage_header";
 // import MemberSearchFilter from "@/components/Member_searchFilter";
 import Gallery_image from "@/components/Gallery_image";
 
+export const dynamic = 'force-dynamic'
 
 export default function Gallery() {
   return (

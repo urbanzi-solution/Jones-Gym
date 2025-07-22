@@ -4,6 +4,8 @@ import Dashboardgreeting from "@/components/Dashboard_greeting";
 import StaffClient from "@/components/StaffClient";
 import { query } from "@/lib/db";
 
+export const dynamic = 'force-dynamic'
+
 export default async function Staff({ searchParams }) {
   const { searchQuery, plan } = await searchParams;
 

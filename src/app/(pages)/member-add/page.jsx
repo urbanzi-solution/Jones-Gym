@@ -1,5 +1,7 @@
 import Member_addpage from '@/components/Member_addform';
 
+export const dynamic = 'force-dynamic'
+
 export default function Page() {
   return (
     <div>

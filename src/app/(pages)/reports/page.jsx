@@ -3,6 +3,8 @@ import Inpage_header from "@/components/Inpage_header"
 import Report_filter from "@/components/Report_filter"
 import Recent_tansation from '@/components/Report_Rencent_transation'
 
+export const dynamic = 'force-dynamic'
+
 export default function page() {
   return (
     <div>

@@ -5,6 +5,8 @@ import Staff_profile2 from '@/components/Staff_profile2';
 import Person_understaff from '@/components/Person_understaff';
 import { query } from '@/lib/db';
 
+export const dynamic = 'force-dynamic'
+
 export default async function MemberProfile({ searchParams }) {
   // Await searchParams to resolve the Promise
   const params = await searchParams;

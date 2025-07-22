@@ -4,6 +4,7 @@ import DashboardStaff from "@/components/Dashborad_staff";
 import Dashboardgreeting from "@/components/Dashboard_greeting";
 import DashboardPlan from "@/components/Dashboard_plan";
 
+export const dynamic = 'force-dynamic'
 
 export default function Dashboard() {
   return (

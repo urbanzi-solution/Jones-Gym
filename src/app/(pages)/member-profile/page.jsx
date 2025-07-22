@@ -6,6 +6,8 @@ import Recent_transations from "@/components/Recent_transations";
 import { query } from '@/lib/db';
 import { notFound } from 'next/navigation';
 
+export const dynamic = 'force-dynamic'
+
 export default async function MemberProfile({ searchParams }) {
   const params = await searchParams;
   const member_id = params.member_id;
