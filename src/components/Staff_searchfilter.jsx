@@ -18,6 +18,8 @@ export default function Staff_searchfilter() {
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
 
+  // console.log("selectedPlan", selectedPlan);
+
   // Fetch plans and trainers_plans from APIs when component mounts
   useEffect(() => {
     async function fetchData() {

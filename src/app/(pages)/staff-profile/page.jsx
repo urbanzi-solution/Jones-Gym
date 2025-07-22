@@ -16,7 +16,13 @@ export default async function MemberProfile({ searchParams }) {
   const result = await query('SELECT * FROM trainers WHERE trainer_id = $1', [trainerId]);
   const trainer = result.rows[0] || {}; // Get the first row or an empty object if no data
 
-  const count_result = await query('SELECT COUNT(*) AS count FROM membership_plans WHERE trainer = $1', [trainerId]);
+  // const count_result = await query('SELECT COUNT(*) AS count FROM membership_plans WHERE trainer = $1', [trainerId]);
+  const count_result = await query(
+    `SELECT COUNT(DISTINCT user_id) AS count
+      FROM membership_plans
+      WHERE trainer = $1
+        AND exp_date >= CURRENT_DATE`,
+    [trainerId]);
   const count = count_result.rows[0].count; // Get the count from the query
 
   // Optional: Handle case where trainer is not found

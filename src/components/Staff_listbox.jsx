@@ -4,6 +4,9 @@ import React from "react";
 import { IoPerson } from "react-icons/io5";
 
 export default function Staff_listbox({ staff }) {
+
+  console.log("staff staff client ...", staff);
+
   return (
     <div>
       {staff.map((member, index) => (

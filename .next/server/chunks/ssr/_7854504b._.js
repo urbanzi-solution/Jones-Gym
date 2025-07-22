@@ -448,7 +448,11 @@ async function MemberProfile({ searchParams }) {
         trainerId
     ]);
     const trainer = result.rows[0] || {}; // Get the first row or an empty object if no data
-    const count_result = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["query"])('SELECT COUNT(*) AS count FROM membership_plans WHERE trainer = $1', [
+    // const count_result = await query('SELECT COUNT(*) AS count FROM membership_plans WHERE trainer = $1', [trainerId]);
+    const count_result = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["query"])(`SELECT COUNT(DISTINCT user_id) AS count
+      FROM membership_plans
+      WHERE trainer = $1
+        AND exp_date >= CURRENT_DATE`, [
         trainerId
     ]);
     const count = count_result.rows[0].count; // Get the count from the query
@@ -461,20 +465,20 @@ async function MemberProfile({ searchParams }) {
                     title: "Staff Profile"
                 }, void 0, false, {
                     fileName: "[project]/src/app/(pages)/staff-profile/page.jsx",
-                    lineNumber: 26,
+                    lineNumber: 32,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                     children: "Trainer not found"
                 }, void 0, false, {
                     fileName: "[project]/src/app/(pages)/staff-profile/page.jsx",
-                    lineNumber: 27,
+                    lineNumber: 33,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/(pages)/staff-profile/page.jsx",
-            lineNumber: 25,
+            lineNumber: 31,
             columnNumber: 7
         }, this);
     }
@@ -484,14 +488,14 @@ async function MemberProfile({ searchParams }) {
                 title: "Staff Profile"
             }, void 0, false, {
                 fileName: "[project]/src/app/(pages)/staff-profile/page.jsx",
-                lineNumber: 34,
+                lineNumber: 40,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Staff_profile$2e$jsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"], {
                 trainer: trainer
             }, void 0, false, {
                 fileName: "[project]/src/app/(pages)/staff-profile/page.jsx",
-                lineNumber: 35,
+                lineNumber: 41,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Staff_profile2$2e$jsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"], {
@@ -501,25 +505,25 @@ async function MemberProfile({ searchParams }) {
                 }
             }, void 0, false, {
                 fileName: "[project]/src/app/(pages)/staff-profile/page.jsx",
-                lineNumber: 36,
+                lineNumber: 42,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Person_understaff$2e$jsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                 fileName: "[project]/src/app/(pages)/staff-profile/page.jsx",
-                lineNumber: 37,
+                lineNumber: 43,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "h-20"
             }, void 0, false, {
                 fileName: "[project]/src/app/(pages)/staff-profile/page.jsx",
-                lineNumber: 38,
+                lineNumber: 44,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/(pages)/staff-profile/page.jsx",
-        lineNumber: 33,
+        lineNumber: 39,
         columnNumber: 5
     }, this);
 }

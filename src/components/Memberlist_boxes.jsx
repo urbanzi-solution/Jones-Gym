@@ -5,9 +5,10 @@ export default function Memberlist_boxes({ members, filters }) {
   const [membershipPlans, setMembershipPlans] = useState([]);
   const [remarkData, setRemarkData] = useState({});
   const currentDate = new Date();
-  const currentDateOnly = currentDate.toISOString().split('T')[0]; // e.g., '2025-07-09'
+  const currentDateOnly = currentDate.toISOString().split('T')[0];
 
-  console.log(members);
+  // console.log("members", members);
+  // console.log("remarkData", remarkData);
 
   const getDateOnly = (date) => {
     if (!date) return null;
@@ -47,6 +48,8 @@ export default function Memberlist_boxes({ members, filters }) {
           throw new Error('Failed to fetch remark and blacklist data');
         }
         const data = await response.json();
+
+        // console.log("data",data);
         // Create a lookup object for remarks and blacklist status
         const remarkLookup = {};
         data.forEach(item => {
@@ -60,7 +63,7 @@ export default function Memberlist_boxes({ members, filters }) {
         console.error('Error fetching remark and blacklist data:', error);
       }
     };
-    fetchRemarkBlacklist();
+    fetchRemarkBlacklist();   
   }, []);
 
   // Check if any member has an active membership plan
@@ -93,30 +96,34 @@ export default function Memberlist_boxes({ members, filters }) {
       passesActiveInactive = !expiryDateOnly || expiryDateOnly < currentDateOnly;
     }
 
-    // Status filter
     if (filters.status) {
       const filterStatus = filters.status.toLowerCase();
       if (filterStatus === "active") {
-        // If status is "Active", only proceed if there is at least one active member
-        if (!hasActiveMember) {
+        if (!hasActiveMember || remarkData[member.user_id]?.blacklistStatus === 'Black-listed') {
           return false;
         }
-        // Allow both active and inactive members to pass if hasActiveMember is true
       } else if (filterStatus === "inactive") {
         const isInactiveByExpiry = !expiryDateOnly || expiryDateOnly < currentDateOnly;
         if (!isInactiveByExpiry) {
           return false;
         }
       } else if (filterStatus === "blacklisted") {
-        if (member.status?.toLowerCase() !== "blacklisted") {
+        // const memberRemarkData = remarkData[member.user_id];
+        const memberRemarkData = remarkData[member.user_id];
+        // console.log("memberRemarkData", memberRemarkData);
+        if (!memberRemarkData || memberRemarkData.blacklistStatus !== "Black-listed") {
           return false;
         }
+
       } else {
         if (member.status?.toLowerCase() !== filterStatus) {
           return false;
         }
       }
     }
+
+    console.log(`Member ${member.user_id} blacklist status:`, 
+      remarkData[member.user_id]?.blacklistStatus || 'Not in remarkData');
 
     // Joining Date Range filter
     if (filters.startDate && filters.endDate && joiningDate) {
@@ -195,18 +202,19 @@ export default function Memberlist_boxes({ members, filters }) {
           const memberBlacklistStatus = remarkData[member.user_id]?.blacklistStatus || 'Not Black-listed';
 
           // Check if the member should be displayed based on filter status and plan validity
-          const hasValidPlan = isFiltersEmpty || membershipPlans.some((plan) => {
-            if (plan.user_id !== member.user_id) return false;
-            const planExpiryDateOnly = getDateOnly(plan.exp_date) || "01-01-2000";
-            const isPlanExpired = planExpiryDateOnly < currentDateOnly;
-            return (
-              (filters.status?.toLowerCase() === "active" && !isPlanExpired) ||
-              (filters.status?.toLowerCase() === "inactive" && isPlanExpired) ||
-              !filters.status
-            );
-          });
+          const hasValidPlan = isFiltersEmpty || 
+            (filters.status?.toLowerCase() === "blacklisted" && memberBlacklistStatus === 'Black-listed') ||
+            membershipPlans.some((plan) => {
+              if (plan.user_id !== member.user_id) return false;
+              const planExpiryDateOnly = getDateOnly(plan.exp_date) || "01-01-2000";
+              const isPlanExpired = planExpiryDateOnly < currentDateOnly;
+              return (
+                (filters.status?.toLowerCase() === "active" && !isPlanExpired) ||
+                (filters.status?.toLowerCase() === "inactive" && isPlanExpired) ||
+                !filters.status
+              );
+            });
 
-          // Only render the member box if they have a valid plan matching the filter
           if (!hasValidPlan) return null;
 
           return (

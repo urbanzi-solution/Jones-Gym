@@ -706,8 +706,9 @@ function Memberlist_boxes({ members, filters }) {
     const [membershipPlans, setMembershipPlans] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
     const [remarkData, setRemarkData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])({});
     const currentDate = new Date();
-    const currentDateOnly = currentDate.toISOString().split('T')[0]; // e.g., '2025-07-09'
-    console.log(members);
+    const currentDateOnly = currentDate.toISOString().split('T')[0];
+    // console.log("members", members);
+    // console.log("remarkData", remarkData);
     const getDateOnly = (date)=>{
         if (!date) return null;
         try {
@@ -744,6 +745,7 @@ function Memberlist_boxes({ members, filters }) {
                     throw new Error('Failed to fetch remark and blacklist data');
                 }
                 const data = await response.json();
+                // console.log("data",data);
                 // Create a lookup object for remarks and blacklist status
                 const remarkLookup = {};
                 data.forEach((item)=>{
@@ -778,22 +780,22 @@ function Memberlist_boxes({ members, filters }) {
         } else if (filters.inactive && !filters.active) {
             passesActiveInactive = !expiryDateOnly || expiryDateOnly < currentDateOnly;
         }
-        // Status filter
         if (filters.status) {
             const filterStatus = filters.status.toLowerCase();
             if (filterStatus === "active") {
-                // If status is "Active", only proceed if there is at least one active member
-                if (!hasActiveMember) {
+                if (!hasActiveMember || remarkData[member.user_id]?.blacklistStatus === 'Black-listed') {
                     return false;
                 }
-            // Allow both active and inactive members to pass if hasActiveMember is true
             } else if (filterStatus === "inactive") {
                 const isInactiveByExpiry = !expiryDateOnly || expiryDateOnly < currentDateOnly;
                 if (!isInactiveByExpiry) {
                     return false;
                 }
             } else if (filterStatus === "blacklisted") {
-                if (member.status?.toLowerCase() !== "blacklisted") {
+                // const memberRemarkData = remarkData[member.user_id];
+                const memberRemarkData = remarkData[member.user_id];
+                // console.log("memberRemarkData", memberRemarkData);
+                if (!memberRemarkData || memberRemarkData.blacklistStatus !== "Black-listed") {
                     return false;
                 }
             } else {
@@ -802,6 +804,7 @@ function Memberlist_boxes({ members, filters }) {
                 }
             }
         }
+        console.log(`Member ${member.user_id} blacklist status:`, remarkData[member.user_id]?.blacklistStatus || 'Not in remarkData');
         // Joining Date Range filter
         if (filters.startDate && filters.endDate && joiningDate) {
             const joiningDateOnly = getDateOnly(joiningDate);
@@ -854,13 +857,12 @@ function Memberlist_boxes({ members, filters }) {
             const memberRemark = remarkData[member.user_id]?.remark || 'No Remarks';
             const memberBlacklistStatus = remarkData[member.user_id]?.blacklistStatus || 'Not Black-listed';
             // Check if the member should be displayed based on filter status and plan validity
-            const hasValidPlan = isFiltersEmpty || membershipPlans.some((plan)=>{
+            const hasValidPlan = isFiltersEmpty || filters.status?.toLowerCase() === "blacklisted" && memberBlacklistStatus === 'Black-listed' || membershipPlans.some((plan)=>{
                 if (plan.user_id !== member.user_id) return false;
                 const planExpiryDateOnly = getDateOnly(plan.exp_date) || "01-01-2000";
                 const isPlanExpired = planExpiryDateOnly < currentDateOnly;
                 return filters.status?.toLowerCase() === "active" && !isPlanExpired || filters.status?.toLowerCase() === "inactive" && isPlanExpired || !filters.status;
             });
-            // Only render the member box if they have a valid plan matching the filter
             if (!hasValidPlan) return null;
             return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
                 className: "flex justify-between items-center p-4 mb-4 border rounded-lg hover:bg-[#2B2E32]",
@@ -879,7 +881,7 @@ function Memberlist_boxes({ members, filters }) {
                                 }
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                                lineNumber: 219,
+                                lineNumber: 227,
                                 columnNumber: 17
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -890,14 +892,14 @@ function Memberlist_boxes({ members, filters }) {
                                         children: member.name || "Member name"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                                        lineNumber: 230,
+                                        lineNumber: 238,
                                         columnNumber: 19
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
                                         children: member.user_id || "member_id"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                                        lineNumber: 231,
+                                        lineNumber: 239,
                                         columnNumber: 19
                                     }, this),
                                     memberRemark !== 'No Remarks' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -908,7 +910,7 @@ function Memberlist_boxes({ members, filters }) {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                                        lineNumber: 233,
+                                        lineNumber: 241,
                                         columnNumber: 21
                                     }, this),
                                     memberBlacklistStatus === 'Black-listed' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -919,19 +921,19 @@ function Memberlist_boxes({ members, filters }) {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                                        lineNumber: 238,
+                                        lineNumber: 246,
                                         columnNumber: 21
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                                lineNumber: 229,
+                                lineNumber: 237,
                                 columnNumber: 17
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                        lineNumber: 218,
+                        lineNumber: 226,
                         columnNumber: 15
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -941,7 +943,7 @@ function Memberlist_boxes({ members, filters }) {
                             children: "This member is Blacklisted"
                         }, void 0, false, {
                             fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                            lineNumber: 246,
+                            lineNumber: 254,
                             columnNumber: 19
                         }, this) : membershipPlans.filter((plan)=>plan.user_id === member.user_id).reduce((uniquePlans, plan)=>{
                             const planExpiryDateOnly = getDateOnly(plan.exp_date) || "01-01-2000";
@@ -985,18 +987,18 @@ function Memberlist_boxes({ members, filters }) {
                                 ]
                             }, `${plan.user_id}-${plan.plan_name}-${index}`, true, {
                                 fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                                lineNumber: 285,
+                                lineNumber: 293,
                                 columnNumber: 23
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                        lineNumber: 244,
+                        lineNumber: 252,
                         columnNumber: 15
                     }, this)
                 ]
             }, member.user_id || `member-${index}`, true, {
                 fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                lineNumber: 213,
+                lineNumber: 221,
                 columnNumber: 13
             }, this);
         }) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1004,12 +1006,12 @@ function Memberlist_boxes({ members, filters }) {
             children: "No members found."
         }, void 0, false, {
             fileName: "[project]/src/components/Memberlist_boxes.jsx",
-            lineNumber: 300,
+            lineNumber: 308,
             columnNumber: 9
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/Memberlist_boxes.jsx",
-        lineNumber: 177,
+        lineNumber: 184,
         columnNumber: 5
     }, this);
 }

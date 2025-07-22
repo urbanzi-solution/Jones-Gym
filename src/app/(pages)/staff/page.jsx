@@ -41,7 +41,13 @@ export default async function Staff({ searchParams }) {
   const staffWithCounts = await Promise.all(
     staff.map(async (member) => {
       const countResult = await query(
-        'SELECT COUNT(*) AS count FROM membership_plans WHERE trainer = $1',
+        `SELECT COUNT(DISTINCT user_id) AS count
+          FROM membership_plans
+          WHERE trainer = $1
+            AND exp_date >= CURRENT_DATE`,
+
+        // 'SELECT COUNT(*) AS count FROM membership_plans WHERE trainer = $1',
+      
         [member.trainer_id]
       );
       return {
