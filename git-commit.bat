@@ -34,7 +34,7 @@ if not "!commit_msg!"=="" (
 set push_choice=
 set /p push_choice="Push to origin/master? (y/n): "
 if /i "!push_choice!"=="y" (
-    git push origin master || (
+    git push origin main || (
         echo Error: Failed to push to origin/main.
         pause
         exit /b 1
