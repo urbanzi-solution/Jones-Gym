@@ -1,11 +1,12 @@
 'use client';
-// import Inpage_header from "@/components/Inpage_header"
-import Detailed_transations from "@/components/Detailed_transations"
-import { useSearchParams } from 'next/navigation'
 
-export const dynamic = 'force-dynamic'
+import Detailed_transations from "@/components/Detailed_transations";
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
-export default function Page() {
+export const dynamic = 'force-dynamic';
+
+function TransactionsContent() {
   const searchParams = useSearchParams();
   const userId = searchParams.get('userId');
   // console.log("just consoling", userId);
@@ -16,5 +17,13 @@ export default function Page() {
       <Detailed_transations userId={userId} />
       <div className="h-20"></div>
     </div>
-  )
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <TransactionsContent />
+    </Suspense>
+  );
 }
