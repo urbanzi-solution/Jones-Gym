@@ -51,6 +51,8 @@ export default function Member_addpage() {
       trainer: '',
       includeDays: false,
       days: '',
+      expiry_date: '',
+      default_expiry_date: '', // Store the default expiry from plan duration
     },
   ]);
   const [error, setError] = useState('');
@@ -72,14 +74,44 @@ export default function Member_addpage() {
     }
   };
 
+  // Calculate expiry date based on current date and duration
+  const calculateExpiryDate = (duration) => {
+    if (!duration) return '';
+    const currentDate = new Date();
+    const expiryDate = new Date(currentDate);
+    expiryDate.setDate(expiryDate.getDate() + parseInt(duration));
+    return expiryDate.toISOString().split('T')[0];
+  };
+
+  // Calculate expiry date based on days input
+  const calculateExpiryDateFromDays = (days) => {
+    if (!days) return '';
+    const currentDate = new Date();
+    const expiryDate = new Date(currentDate);
+    expiryDate.setDate(expiryDate.getDate() + parseInt(days));
+    return expiryDate.toISOString().split('T')[0];
+  };
+
   const handleToggleDays = (index) => {
     setPlans((prevPlans) => {
       const newPlans = [...prevPlans];
-      newPlans[index] = {
-        ...newPlans[index],
-        includeDays: !newPlans[index].includeDays,
-        days: !newPlans[index].includeDays ? newPlans[index].days : '',
-      };
+      if (!newPlans[index].includeDays) {
+        // Enabling includeDays - clear the expiry_date to allow manual input
+        newPlans[index] = {
+          ...newPlans[index],
+          includeDays: true,
+          days: '',
+          expiry_date: '',
+        };
+      } else {
+        // Disabling includeDays - reset to default expiry date from plan
+        newPlans[index] = {
+          ...newPlans[index],
+          includeDays: false,
+          days: '',
+          expiry_date: newPlans[index].default_expiry_date,
+        };
+      }
       return newPlans;
     });
   };
@@ -96,6 +128,8 @@ export default function Member_addpage() {
         trainer: '',
         includeDays: false,
         days: '',
+        expiry_date: '',
+        default_expiry_date: '',
       },
     ]);
   };
@@ -104,15 +138,6 @@ export default function Member_addpage() {
     if (plans.length > 1) {
       setPlans((prevPlans) => prevPlans.filter((_, i) => i !== index));
     }
-  };
-
-  // Calculate expiry date based on current date and duration
-  const calculateExpiryDate = (duration) => {
-    if (!duration) return '';
-    const currentDate = new Date();
-    const expiryDate = new Date(currentDate);
-    expiryDate.setDate(expiryDate.getDate() + parseInt(duration));
-    return expiryDate.toISOString().split('T')[0];
   };
 
   const handlePlanChange = (index, field, value) => {
@@ -134,7 +159,14 @@ export default function Member_addpage() {
       if (field === 'plan' && value) {
         const selectedPlan = availablePlans.find(plan => plan.plan_name === value);
         if (selectedPlan) {
-          newPlans[index].expiry_date = calculateExpiryDate(selectedPlan.duration);
+          const defaultExpiryDate = calculateExpiryDate(selectedPlan.duration);
+          newPlans[index].default_expiry_date = defaultExpiryDate;
+          
+          // Set expiry date based on includeDays status
+          if (!newPlans[index].includeDays) {
+            newPlans[index].expiry_date = defaultExpiryDate;
+          }
+          
           // Recalculate balance with the new plan's amount
           const amount = parseFloat(newPlans[index].amount) || 0;
           const discount = parseFloat(newPlans[index].discount) || 0;
@@ -142,6 +174,21 @@ export default function Member_addpage() {
           const planAmount = parseFloat(selectedPlan.amount) || 0;
           newPlans[index].balance = Math.max(0, planAmount - sum);
         }
+      }
+
+      // Calculate expiry date based on days input when days are included
+      if (field === 'days' && newPlans[index].includeDays && value) {
+        newPlans[index].expiry_date = calculateExpiryDateFromDays(value);
+      }
+
+      // Clear expiry date if days input is cleared
+      if (field === 'days' && newPlans[index].includeDays && !value) {
+        newPlans[index].expiry_date = '';
+      }
+
+      // Allow manual expiry date input when includeDays is enabled
+      if (field === 'expiry_date' && newPlans[index].includeDays) {
+        newPlans[index].expiry_date = value;
       }
 
       return newPlans;
@@ -237,7 +284,8 @@ export default function Member_addpage() {
           membership_plans: plans.map(plan => ({
             plan_name: plan.plan,
             join_date: formData.join_date || currentDate,
-            expiry_date: plan.expiry_date,
+            // Use manual expiry_date if includeDays is true and expiry_date is filled, otherwise use default
+            expiry_date: plan.includeDays && plan.expiry_date ? plan.expiry_date : plan.default_expiry_date,
             amount: parseFloat(plan.amount) || 0,
             discount: parseFloat(plan.discount) || 0,
             balance: plan.balance,
@@ -506,7 +554,7 @@ export default function Member_addpage() {
                     onChange={handleChange}
                     className="hidden"
                     accept="image/*"
-                    required
+                    // required
                   />
                 </label>
               </div>
@@ -662,22 +710,52 @@ export default function Member_addpage() {
                   </div>
                   
                   {plan.includeDays && (
-                    <div className="flex-1">
-                      <label htmlFor={`days-${index}`} className="block text-sm font-medium mb-1 text-gray-300">
-                        Days (optional)
-                      </label>
-                      <input
-                        type="number"
-                        id={`days-${index}`}
-                        value={plan.days}
-                        onChange={(e) => handlePlanChange(index, 'days', e.target.value)}
-                        placeholder="Number of days"
-                        min="1"
-                        className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
-                      />
+                    <div className="flex gap-4 flex-1">
+                      <div className="flex-1">
+                        <label htmlFor={`days-${index}`} className="block text-sm font-medium mb-1 text-gray-300">
+                          Days (optional)
+                        </label>
+                        <input
+                          type="number"
+                          id={`days-${index}`}
+                          value={plan.days}
+                          onChange={(e) => handlePlanChange(index, 'days', e.target.value)}
+                          placeholder="Number of days"
+                          min="1"
+                          className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
+                        />
+                      </div>
+                      
+                      <div className="flex-1">
+                        <label htmlFor={`expiry-date-${index}`} className="block text-sm font-medium mb-1 text-gray-300">
+                          Expiry Date
+                        </label>
+                        <input
+                          type="date"
+                          id={`expiry-date-${index}`}
+                          value={plan.expiry_date}
+                          onChange={(e) => handlePlanChange(index, 'expiry_date', e.target.value)}
+                          className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                        />
+                      </div>
                     </div>
                   )}
                 </div>
+
+                {/* Display current expiry date when includeDays is false */}
+                {!plan.includeDays && plan.default_expiry_date && (
+                  <div className="md:col-span-5">
+                    <label className="block text-sm font-medium mb-1 text-gray-300">
+                      Plan Expiry Date
+                    </label>
+                    <input
+                      type="date"
+                      value={plan.default_expiry_date}
+                      readOnly
+                      className="p-4 w-full bg-[#1a181b] rounded-lg border border-[#3E3A3D] text-gray-400"
+                    />
+                  </div>
+                )}
 
                 {plans.length > 1 && (
                   <div className="md:col-span-5 flex justify-end">

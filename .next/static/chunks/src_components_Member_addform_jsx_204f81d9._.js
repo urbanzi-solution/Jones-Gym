@@ -68,7 +68,9 @@ function Member_addpage() {
             bill_no: '',
             trainer: '',
             includeDays: false,
-            days: ''
+            days: '',
+            expiry_date: '',
+            default_expiry_date: ''
         }
     ]);
     const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
@@ -88,16 +90,44 @@ function Member_addpage() {
                 }));
         }
     };
+    // Calculate expiry date based on current date and duration
+    const calculateExpiryDate = (duration)=>{
+        if (!duration) return '';
+        const currentDate = new Date();
+        const expiryDate = new Date(currentDate);
+        expiryDate.setDate(expiryDate.getDate() + parseInt(duration));
+        return expiryDate.toISOString().split('T')[0];
+    };
+    // Calculate expiry date based on days input
+    const calculateExpiryDateFromDays = (days)=>{
+        if (!days) return '';
+        const currentDate = new Date();
+        const expiryDate = new Date(currentDate);
+        expiryDate.setDate(expiryDate.getDate() + parseInt(days));
+        return expiryDate.toISOString().split('T')[0];
+    };
     const handleToggleDays = (index)=>{
         setPlans((prevPlans)=>{
             const newPlans = [
                 ...prevPlans
             ];
-            newPlans[index] = {
-                ...newPlans[index],
-                includeDays: !newPlans[index].includeDays,
-                days: !newPlans[index].includeDays ? newPlans[index].days : ''
-            };
+            if (!newPlans[index].includeDays) {
+                // Enabling includeDays - clear the expiry_date to allow manual input
+                newPlans[index] = {
+                    ...newPlans[index],
+                    includeDays: true,
+                    days: '',
+                    expiry_date: ''
+                };
+            } else {
+                // Disabling includeDays - reset to default expiry date from plan
+                newPlans[index] = {
+                    ...newPlans[index],
+                    includeDays: false,
+                    days: '',
+                    expiry_date: newPlans[index].default_expiry_date
+                };
+            }
             return newPlans;
         });
     };
@@ -112,7 +142,9 @@ function Member_addpage() {
                     transaction_type: '',
                     trainer: '',
                     includeDays: false,
-                    days: ''
+                    days: '',
+                    expiry_date: '',
+                    default_expiry_date: ''
                 }
             ]);
     };
@@ -120,14 +152,6 @@ function Member_addpage() {
         if (plans.length > 1) {
             setPlans((prevPlans)=>prevPlans.filter((_, i)=>i !== index));
         }
-    };
-    // Calculate expiry date based on current date and duration
-    const calculateExpiryDate = (duration)=>{
-        if (!duration) return '';
-        const currentDate = new Date();
-        const expiryDate = new Date(currentDate);
-        expiryDate.setDate(expiryDate.getDate() + parseInt(duration));
-        return expiryDate.toISOString().split('T')[0];
     };
     const handlePlanChange = (index, field, value)=>{
         setPlans((prevPlans)=>{
@@ -151,7 +175,12 @@ function Member_addpage() {
             if (field === 'plan' && value) {
                 const selectedPlan = availablePlans.find((plan)=>plan.plan_name === value);
                 if (selectedPlan) {
-                    newPlans[index].expiry_date = calculateExpiryDate(selectedPlan.duration);
+                    const defaultExpiryDate = calculateExpiryDate(selectedPlan.duration);
+                    newPlans[index].default_expiry_date = defaultExpiryDate;
+                    // Set expiry date based on includeDays status
+                    if (!newPlans[index].includeDays) {
+                        newPlans[index].expiry_date = defaultExpiryDate;
+                    }
                     // Recalculate balance with the new plan's amount
                     const amount = parseFloat(newPlans[index].amount) || 0;
                     const discount = parseFloat(newPlans[index].discount) || 0;
@@ -159,6 +188,18 @@ function Member_addpage() {
                     const planAmount = parseFloat(selectedPlan.amount) || 0;
                     newPlans[index].balance = Math.max(0, planAmount - sum);
                 }
+            }
+            // Calculate expiry date based on days input when days are included
+            if (field === 'days' && newPlans[index].includeDays && value) {
+                newPlans[index].expiry_date = calculateExpiryDateFromDays(value);
+            }
+            // Clear expiry date if days input is cleared
+            if (field === 'days' && newPlans[index].includeDays && !value) {
+                newPlans[index].expiry_date = '';
+            }
+            // Allow manual expiry date input when includeDays is enabled
+            if (field === 'expiry_date' && newPlans[index].includeDays) {
+                newPlans[index].expiry_date = value;
             }
             return newPlans;
         });
@@ -241,7 +282,8 @@ function Member_addpage() {
                     membership_plans: plans.map((plan)=>({
                             plan_name: plan.plan,
                             join_date: formData.join_date || currentDate,
-                            expiry_date: plan.expiry_date,
+                            // Use manual expiry_date if includeDays is true and expiry_date is filled, otherwise use default
+                            expiry_date: plan.includeDays && plan.expiry_date ? plan.expiry_date : plan.default_expiry_date,
                             amount: parseFloat(plan.amount) || 0,
                             discount: parseFloat(plan.discount) || 0,
                             balance: plan.balance,
@@ -308,7 +350,7 @@ function Member_addpage() {
                         children: "Add Member"
                     }, void 0, false, {
                         fileName: "[project]/src/components/Member_addform.jsx",
-                        lineNumber: 306,
+                        lineNumber: 354,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$gr$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["GrClose"], {
@@ -316,13 +358,13 @@ function Member_addpage() {
                         onClick: ()=>router.back()
                     }, void 0, false, {
                         fileName: "[project]/src/components/Member_addform.jsx",
-                        lineNumber: 307,
+                        lineNumber: 355,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/Member_addform.jsx",
-                lineNumber: 305,
+                lineNumber: 353,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -337,7 +379,7 @@ function Member_addpage() {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Member_addform.jsx",
-                        lineNumber: 315,
+                        lineNumber: 363,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -354,7 +396,7 @@ function Member_addpage() {
                                                 children: "Gym ID *"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_addform.jsx",
-                                                lineNumber: 324,
+                                                lineNumber: 372,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -363,128 +405,6 @@ function Member_addpage() {
                                                 value: formData.gym_id,
                                                 onChange: handleChange,
                                                 placeholder: "Enter Gym ID",
-                                                className: "p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500",
-                                                required: true
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/components/Member_addform.jsx",
-                                                lineNumber: 327,
-                                                columnNumber: 15
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/src/components/Member_addform.jsx",
-                                        lineNumber: 323,
-                                        columnNumber: 13
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                htmlFor: "fullName",
-                                                className: "block text-sm font-medium mb-1 text-gray-300",
-                                                children: "Full Name *"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/components/Member_addform.jsx",
-                                                lineNumber: 339,
-                                                columnNumber: 15
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                type: "text",
-                                                id: "fullName",
-                                                value: formData.fullName,
-                                                onChange: handleChange,
-                                                placeholder: "Enter full name",
-                                                className: "p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500",
-                                                required: true
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/components/Member_addform.jsx",
-                                                lineNumber: 342,
-                                                columnNumber: 15
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/src/components/Member_addform.jsx",
-                                        lineNumber: 338,
-                                        columnNumber: 13
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                htmlFor: "gender",
-                                                className: "block text-sm font-medium mb-1 text-gray-300",
-                                                children: "Gender *"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/components/Member_addform.jsx",
-                                                lineNumber: 354,
-                                                columnNumber: 15
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
-                                                id: "gender",
-                                                value: formData.gender,
-                                                onChange: handleChange,
-                                                className: "p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] appearance-none",
-                                                required: true,
-                                                children: [
-                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
-                                                        value: "",
-                                                        children: "Select Gender"
-                                                    }, void 0, false, {
-                                                        fileName: "[project]/src/components/Member_addform.jsx",
-                                                        lineNumber: 364,
-                                                        columnNumber: 17
-                                                    }, this),
-                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
-                                                        value: "male",
-                                                        children: "Male"
-                                                    }, void 0, false, {
-                                                        fileName: "[project]/src/components/Member_addform.jsx",
-                                                        lineNumber: 365,
-                                                        columnNumber: 17
-                                                    }, this),
-                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
-                                                        value: "female",
-                                                        children: "Female"
-                                                    }, void 0, false, {
-                                                        fileName: "[project]/src/components/Member_addform.jsx",
-                                                        lineNumber: 366,
-                                                        columnNumber: 17
-                                                    }, this),
-                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
-                                                        value: "other",
-                                                        children: "Other"
-                                                    }, void 0, false, {
-                                                        fileName: "[project]/src/components/Member_addform.jsx",
-                                                        lineNumber: 367,
-                                                        columnNumber: 17
-                                                    }, this)
-                                                ]
-                                            }, void 0, true, {
-                                                fileName: "[project]/src/components/Member_addform.jsx",
-                                                lineNumber: 357,
-                                                columnNumber: 15
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/src/components/Member_addform.jsx",
-                                        lineNumber: 353,
-                                        columnNumber: 13
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                htmlFor: "weight",
-                                                className: "block text-sm font-medium mb-1 text-gray-300",
-                                                children: "Weight *"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/components/Member_addform.jsx",
-                                                lineNumber: 372,
-                                                columnNumber: 15
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                type: "number",
-                                                id: "weight",
-                                                value: formData.weight,
-                                                onChange: handleChange,
-                                                placeholder: "Enter the weight",
                                                 className: "p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500",
                                                 required: true
                                             }, void 0, false, {
@@ -501,20 +421,22 @@ function Member_addpage() {
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                htmlFor: "dob",
+                                                htmlFor: "fullName",
                                                 className: "block text-sm font-medium mb-1 text-gray-300",
-                                                children: "Date of Birth"
+                                                children: "Full Name *"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_addform.jsx",
                                                 lineNumber: 387,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                type: "date",
-                                                id: "dob",
-                                                value: formData.dob,
+                                                type: "text",
+                                                id: "fullName",
+                                                value: formData.fullName,
                                                 onChange: handleChange,
-                                                className: "p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                                placeholder: "Enter full name",
+                                                className: "p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500",
+                                                required: true
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_addform.jsx",
                                                 lineNumber: 390,
@@ -529,12 +451,132 @@ function Member_addpage() {
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                htmlFor: "gender",
+                                                className: "block text-sm font-medium mb-1 text-gray-300",
+                                                children: "Gender *"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/components/Member_addform.jsx",
+                                                lineNumber: 402,
+                                                columnNumber: 15
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
+                                                id: "gender",
+                                                value: formData.gender,
+                                                onChange: handleChange,
+                                                className: "p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] appearance-none",
+                                                required: true,
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                                        value: "",
+                                                        children: "Select Gender"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/components/Member_addform.jsx",
+                                                        lineNumber: 412,
+                                                        columnNumber: 17
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                                        value: "male",
+                                                        children: "Male"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/components/Member_addform.jsx",
+                                                        lineNumber: 413,
+                                                        columnNumber: 17
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                                        value: "female",
+                                                        children: "Female"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/components/Member_addform.jsx",
+                                                        lineNumber: 414,
+                                                        columnNumber: 17
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                                        value: "other",
+                                                        children: "Other"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/components/Member_addform.jsx",
+                                                        lineNumber: 415,
+                                                        columnNumber: 17
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/src/components/Member_addform.jsx",
+                                                lineNumber: 405,
+                                                columnNumber: 15
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/components/Member_addform.jsx",
+                                        lineNumber: 401,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                htmlFor: "weight",
+                                                className: "block text-sm font-medium mb-1 text-gray-300",
+                                                children: "Weight *"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/components/Member_addform.jsx",
+                                                lineNumber: 420,
+                                                columnNumber: 15
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                type: "number",
+                                                id: "weight",
+                                                value: formData.weight,
+                                                onChange: handleChange,
+                                                placeholder: "Enter the weight",
+                                                className: "p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500",
+                                                required: true
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/components/Member_addform.jsx",
+                                                lineNumber: 423,
+                                                columnNumber: 15
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/components/Member_addform.jsx",
+                                        lineNumber: 419,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                htmlFor: "dob",
+                                                className: "block text-sm font-medium mb-1 text-gray-300",
+                                                children: "Date of Birth"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/components/Member_addform.jsx",
+                                                lineNumber: 435,
+                                                columnNumber: 15
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                type: "date",
+                                                id: "dob",
+                                                value: formData.dob,
+                                                onChange: handleChange,
+                                                className: "p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/components/Member_addform.jsx",
+                                                lineNumber: 438,
+                                                columnNumber: 15
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/components/Member_addform.jsx",
+                                        lineNumber: 434,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                                 htmlFor: "about",
                                                 className: "block text-sm font-medium mb-1 text-gray-300",
                                                 children: "About / Description"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_addform.jsx",
-                                                lineNumber: 401,
+                                                lineNumber: 449,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -546,19 +588,19 @@ function Member_addpage() {
                                                 className: "p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_addform.jsx",
-                                                lineNumber: 404,
+                                                lineNumber: 452,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Member_addform.jsx",
-                                        lineNumber: 400,
+                                        lineNumber: 448,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/Member_addform.jsx",
-                                lineNumber: 322,
+                                lineNumber: 370,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -572,7 +614,7 @@ function Member_addpage() {
                                                 children: "Location *"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_addform.jsx",
-                                                lineNumber: 421,
+                                                lineNumber: 469,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -585,13 +627,13 @@ function Member_addpage() {
                                                 required: true
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_addform.jsx",
-                                                lineNumber: 424,
+                                                lineNumber: 472,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Member_addform.jsx",
-                                        lineNumber: 420,
+                                        lineNumber: 468,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -602,7 +644,7 @@ function Member_addpage() {
                                                 children: "Phone Number *"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_addform.jsx",
-                                                lineNumber: 436,
+                                                lineNumber: 484,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -615,13 +657,13 @@ function Member_addpage() {
                                                 required: true
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_addform.jsx",
-                                                lineNumber: 439,
+                                                lineNumber: 487,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Member_addform.jsx",
-                                        lineNumber: 435,
+                                        lineNumber: 483,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -632,7 +674,7 @@ function Member_addpage() {
                                                 children: "WhatsApp Number *"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_addform.jsx",
-                                                lineNumber: 451,
+                                                lineNumber: 499,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -645,13 +687,13 @@ function Member_addpage() {
                                                 required: true
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_addform.jsx",
-                                                lineNumber: 454,
+                                                lineNumber: 502,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Member_addform.jsx",
-                                        lineNumber: 450,
+                                        lineNumber: 498,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -662,7 +704,7 @@ function Member_addpage() {
                                                 children: "Joining Date *"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_addform.jsx",
-                                                lineNumber: 466,
+                                                lineNumber: 514,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -674,23 +716,23 @@ function Member_addpage() {
                                                 required: true
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_addform.jsx",
-                                                lineNumber: 469,
+                                                lineNumber: 517,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Member_addform.jsx",
-                                        lineNumber: 465,
+                                        lineNumber: 513,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                                 className: "block text-sm font-medium mb-1 text-gray-300",
-                                                children: "Profile Picture (Optional)"
+                                                children: "Profile Picture *"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_addform.jsx",
-                                                lineNumber: 480,
+                                                lineNumber: 528,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -713,12 +755,12 @@ function Member_addpage() {
                                                                         d: "M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/components/Member_addform.jsx",
-                                                                        lineNumber: 492,
+                                                                        lineNumber: 540,
                                                                         columnNumber: 23
                                                                     }, this)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/Member_addform.jsx",
-                                                                    lineNumber: 486,
+                                                                    lineNumber: 534,
                                                                     columnNumber: 21
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -726,13 +768,13 @@ function Member_addpage() {
                                                                     children: selectedFileName ? selectedFileName : 'Click to upload image'
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/Member_addform.jsx",
-                                                                    lineNumber: 499,
+                                                                    lineNumber: 547,
                                                                     columnNumber: 21
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/Member_addform.jsx",
-                                                            lineNumber: 485,
+                                                            lineNumber: 533,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -743,36 +785,36 @@ function Member_addpage() {
                                                             accept: "image/*"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/Member_addform.jsx",
-                                                            lineNumber: 503,
+                                                            lineNumber: 551,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/Member_addform.jsx",
-                                                    lineNumber: 484,
+                                                    lineNumber: 532,
                                                     columnNumber: 17
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_addform.jsx",
-                                                lineNumber: 483,
+                                                lineNumber: 531,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Member_addform.jsx",
-                                        lineNumber: 479,
+                                        lineNumber: 527,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/Member_addform.jsx",
-                                lineNumber: 419,
+                                lineNumber: 467,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Member_addform.jsx",
-                        lineNumber: 320,
+                        lineNumber: 368,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -786,7 +828,7 @@ function Member_addpage() {
                                 className: "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Member_addform.jsx",
-                                lineNumber: 517,
+                                lineNumber: 566,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -795,13 +837,13 @@ function Member_addpage() {
                                 children: "Include Membership Plan?"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Member_addform.jsx",
-                                lineNumber: 524,
+                                lineNumber: 573,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Member_addform.jsx",
-                        lineNumber: 516,
+                        lineNumber: 565,
                         columnNumber: 9
                     }, this),
                     includeMembership && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -812,7 +854,7 @@ function Member_addpage() {
                                 children: "Membership Plans"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Member_addform.jsx",
-                                lineNumber: 531,
+                                lineNumber: 580,
                                 columnNumber: 13
                             }, this),
                             plans.map((plan, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -826,7 +868,7 @@ function Member_addpage() {
                                                     children: "Plan"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/Member_addform.jsx",
-                                                    lineNumber: 536,
+                                                    lineNumber: 585,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -840,7 +882,7 @@ function Member_addpage() {
                                                             children: "Select Plan"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/Member_addform.jsx",
-                                                            lineNumber: 545,
+                                                            lineNumber: 594,
                                                             columnNumber: 21
                                                         }, this),
                                                         availablePlans.map((planName)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -852,99 +894,11 @@ function Member_addpage() {
                                                                 ]
                                                             }, planName.plan_name, true, {
                                                                 fileName: "[project]/src/components/Member_addform.jsx",
-                                                                lineNumber: 547,
+                                                                lineNumber: 596,
                                                                 columnNumber: 23
                                                             }, this))
                                                     ]
                                                 }, void 0, true, {
-                                                    fileName: "[project]/src/components/Member_addform.jsx",
-                                                    lineNumber: 539,
-                                                    columnNumber: 19
-                                                }, this)
-                                            ]
-                                        }, void 0, true, {
-                                            fileName: "[project]/src/components/Member_addform.jsx",
-                                            lineNumber: 535,
-                                            columnNumber: 17
-                                        }, this),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                            children: [
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                    htmlFor: `amount-${index}`,
-                                                    className: "block text-sm font-medium mb-1 text-gray-300",
-                                                    children: "Amount (₹)"
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/components/Member_addform.jsx",
-                                                    lineNumber: 555,
-                                                    columnNumber: 19
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                    type: "number",
-                                                    id: `amount-${index}`,
-                                                    value: plan.amount,
-                                                    onChange: (e)=>handlePlanChange(index, 'amount', e.target.value),
-                                                    placeholder: "Amount",
-                                                    min: "0",
-                                                    className: "p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/components/Member_addform.jsx",
-                                                    lineNumber: 558,
-                                                    columnNumber: 19
-                                                }, this)
-                                            ]
-                                        }, void 0, true, {
-                                            fileName: "[project]/src/components/Member_addform.jsx",
-                                            lineNumber: 554,
-                                            columnNumber: 17
-                                        }, this),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                            children: [
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                    htmlFor: `discount-${index}`,
-                                                    className: "block text-sm font-medium mb-1 text-gray-300",
-                                                    children: "Discount (₹)"
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/components/Member_addform.jsx",
-                                                    lineNumber: 570,
-                                                    columnNumber: 19
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                    type: "number",
-                                                    id: `discount-${index}`,
-                                                    value: plan.discount,
-                                                    onChange: (e)=>handlePlanChange(index, 'discount', e.target.value),
-                                                    placeholder: "Discount",
-                                                    min: "0",
-                                                    className: "p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/components/Member_addform.jsx",
-                                                    lineNumber: 573,
-                                                    columnNumber: 19
-                                                }, this)
-                                            ]
-                                        }, void 0, true, {
-                                            fileName: "[project]/src/components/Member_addform.jsx",
-                                            lineNumber: 569,
-                                            columnNumber: 17
-                                        }, this),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                            children: [
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                    htmlFor: `balance-${index}`,
-                                                    className: "block text-sm font-medium mb-1 text-gray-300",
-                                                    children: "Balance (₹)"
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/components/Member_addform.jsx",
-                                                    lineNumber: 585,
-                                                    columnNumber: 19
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                    type: "number",
-                                                    id: `balance-${index}`,
-                                                    value: plan.balance.toFixed(2),
-                                                    readOnly: true,
-                                                    className: "p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
-                                                }, void 0, false, {
                                                     fileName: "[project]/src/components/Member_addform.jsx",
                                                     lineNumber: 588,
                                                     columnNumber: 19
@@ -958,12 +912,100 @@ function Member_addpage() {
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                    htmlFor: `amount-${index}`,
+                                                    className: "block text-sm font-medium mb-1 text-gray-300",
+                                                    children: "Amount (₹)"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/components/Member_addform.jsx",
+                                                    lineNumber: 604,
+                                                    columnNumber: 19
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                    type: "number",
+                                                    id: `amount-${index}`,
+                                                    value: plan.amount,
+                                                    onChange: (e)=>handlePlanChange(index, 'amount', e.target.value),
+                                                    placeholder: "Amount",
+                                                    min: "0",
+                                                    className: "p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/components/Member_addform.jsx",
+                                                    lineNumber: 607,
+                                                    columnNumber: 19
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/components/Member_addform.jsx",
+                                            lineNumber: 603,
+                                            columnNumber: 17
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                    htmlFor: `discount-${index}`,
+                                                    className: "block text-sm font-medium mb-1 text-gray-300",
+                                                    children: "Discount (₹)"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/components/Member_addform.jsx",
+                                                    lineNumber: 619,
+                                                    columnNumber: 19
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                    type: "number",
+                                                    id: `discount-${index}`,
+                                                    value: plan.discount,
+                                                    onChange: (e)=>handlePlanChange(index, 'discount', e.target.value),
+                                                    placeholder: "Discount",
+                                                    min: "0",
+                                                    className: "p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/components/Member_addform.jsx",
+                                                    lineNumber: 622,
+                                                    columnNumber: 19
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/components/Member_addform.jsx",
+                                            lineNumber: 618,
+                                            columnNumber: 17
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                    htmlFor: `balance-${index}`,
+                                                    className: "block text-sm font-medium mb-1 text-gray-300",
+                                                    children: "Balance (₹)"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/components/Member_addform.jsx",
+                                                    lineNumber: 634,
+                                                    columnNumber: 19
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                    type: "number",
+                                                    id: `balance-${index}`,
+                                                    value: plan.balance.toFixed(2),
+                                                    readOnly: true,
+                                                    className: "p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/components/Member_addform.jsx",
+                                                    lineNumber: 637,
+                                                    columnNumber: 19
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/components/Member_addform.jsx",
+                                            lineNumber: 633,
+                                            columnNumber: 17
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                                     htmlFor: `transaction_type-${index}`,
                                                     className: "block text-sm font-medium mb-1 text-gray-300",
                                                     children: "Transaction Type"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/Member_addform.jsx",
-                                                    lineNumber: 598,
+                                                    lineNumber: 647,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -977,7 +1019,7 @@ function Member_addpage() {
                                                             children: "Select Type"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/Member_addform.jsx",
-                                                            lineNumber: 607,
+                                                            lineNumber: 656,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -985,7 +1027,7 @@ function Member_addpage() {
                                                             children: "GPay"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/Member_addform.jsx",
-                                                            lineNumber: 608,
+                                                            lineNumber: 657,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -993,7 +1035,7 @@ function Member_addpage() {
                                                             children: "Cash"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/Member_addform.jsx",
-                                                            lineNumber: 609,
+                                                            lineNumber: 658,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1001,7 +1043,7 @@ function Member_addpage() {
                                                             children: "Credit Card"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/Member_addform.jsx",
-                                                            lineNumber: 610,
+                                                            lineNumber: 659,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1009,7 +1051,7 @@ function Member_addpage() {
                                                             children: "Bank Transfer"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/Member_addform.jsx",
-                                                            lineNumber: 611,
+                                                            lineNumber: 660,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1017,19 +1059,19 @@ function Member_addpage() {
                                                             children: "Other"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/Member_addform.jsx",
-                                                            lineNumber: 612,
+                                                            lineNumber: 661,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/Member_addform.jsx",
-                                                    lineNumber: 601,
+                                                    lineNumber: 650,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/Member_addform.jsx",
-                                            lineNumber: 597,
+                                            lineNumber: 646,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1040,7 +1082,7 @@ function Member_addpage() {
                                                     children: "Bill No"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/Member_addform.jsx",
-                                                    lineNumber: 617,
+                                                    lineNumber: 666,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1052,13 +1094,13 @@ function Member_addpage() {
                                                     className: "p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/Member_addform.jsx",
-                                                    lineNumber: 620,
+                                                    lineNumber: 669,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/Member_addform.jsx",
-                                            lineNumber: 616,
+                                            lineNumber: 665,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1070,7 +1112,7 @@ function Member_addpage() {
                                                     children: "Assigned Trainer"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/Member_addform.jsx",
-                                                    lineNumber: 631,
+                                                    lineNumber: 680,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1084,7 +1126,7 @@ function Member_addpage() {
                                                             children: "Select Trainer"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/Member_addform.jsx",
-                                                            lineNumber: 640,
+                                                            lineNumber: 689,
                                                             columnNumber: 21
                                                         }, this),
                                                         trainers.map((trainer)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1092,19 +1134,19 @@ function Member_addpage() {
                                                                 children: trainer.name
                                                             }, trainer.trainer_id, false, {
                                                                 fileName: "[project]/src/components/Member_addform.jsx",
-                                                                lineNumber: 642,
+                                                                lineNumber: 691,
                                                                 columnNumber: 23
                                                             }, this))
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/Member_addform.jsx",
-                                                    lineNumber: 634,
+                                                    lineNumber: 683,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/Member_addform.jsx",
-                                            lineNumber: 630,
+                                            lineNumber: 679,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1121,7 +1163,7 @@ function Member_addpage() {
                                                             className: "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/Member_addform.jsx",
-                                                            lineNumber: 651,
+                                                            lineNumber: 700,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -1130,51 +1172,116 @@ function Member_addpage() {
                                                             children: "Include Days"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/Member_addform.jsx",
-                                                            lineNumber: 658,
+                                                            lineNumber: 707,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/Member_addform.jsx",
-                                                    lineNumber: 650,
+                                                    lineNumber: 699,
                                                     columnNumber: 19
                                                 }, this),
                                                 plan.includeDays && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                    className: "flex-1",
+                                                    className: "flex gap-4 flex-1",
                                                     children: [
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                            htmlFor: `days-${index}`,
-                                                            className: "block text-sm font-medium mb-1 text-gray-300",
-                                                            children: "Days (optional)"
-                                                        }, void 0, false, {
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                            className: "flex-1",
+                                                            children: [
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                                    htmlFor: `days-${index}`,
+                                                                    className: "block text-sm font-medium mb-1 text-gray-300",
+                                                                    children: "Days (optional)"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/components/Member_addform.jsx",
+                                                                    lineNumber: 715,
+                                                                    columnNumber: 25
+                                                                }, this),
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                                    type: "number",
+                                                                    id: `days-${index}`,
+                                                                    value: plan.days,
+                                                                    onChange: (e)=>handlePlanChange(index, 'days', e.target.value),
+                                                                    placeholder: "Number of days",
+                                                                    min: "1",
+                                                                    className: "p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/components/Member_addform.jsx",
+                                                                    lineNumber: 718,
+                                                                    columnNumber: 25
+                                                                }, this)
+                                                            ]
+                                                        }, void 0, true, {
                                                             fileName: "[project]/src/components/Member_addform.jsx",
-                                                            lineNumber: 665,
+                                                            lineNumber: 714,
                                                             columnNumber: 23
                                                         }, this),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                            type: "number",
-                                                            id: `days-${index}`,
-                                                            value: plan.days,
-                                                            onChange: (e)=>handlePlanChange(index, 'days', e.target.value),
-                                                            placeholder: "Number of days",
-                                                            min: "1",
-                                                            className: "p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
-                                                        }, void 0, false, {
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                            className: "flex-1",
+                                                            children: [
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                                    htmlFor: `expiry-date-${index}`,
+                                                                    className: "block text-sm font-medium mb-1 text-gray-300",
+                                                                    children: "Expiry Date"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/components/Member_addform.jsx",
+                                                                    lineNumber: 730,
+                                                                    columnNumber: 25
+                                                                }, this),
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                                    type: "date",
+                                                                    id: `expiry-date-${index}`,
+                                                                    value: plan.expiry_date,
+                                                                    onChange: (e)=>handlePlanChange(index, 'expiry_date', e.target.value),
+                                                                    className: "p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/components/Member_addform.jsx",
+                                                                    lineNumber: 733,
+                                                                    columnNumber: 25
+                                                                }, this)
+                                                            ]
+                                                        }, void 0, true, {
                                                             fileName: "[project]/src/components/Member_addform.jsx",
-                                                            lineNumber: 668,
+                                                            lineNumber: 729,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/Member_addform.jsx",
-                                                    lineNumber: 664,
+                                                    lineNumber: 713,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/Member_addform.jsx",
-                                            lineNumber: 649,
+                                            lineNumber: 698,
                                             columnNumber: 17
+                                        }, this),
+                                        !plan.includeDays && plan.default_expiry_date && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: "md:col-span-5",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                    className: "block text-sm font-medium mb-1 text-gray-300",
+                                                    children: "Plan Expiry Date"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/components/Member_addform.jsx",
+                                                    lineNumber: 748,
+                                                    columnNumber: 21
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                    type: "date",
+                                                    value: plan.default_expiry_date,
+                                                    readOnly: true,
+                                                    className: "p-4 w-full bg-[#1a181b] rounded-lg border border-[#3E3A3D] text-gray-400"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/components/Member_addform.jsx",
+                                                    lineNumber: 751,
+                                                    columnNumber: 21
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/components/Member_addform.jsx",
+                                            lineNumber: 747,
+                                            columnNumber: 19
                                         }, this),
                                         plans.length > 1 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "md:col-span-5 flex justify-end",
@@ -1185,18 +1292,18 @@ function Member_addpage() {
                                                 children: "Remove Plan"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_addform.jsx",
-                                                lineNumber: 683,
+                                                lineNumber: 762,
                                                 columnNumber: 21
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/Member_addform.jsx",
-                                            lineNumber: 682,
+                                            lineNumber: 761,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, index, true, {
                                     fileName: "[project]/src/components/Member_addform.jsx",
-                                    lineNumber: 534,
+                                    lineNumber: 583,
                                     columnNumber: 15
                                 }, this)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1208,18 +1315,18 @@ function Member_addpage() {
                                     children: "Add Another Plan"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/Member_addform.jsx",
-                                    lineNumber: 696,
+                                    lineNumber: 775,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Member_addform.jsx",
-                                lineNumber: 695,
+                                lineNumber: 774,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Member_addform.jsx",
-                        lineNumber: 530,
+                        lineNumber: 579,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1233,7 +1340,7 @@ function Member_addpage() {
                                 children: "Cancel"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Member_addform.jsx",
-                                lineNumber: 708,
+                                lineNumber: 787,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1243,29 +1350,29 @@ function Member_addpage() {
                                 children: isSubmitting ? "Saving..." : "Save"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Member_addform.jsx",
-                                lineNumber: 716,
+                                lineNumber: 795,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Member_addform.jsx",
-                        lineNumber: 707,
+                        lineNumber: 786,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/Member_addform.jsx",
-                lineNumber: 313,
+                lineNumber: 361,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/Member_addform.jsx",
-        lineNumber: 304,
+        lineNumber: 352,
         columnNumber: 5
     }, this);
 }
-_s(Member_addpage, "qnI4YFd9Uz81LPmahrAJugBQI1k=", false, function() {
+_s(Member_addpage, "fskGPdrCNY530TfHmtJQNKFnUxA=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"]
     ];

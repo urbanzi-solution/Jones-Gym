@@ -1224,7 +1224,7 @@ function MembersClient({ members }) {
                 className: "z-0"
             }, void 0, false, {
                 fileName: "[project]/src/components/MembersClient.jsx",
-                lineNumber: 60,
+                lineNumber: 59,
                 columnNumber: 7
             }, this)
         ]
