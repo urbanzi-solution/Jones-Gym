@@ -40,6 +40,12 @@ export default function EditUserData({ member, onCancel }) {
     }));
   };
 
+  const handleCancel = () => {
+    if (onCancel) {
+      onCancel();
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSaving(true);
@@ -179,7 +185,7 @@ export default function EditUserData({ member, onCancel }) {
       <div className="flex flex-col sm:flex-row gap-4">
         <button
           type="button"
-          onClick={onCancel}
+          onClick={handleCancel}
           className="w-full border border-gray-500 text-white rounded-lg py-3 hover:bg-[#1a1a1a] transition"
           disabled={isSaving || saveSuccess}
         >

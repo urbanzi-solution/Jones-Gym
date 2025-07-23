@@ -43,6 +43,7 @@ renew plan existing plan validation
 > completed
 
 Blacklisted user no plans and blacklist banner in member list
+> completed
 
 -------
 
@@ -50,7 +51,13 @@ add form days and exp date calculations
 
 login page
 
-close button in renew form and balance form
+close button in renew form and balance form (icon close button)
+> completed
+
+close button in member profile edit form (icon close button)
+> completed
+
+back button working 
 
 -------
 

@@ -56,7 +56,6 @@ export default function MembersClient({ members }) {
     <>
       <Inpage_header title="Members List" onExport={exportToExcel} />
       <MemberSearchFilter setFilters={setFilters} />
-      
       <Memberlist_boxes members={members} filters={filters} className="z-0" />
     </>
   );

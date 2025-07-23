@@ -1,3 +1,4 @@
+// src\components\Remarks_form.jsx
 "use client";
 import { useState, useEffect } from "react";
 
@@ -12,6 +13,12 @@ export default function RemarksForm({ user_id, onSave, onCancel }) {
       setName(user_id);
     }
   }, [user_id]);
+
+  const handleCancel = () => {
+    if (onCancel) {
+      onCancel();
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,7 +86,7 @@ export default function RemarksForm({ user_id, onSave, onCancel }) {
       <div className="flex flex-col sm:flex-row gap-4">
         <button
           type="button"
-          onClick={onCancel}
+          onClick={handleCancel}
           className="w-full border border-gray-500 text-white rounded-lg py-3 hover:bg-[#1a1a1a] transition"
           disabled={isSubmitting}
         >

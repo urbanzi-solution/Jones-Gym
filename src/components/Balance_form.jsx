@@ -1,7 +1,8 @@
+// src\components\Balance_form.jsx
 "use client";
 import { useState, useEffect } from 'react';
 
-export default function Balance_form({ user_id, membershipPlans }) {
+export default function Balance_form({ user_id, membershipPlans, onCancel }) {
   const [selectedPlan, setSelectedPlan] = useState(membershipPlans[0]?.plan_name || '');
   const [newAmountReceived, setNewAmountReceived] = useState(0);
   const [formData, setFormData] = useState({
@@ -128,14 +129,21 @@ export default function Balance_form({ user_id, membershipPlans }) {
   };
 
   const handleCancel = () => {
+    // Reset form data to original values
     const plan = membershipPlans.find(p => p.plan_name === selectedPlan) || membershipPlans[0] || {};
     setFormData({
       amountPaid: plan.amount || 0,
       discount: plan.discount || 0,
       bill_no: plan.bill_no || '',
+      trainer: plan.trainer || '',
     });
     setNewAmountReceived(0);
     setMessage({ text: '', type: '' });
+    
+    // Close the component by calling the onCancel prop
+    if (onCancel) {
+      onCancel();
+    }
   };
 
   const handleWriteOff = () => {

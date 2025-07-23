@@ -1,3 +1,4 @@
+// src\components\memberlist_profile.jsx
 "use client";
 import { useState, useEffect, useMemo } from "react";
 import { FaRegCheckCircle } from "react-icons/fa";
@@ -185,8 +186,13 @@ export default function MemberlistProfile({ member }) {
                   size={28}
                 />
               </div>
+
               {/* <Balance_form /> */}
-              <BalanceEditForm user_id={member.user_id} membershipPlans={membershipPlans} />
+              <BalanceEditForm 
+                user_id={member.user_id} 
+                membershipPlans={membershipPlans} 
+                onCancel={toggleBalanceBox}
+              />
             </div>
           )}
         </div>
@@ -231,7 +237,11 @@ export default function MemberlistProfile({ member }) {
                   size={28}
                 />
               </div>
-              <Renew_form user_id={member.user_id} membershipPlans={membershipPlans}/>
+              <Renew_form 
+                user_id={member.user_id} 
+                membershipPlans={membershipPlans}
+                onCancel={toggleRenewBox}
+              />
             </div>
           )}
         </div>

@@ -57,6 +57,19 @@ export default function Inpage_header({ title, member_id, member }) {
     setEditUserDataShow(false);
   };
 
+  // Individual close functions for better control
+  const closeEditUserData = () => {
+    setEditUserDataShow(false);
+  };
+
+  const closeRemarks = () => {
+    setRemarksShow(false);
+  };
+
+  const closeBlacklist = () => {
+    setBlacklistShow(false);
+  };
+
   return (
     <div className="relative flex text-2xl md:text-4xl p-4 md:p-6 lg:p-10 justify-between items-center">
       <a href="">
@@ -106,13 +119,13 @@ export default function Inpage_header({ title, member_id, member }) {
           <div className="relative w-full max-w-2xl bg-[#0a0a0a] border border-[#6e6e6e] rounded-xl overflow-hidden flex flex-col max-h-[90vh]">
             <div className="sticky top-0 z-10 bg-[#0a0a0a] p-4 border-b border-[#6e6e6e] flex justify-end">
               <GrClose
-                onClick={closeAllModals}
+                onClick={closeRemarks}
                 className="cursor-pointer text-gray-400 hover:text-white hover:scale-90 transition-transform"
                 size={28}
               />
             </div>
             <div className="overflow-y-auto p-4 md:p-6 text-sm md:text-base">
-              <RemarksForm user_id={member_id} onSave={closeAllModals} onCancel={closeAllModals} />
+              <RemarksForm user_id={member_id} onSave={closeRemarks} onCancel={closeRemarks} />
             </div>
             <div className="h-20" />
           </div>
@@ -125,7 +138,7 @@ export default function Inpage_header({ title, member_id, member }) {
           <div className="relative w-full max-w-2xl bg-[#0a0a0a] border border-[#6e6e6e] rounded-xl overflow-hidden flex flex-col max-h-[90vh]">
             <div className="sticky top-0 z-10 bg-[#0a0a0a] p-4 border-b border-[#6e6e6e] flex justify-end">
               <GrClose
-                onClick={closeAllModals}
+                onClick={closeBlacklist}
                 className="cursor-pointer text-gray-400 hover:text-white hover:scale-90 transition-transform"
                 size={28}
               />
@@ -135,9 +148,9 @@ export default function Inpage_header({ title, member_id, member }) {
                 user_id={member_id}
                 onSave={(data) => {
                   console.log("Blacklisted:", data);
-                  closeAllModals();
+                  closeBlacklist();
                 }}
-                onCancel={closeAllModals}
+                onCancel={closeBlacklist}
               />
             </div>
             <div className="h-20" />
@@ -151,7 +164,7 @@ export default function Inpage_header({ title, member_id, member }) {
           <div className="relative w-full max-w-2xl bg-[#0a0a0a] border border-[#6e6e6e] rounded-xl overflow-hidden flex flex-col max-h-[90vh]">
             <div className="sticky top-0 z-10 bg-[#0a0a0a] p-4 border-b border-[#6e6e6e] flex justify-end">
               <GrClose
-                onClick={closeAllModals}
+                onClick={closeEditUserData}
                 className="cursor-pointer text-gray-400 hover:text-white hover:scale-90 transition-transform"
                 size={28}
               />
@@ -162,9 +175,9 @@ export default function Inpage_header({ title, member_id, member }) {
                 user_id={member_id}
                 onSave={(data) => {
                   console.log("User Data Edited:", data);
-                  closeAllModals();
+                  closeEditUserData();
                 }}
-                onCancel={closeAllModals}
+                onCancel={closeEditUserData}
               />
             </div>
             <div className="h-20" />

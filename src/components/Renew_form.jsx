@@ -1,8 +1,9 @@
+// src\components\Renew_form.jsx
 "use client";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function RenewalFormSection({ user_id, membershipPlans}) {
+export default function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
   console.log(membershipPlans)
   const [formData, setFormData] = useState({
     bill_no: '',
@@ -166,16 +167,28 @@ export default function RenewalFormSection({ user_id, membershipPlans}) {
   };
 
   const handleCancel = () => {
+    // Reset form data to initial state
     setFormData({
       bill_no: '',
       plan: '',
+      days:'',
       amount: '',
+      totalAmount:'',
       discount: '',
       balance: 0,
       transaction_type: '',
       trainer_id: '',
       expiry_date: ''
     });
+    
+    // Clear any error or success messages
+    setError(null);
+    setSuccess(null);
+    
+    // Close the component by calling the onCancel prop
+    if (onCancel) {
+      onCancel();
+    }
   };
 
   return (

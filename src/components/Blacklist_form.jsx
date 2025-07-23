@@ -14,6 +14,12 @@ export default function BlacklistForm({ user_id, onSave, onCancel }) {
     }
   }, [user_id]);
 
+  const handleCancel = () => {
+    if (onCancel) {
+      onCancel();
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -78,7 +84,7 @@ export default function BlacklistForm({ user_id, onSave, onCancel }) {
       <div className="flex flex-col sm:flex-row gap-4">
         <button
           type="button"
-          onClick={onCancel}
+          onClick={handleCancel}
           className="w-full border border-gray-500 text-white rounded-lg py-3 hover:bg-[#1a1a1a] transition"
           disabled={isSubmitting}
         >
