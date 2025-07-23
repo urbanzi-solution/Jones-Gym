@@ -5,7 +5,7 @@
   "static/chunks/node_modules_react-icons_gr_index_mjs_42e3d99f._.js",
   "static/chunks/node_modules_react-icons_fa_index_mjs_d2e2d7f5._.js",
   "static/chunks/node_modules_next_066d1226._.js",
-  "static/chunks/src_components_ef0a540a._.js"
+  "static/chunks/src_bc673e34._.js"
 ],
     source: "dynamic"
 });

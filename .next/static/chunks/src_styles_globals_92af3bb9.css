@@ -320,6 +320,10 @@
     position: relative;
   }
 
+  .static {
+    position: static;
+  }
+
   .sticky {
     position: sticky;
   }
@@ -867,6 +871,10 @@
 
   .border-gray-700 {
     border-color: var(--color-gray-700);
+  }
+
+  .border-red-600 {
+    border-color: var(--color-red-600);
   }
 
   .border-transparent {
