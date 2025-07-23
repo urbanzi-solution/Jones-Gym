@@ -8,5 +8,6 @@
   "/api/fetch_plans/route": "app/api/fetch_plans/route.js",
   "/api/fetch_remark_blcklist/route": "app/api/fetch_remark_blcklist/route.js",
   "/api/members/route": "app/api/members/route.js",
-  "/api/notification/route": "app/api/notification/route.js"
+  "/api/notification/route": "app/api/notification/route.js",
+  "/login/page": "app/login/page.js"
 }
