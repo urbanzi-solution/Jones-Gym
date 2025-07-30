@@ -149,10 +149,10 @@ export default function Member_addpage() {
         const selectedPlan = availablePlans.find(plan => plan.plan_name === newPlans[index].plan);
         if (selectedPlan) {
           const amount = parseFloat(newPlans[index].amount) || 0;
+          const totalamount = parseFloat(newPlans[index].totalamount) || 0;
           const discount = parseFloat(newPlans[index].discount) || 0;
           const sum = amount + discount;
-          const planAmount = parseFloat(selectedPlan.amount) || 0;
-          newPlans[index].balance = Math.max(0, planAmount - sum);
+          newPlans[index].balance = Math.max(0, totalamount - sum);
         }
       }
 
@@ -169,10 +169,12 @@ export default function Member_addpage() {
           
           // Recalculate balance with the new plan's amount
           const amount = parseFloat(newPlans[index].amount) || 0;
+          const totalamount = parseFloat(newPlans[index].totalamount) || 0;
           const discount = parseFloat(newPlans[index].discount) || 0;
           const sum = amount + discount;
           const planAmount = parseFloat(selectedPlan.amount) || 0;
-          newPlans[index].balance = Math.max(0, planAmount - sum);
+          newPlans[index].totalamount = Math.max(planAmount);
+          newPlans[index].balance = Math.max(0, totalamount - sum || 0);
         }
       }
 
@@ -217,56 +219,58 @@ export default function Member_addpage() {
 
       // Handle profile picture upload first if exists
       if (formData.profilePicture) {
-        console.log('Uploading profile picture...');
-        const imageFormData = new FormData();
-        imageFormData.append('profilePicture', formData.profilePicture);
-        imageFormData.append('gym_id', formData.gym_id);
-
-        const uploadResponse = await fetch('/api/upload_profile_picture', {
-          method: 'POST',
-          body: imageFormData,
-        });
-
-        console.log('Upload response status:', uploadResponse.status);
-        console.log('Upload response headers:', uploadResponse.headers);
-        console.log('Upload response URL:', uploadResponse.url);
-
-        // Get the raw response text first
-        const responseText = await uploadResponse.text();
-        console.log('Raw response text:', responseText);
-
-        if (!uploadResponse.ok) {
-          console.error('Upload failed with status:', uploadResponse.status);
-          console.error('Response text:', responseText);
-          
-          let errorMessage = 'Failed to upload profile picture';
-          
-          // Check if response is HTML (error page)
-          if (responseText.startsWith('<!DOCTYPE html>') || responseText.startsWith('<html>')) {
-            errorMessage = `Upload failed: Received HTML response instead of JSON. Status: ${uploadResponse.status}`;
-          } else {
-            try {
-              const errorData = JSON.parse(responseText);
-              errorMessage = errorData.error || errorMessage;
-            } catch (parseError) {
-              console.error('Error parsing upload response:', parseError);
-              errorMessage = `Upload failed: ${responseText.substring(0, 100)}...`;
-            }
-          }
-          throw new Error(errorMessage);
-        }
-
-        // Try to parse JSON response
-        let uploadResult;
         try {
-          uploadResult = JSON.parse(responseText);
-          console.log('Upload successful:', uploadResult);
-        } catch (parseError) {
-          console.error('Error parsing successful upload response:', parseError);
-          console.error('Response was:', responseText);
-          throw new Error('Upload completed but received invalid response format');
+          console.log('Uploading profile picture...');
+          const imageFormData = new FormData();
+          // Make sure to append file as Blob/File with proper name
+          imageFormData.append('profilePicture', formData.profilePicture, formData.profilePicture.name || 'profile.jpg');
+          imageFormData.append('gym_id', formData.gym_id);
+
+          const uploadResponse = await fetch('/api/upload_profile_picture', {
+            method: 'POST',
+            body: imageFormData,
+            // Do NOT set 'Content-Type' header — browser sets correct multipart boundary automatically
+          });
+
+          const responseText = await uploadResponse.text();
+
+          if (!uploadResponse.ok) {
+            console.error('Upload failed with status:', uploadResponse.status);
+            console.error('Response text:', responseText);
+
+            let errorMessage = 'Failed to upload profile picture';
+
+            if (responseText.startsWith('<!DOCTYPE html>') || responseText.startsWith('<html>')) {
+              errorMessage = `Upload failed: Received HTML response instead of JSON. Status: ${uploadResponse.status}`;
+            } else {
+              try {
+                const errorData = JSON.parse(responseText);
+                errorMessage = errorData.error || errorMessage;
+              } catch {
+                errorMessage = `Upload failed: ${responseText.substring(0, 100)}...`;
+              }
+            }
+            throw new Error(errorMessage);
+          }
+
+          let uploadResult;
+          try {
+            uploadResult = JSON.parse(responseText);
+            console.log('Upload successful:', uploadResult);
+            // Optionally, you can save the uploaded key or URL if needed:
+            // formData.uploadedProfilePictureKey = uploadResult.key;
+          } catch (parseError) {
+            console.error('Error parsing successful upload response:', parseError);
+            console.error('Response was:', responseText);
+            throw new Error('Upload completed but received invalid response format');
+          }
+        } catch (err) {
+          setIsSubmitting(false);
+          setError(`Profile picture upload error: ${err.message}`);
+          return; // Prevent further submission if upload fails
         }
       }
+
 
       // Prepare member data
       const dataToSubmit = {
@@ -284,7 +288,6 @@ export default function Member_addpage() {
           membership_plans: plans.map(plan => ({
             plan_name: plan.plan,
             join_date: formData.join_date || currentDate,
-            // Use manual expiry_date if includeDays is true and expiry_date is filled, otherwise use default
             expiry_date: plan.includeDays && plan.expiry_date ? plan.expiry_date : plan.default_expiry_date,
             amount: parseFloat(plan.amount) || 0,
             discount: parseFloat(plan.discount) || 0,
@@ -309,8 +312,8 @@ export default function Member_addpage() {
         body: JSON.stringify(dataToSubmit),
       });
 
-      console.log('Member submission response status:', response.status);
-      console.log('Member submission response headers:', response.headers);
+      // console.log('Member submission response status:', response.status);
+      // console.log('Member submission response headers:', response.headers);
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -602,6 +605,21 @@ export default function Member_addpage() {
 
                 <div>
                   <label htmlFor={`amount-${index}`} className="block text-sm font-medium mb-1 text-gray-300">
+                    Total Amount (₹)
+                  </label>
+                  <input
+                    type="number"
+                    id={`totalamount-${index}`}
+                    value={plan.totalamount}
+                    onChange={(e) => handlePlanChange(index, 'totalamount', e.target.value)}
+                    placeholder="Total Amount"
+                    min="0"
+                    className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor={`amount-${index}`} className="block text-sm font-medium mb-1 text-gray-300">
                     Amount (₹)
                   </label>
                   <input
@@ -637,7 +655,7 @@ export default function Member_addpage() {
                   <input
                     type="number"
                     id={`balance-${index}`}
-                    value={plan.balance.toFixed(2)}
+                    value={plan.balance}
                     readOnly
                     className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
                   />

@@ -1,0 +1,7 @@
+create table user_cred(username varchar(15), password varchar(100));
+
+INSERT INTO user_cred (username, password)
+VALUES ('Manager', '$2b$10$RNEhdAw1oxZKlfTaiSP0wOK49LXq6a/YVNdn2G9HoTcTVxgVRXiam');
+
+INSERT INTO user_cred (username, password)
+VALUES ('Admin', 'Mustang');

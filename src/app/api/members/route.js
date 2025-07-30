@@ -5,6 +5,9 @@ export async function POST(request) {
   let client;
   try {
     const data = await request.json();
+
+    console.log("data", data);
+
     const {
       gym_id,
       full_name,

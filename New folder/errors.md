@@ -6,7 +6,7 @@ Uncaught Error: Hydration failed because the server rendered HTML didn't match t
 - External changing data without sending a snapshot of it along with the HTML.
 - Invalid HTML tag nesting.
 
-It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+### It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
 
 https://react.dev/link/hydration-mismatch
     at throwOnHydrationMismatch (react-dom-client.development.js:4432:11)

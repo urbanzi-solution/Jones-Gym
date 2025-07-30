@@ -120,6 +120,7 @@ async function POST(request) {
     let client;
     try {
         const data = await request.json();
+        console.log("data", data);
         const { gym_id, full_name, gender, weight, dob, about, location, phone, whatsapp, join_date, membership_plans = [] } = data;
         // console.log("🚀 Received data from frontend:", data);
         // Get database client
