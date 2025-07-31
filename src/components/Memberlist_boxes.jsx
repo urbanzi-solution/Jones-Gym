@@ -227,12 +227,25 @@ export default function Memberlist_boxes({ members, filters }) {
                 <img
                   loading="lazy"
                   className="w-16 h-16 sm:h-22 sm:w-22 lg:w-40 lg:h-40 object-cover border-2 rounded-full"
-                  src={member.user_id ? `/images/user_pic/${member.user_id}.png` : "/images/user1.jpg"}
+                  src={member.user_id 
+                    ? `/api/fetch_user_images?user_id=${member.user_id}` 
+                    : "/images/user3.jpg"
+                  }
                   alt={member.name || "Member"}
                   onError={(e) => {
-                    e.target.src = "/images/user1.jpg";
+                    e.target.src = "/images/user3.jpg";
                   }}
                 />
+
+                {/* <img
+                  loading="lazy"
+                  className="w-16 h-16 sm:h-22 sm:w-22 lg:w-40 lg:h-40 object-cover border-2 rounded-full"
+                  src={member.user_id ? `/images/user_pic/${member.user_id}.png` : "/images/user3.jpg"}
+                  alt={member.name || "Member"}
+                  onError={(e) => {
+                    e.target.src = "/images/user3.jpg";
+                  }}
+                /> */}
                 
                 <span className="flex flex-col gap-1 text-sm sm:text-xl lg:text-2xl">
                   <h3 className="font-semibold">{member.name || "Member name"}</h3>

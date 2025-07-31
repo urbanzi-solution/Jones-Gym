@@ -5,8 +5,6 @@ import { IoPerson } from "react-icons/io5";
 
 export default function Staff_listbox({ staff }) {
 
-  console.log("staff staff client ...", staff);
-
   return (
     <div>
       {staff.map((member, index) => (
@@ -19,12 +17,25 @@ export default function Staff_listbox({ staff }) {
             <img
               loading="lazy"
               className="w-16 h-16 sm:w-32 sm:h-32 lg:w-40 lg:h-40 object-cover border-2 rounded-full"
-              src={member.trainer_id ? `/images/trainer_pic/${member.trainer_id}.png` : "/images/user1.jpg"}
+              src={member.trainer_id 
+                ? `/api/fetch_trainer_images?trainer_id=${member.trainer_id}` 
+                : "/images/user3.jpg"
+              }
               alt="Staff Member"
               onError={(e) => {
-                e.target.src = "/images/user1.jpg";
+                e.target.src = "/images/user3.jpg";
               }}
             />
+
+            {/* <img
+              loading="lazy"
+              className="w-16 h-16 sm:w-32 sm:h-32 lg:w-40 lg:h-40 object-cover border-2 rounded-full"
+              src={member.trainer_id ? `/images/trainer_pic/${member.trainer_id}.png` : "/images/user3.jpg"}
+              alt="Staff Member"
+              onError={(e) => {
+                e.target.src = "/images/user3.jpg";
+              }}
+            /> */}
             <span className="flex flex-col gap-1 md:gap-5 text-sm sm:text-xl lg:text-2xl">
               <h3 className="font-semibold">{member.name || "Unknown"}</h3>
               <h4>{member.trainer_id || "Unknown"}</h4>

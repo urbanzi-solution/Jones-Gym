@@ -15,7 +15,11 @@ export default async function GalleryImage() {
           <img 
             loading="lazy"
             className="w-full aspect-[3/4] object-cover" 
-            src={member.user_id ? `/images/user_pic/${member.user_id}.png` : "/images/user1.jpg"}
+            // src={member.user_id ? `/images/user_pic/${member.user_id}.png` : "/images/user1.jpg"}
+            src={member.user_id 
+              ? `/api/fetch_user_images?user_id=${member.user_id}` 
+              : "/images/user3.jpg"
+            }
             alt={member.name || "User profile"}
           />
           <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/95 via-black/60 to-transparent">

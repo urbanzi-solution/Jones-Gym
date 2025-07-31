@@ -33,7 +33,11 @@ export default async function DashboardMembers() {
                         href={`/member-profile?member_id=${member.user_id || 'unknown'}`}
                         className="flex flex-col items-center">
                         <img 
-                            src={member.hasImage ? `/images/user_pic/${member.user_id}.png` : "/images/user1.jpg"}
+                            // src={member.hasImage ? `/images/user_pic/${member.user_id}.png` : "/images/user1.jpg"}
+                            src={member.user_id 
+                                ? `/api/fetch_user_images?user_id=${member.user_id}` 
+                                : "/images/user3.jpg"
+                            }
                             alt="Member" 
                             loading='lazy'
                             className="rounded-full object-cover border-2 border-white shadow-md w-16 h-16 sm:w-32 sm:h-32 lg:w-50 lg:h-50"

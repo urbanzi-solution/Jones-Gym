@@ -49,7 +49,11 @@ export default async function DashboardStaff() {
               className="flex flex-col items-center"
             >
               <img
-                src={member.hasImage ? `/images/trainer_pic/${member.trainer_id}.png` : "/images/user1.jpg"}
+                // src={member.hasImage ? `/images/trainer_pic/${member.trainer_id}.png` : "/images/user1.jpg"}
+                src={member.trainer_id 
+                  ? `/api/fetch_trainer_images?trainer_id=${member.trainer_id}` 
+                  : "/images/user3.jpg"
+                }
                 alt={member.name || 'Staff member'}
                 loading='lazy'
                 className="rounded-full object-cover border-2 border-white shadow-md w-16 h-16 sm:w-32 sm:h-32 lg:w-50 lg:h-50"

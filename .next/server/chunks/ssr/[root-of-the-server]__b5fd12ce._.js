@@ -264,7 +264,8 @@ async function DashboardMembers() {
                         className: "flex flex-col items-center",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
-                                src: member.hasImage ? `/images/user_pic/${member.user_id}.png` : "/images/user1.jpg",
+                                // src={member.hasImage ? `/images/user_pic/${member.user_id}.png` : "/images/user1.jpg"}
+                                src: member.user_id ? `/api/fetch_user_images?user_id=${member.user_id}` : "/images/user3.jpg",
                                 alt: "Member",
                                 loading: "lazy",
                                 className: "rounded-full object-cover border-2 border-white shadow-md w-16 h-16 sm:w-32 sm:h-32 lg:w-50 lg:h-50"
@@ -278,7 +279,7 @@ async function DashboardMembers() {
                                 children: member.user_id || '123'
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Dashboard_members.jsx",
-                                lineNumber: 41,
+                                lineNumber: 45,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -286,7 +287,7 @@ async function DashboardMembers() {
                                 children: member.name || `Member ${index + 1}`
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Dashboard_members.jsx",
-                                lineNumber: 42,
+                                lineNumber: 46,
                                 columnNumber: 25
                             }, this)
                         ]
@@ -423,7 +424,8 @@ async function DashboardStaff() {
                         className: "flex flex-col items-center",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
-                                src: member.hasImage ? `/images/trainer_pic/${member.trainer_id}.png` : "/images/user1.jpg",
+                                // src={member.hasImage ? `/images/trainer_pic/${member.trainer_id}.png` : "/images/user1.jpg"}
+                                src: member.trainer_id ? `/api/fetch_trainer_images?trainer_id=${member.trainer_id}` : "/images/user3.jpg",
                                 alt: member.name || 'Staff member',
                                 loading: "lazy",
                                 className: "rounded-full object-cover border-2 border-white shadow-md w-16 h-16 sm:w-32 sm:h-32 lg:w-50 lg:h-50"
@@ -437,7 +439,7 @@ async function DashboardStaff() {
                                 children: member.trainer_id || '123'
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Dashborad_staff.jsx",
-                                lineNumber: 57,
+                                lineNumber: 61,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -445,7 +447,7 @@ async function DashboardStaff() {
                                 children: member.name || `Staff ${index + 1}`
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Dashborad_staff.jsx",
-                                lineNumber: 58,
+                                lineNumber: 62,
                                 columnNumber: 15
                             }, this)
                         ]
@@ -458,7 +460,7 @@ async function DashboardStaff() {
                     children: "No staff found."
                 }, void 0, false, {
                     fileName: "[project]/src/components/Dashborad_staff.jsx",
-                    lineNumber: 62,
+                    lineNumber: 66,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {

@@ -5,6 +5,7 @@
 
 var { g: global, __dirname, k: __turbopack_refresh__, m: module } = __turbopack_context__;
 {
+// src\components\Remarks_form.jsx
 __turbopack_context__.s({
     "default": (()=>RemarksForm)
 });
@@ -29,6 +30,11 @@ function RemarksForm({ user_id, onSave, onCancel }) {
     }["RemarksForm.useEffect"], [
         user_id
     ]);
+    const handleCancel = ()=>{
+        if (onCancel) {
+            onCancel();
+        }
+    };
     const handleSubmit = async (e)=>{
         e.preventDefault();
         setIsSubmitting(true);
@@ -69,7 +75,7 @@ function RemarksForm({ user_id, onSave, onCancel }) {
                         children: "User ID"
                     }, void 0, false, {
                         fileName: "[project]/src/components/Remarks_form.jsx",
-                        lineNumber: 47,
+                        lineNumber: 54,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -82,13 +88,13 @@ function RemarksForm({ user_id, onSave, onCancel }) {
                         maxLength: 10
                     }, void 0, false, {
                         fileName: "[project]/src/components/Remarks_form.jsx",
-                        lineNumber: 48,
+                        lineNumber: 55,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/Remarks_form.jsx",
-                lineNumber: 46,
+                lineNumber: 53,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -98,7 +104,7 @@ function RemarksForm({ user_id, onSave, onCancel }) {
                         children: "Remarks"
                     }, void 0, false, {
                         fileName: "[project]/src/components/Remarks_form.jsx",
-                        lineNumber: 61,
+                        lineNumber: 68,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -111,13 +117,13 @@ function RemarksForm({ user_id, onSave, onCancel }) {
                         maxLength: 50
                     }, void 0, false, {
                         fileName: "[project]/src/components/Remarks_form.jsx",
-                        lineNumber: 62,
+                        lineNumber: 69,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/Remarks_form.jsx",
-                lineNumber: 60,
+                lineNumber: 67,
                 columnNumber: 7
             }, this),
             error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -125,7 +131,7 @@ function RemarksForm({ user_id, onSave, onCancel }) {
                 children: error
             }, void 0, false, {
                 fileName: "[project]/src/components/Remarks_form.jsx",
-                lineNumber: 75,
+                lineNumber: 82,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -133,13 +139,13 @@ function RemarksForm({ user_id, onSave, onCancel }) {
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                         type: "button",
-                        onClick: onCancel,
+                        onClick: handleCancel,
                         className: "w-full border border-gray-500 text-white rounded-lg py-3 hover:bg-[#1a1a1a] transition",
                         disabled: isSubmitting,
                         children: "Cancel"
                     }, void 0, false, {
                         fileName: "[project]/src/components/Remarks_form.jsx",
-                        lineNumber: 80,
+                        lineNumber: 87,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -149,19 +155,19 @@ function RemarksForm({ user_id, onSave, onCancel }) {
                         children: isSubmitting ? 'Saving...' : 'Save Remarks'
                     }, void 0, false, {
                         fileName: "[project]/src/components/Remarks_form.jsx",
-                        lineNumber: 88,
+                        lineNumber: 95,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/Remarks_form.jsx",
-                lineNumber: 79,
+                lineNumber: 86,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/Remarks_form.jsx",
-        lineNumber: 44,
+        lineNumber: 51,
         columnNumber: 5
     }, this);
 }
@@ -203,6 +209,11 @@ function BlacklistForm({ user_id, onSave, onCancel }) {
     }["BlacklistForm.useEffect"], [
         user_id
     ]);
+    const handleCancel = ()=>{
+        if (onCancel) {
+            onCancel();
+        }
+    };
     const handleSubmit = async (e)=>{
         e.preventDefault();
         setIsSubmitting(true);
@@ -243,7 +254,7 @@ function BlacklistForm({ user_id, onSave, onCancel }) {
                         children: "User ID"
                     }, void 0, false, {
                         fileName: "[project]/src/components/Blacklist_form.jsx",
-                        lineNumber: 48,
+                        lineNumber: 54,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -255,13 +266,13 @@ function BlacklistForm({ user_id, onSave, onCancel }) {
                         disabled: isSubmitting
                     }, void 0, false, {
                         fileName: "[project]/src/components/Blacklist_form.jsx",
-                        lineNumber: 49,
+                        lineNumber: 55,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/Blacklist_form.jsx",
-                lineNumber: 47,
+                lineNumber: 53,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -271,7 +282,7 @@ function BlacklistForm({ user_id, onSave, onCancel }) {
                         children: "Reason"
                     }, void 0, false, {
                         fileName: "[project]/src/components/Blacklist_form.jsx",
-                        lineNumber: 61,
+                        lineNumber: 67,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -283,13 +294,13 @@ function BlacklistForm({ user_id, onSave, onCancel }) {
                         disabled: isSubmitting
                     }, void 0, false, {
                         fileName: "[project]/src/components/Blacklist_form.jsx",
-                        lineNumber: 62,
+                        lineNumber: 68,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/Blacklist_form.jsx",
-                lineNumber: 60,
+                lineNumber: 66,
                 columnNumber: 7
             }, this),
             error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -297,7 +308,7 @@ function BlacklistForm({ user_id, onSave, onCancel }) {
                 children: error
             }, void 0, false, {
                 fileName: "[project]/src/components/Blacklist_form.jsx",
-                lineNumber: 74,
+                lineNumber: 80,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -305,13 +316,13 @@ function BlacklistForm({ user_id, onSave, onCancel }) {
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                         type: "button",
-                        onClick: onCancel,
+                        onClick: handleCancel,
                         className: "w-full border border-gray-500 text-white rounded-lg py-3 hover:bg-[#1a1a1a] transition",
                         disabled: isSubmitting,
                         children: "Cancel"
                     }, void 0, false, {
                         fileName: "[project]/src/components/Blacklist_form.jsx",
-                        lineNumber: 79,
+                        lineNumber: 85,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -321,19 +332,19 @@ function BlacklistForm({ user_id, onSave, onCancel }) {
                         children: isSubmitting ? 'Adding...' : 'Add To Blacklist'
                     }, void 0, false, {
                         fileName: "[project]/src/components/Blacklist_form.jsx",
-                        lineNumber: 87,
+                        lineNumber: 93,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/Blacklist_form.jsx",
-                lineNumber: 78,
+                lineNumber: 84,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/Blacklist_form.jsx",
-        lineNumber: 45,
+        lineNumber: 51,
         columnNumber: 5
     }, this);
 }
@@ -396,6 +407,11 @@ function EditUserData({ member, onCancel }) {
                 [name]: value
             }));
     };
+    const handleCancel = ()=>{
+        if (onCancel) {
+            onCancel();
+        }
+    };
     const handleSubmit = async (e)=>{
         e.preventDefault();
         setIsSaving(true);
@@ -449,7 +465,7 @@ function EditUserData({ member, onCancel }) {
                         children: "User ID"
                     }, void 0, false, {
                         fileName: "[project]/src/components/edit_user_data.jsx",
-                        lineNumber: 96,
+                        lineNumber: 102,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -460,13 +476,13 @@ function EditUserData({ member, onCancel }) {
                         readOnly: true
                     }, void 0, false, {
                         fileName: "[project]/src/components/edit_user_data.jsx",
-                        lineNumber: 97,
+                        lineNumber: 103,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/edit_user_data.jsx",
-                lineNumber: 95,
+                lineNumber: 101,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -476,7 +492,7 @@ function EditUserData({ member, onCancel }) {
                         children: "Name"
                     }, void 0, false, {
                         fileName: "[project]/src/components/edit_user_data.jsx",
-                        lineNumber: 108,
+                        lineNumber: 114,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -487,13 +503,13 @@ function EditUserData({ member, onCancel }) {
                         onChange: handleChange
                     }, void 0, false, {
                         fileName: "[project]/src/components/edit_user_data.jsx",
-                        lineNumber: 109,
+                        lineNumber: 115,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/edit_user_data.jsx",
-                lineNumber: 107,
+                lineNumber: 113,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -503,7 +519,7 @@ function EditUserData({ member, onCancel }) {
                         children: "Gender"
                     }, void 0, false, {
                         fileName: "[project]/src/components/edit_user_data.jsx",
-                        lineNumber: 120,
+                        lineNumber: 126,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -517,7 +533,7 @@ function EditUserData({ member, onCancel }) {
                                 children: formData.gender
                             }, void 0, false, {
                                 fileName: "[project]/src/components/edit_user_data.jsx",
-                                lineNumber: 127,
+                                lineNumber: 133,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -525,7 +541,7 @@ function EditUserData({ member, onCancel }) {
                                 children: "Male"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/edit_user_data.jsx",
-                                lineNumber: 128,
+                                lineNumber: 134,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -533,7 +549,7 @@ function EditUserData({ member, onCancel }) {
                                 children: "Female"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/edit_user_data.jsx",
-                                lineNumber: 129,
+                                lineNumber: 135,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -541,19 +557,19 @@ function EditUserData({ member, onCancel }) {
                                 children: "Other"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/edit_user_data.jsx",
-                                lineNumber: 130,
+                                lineNumber: 136,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/edit_user_data.jsx",
-                        lineNumber: 121,
+                        lineNumber: 127,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/edit_user_data.jsx",
-                lineNumber: 119,
+                lineNumber: 125,
                 columnNumber: 7
             }, this),
             [
@@ -566,7 +582,7 @@ function EditUserData({ member, onCancel }) {
                             children: field.split('_').map((word)=>word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
                         }, void 0, false, {
                             fileName: "[project]/src/components/edit_user_data.jsx",
-                            lineNumber: 137,
+                            lineNumber: 143,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -577,13 +593,13 @@ function EditUserData({ member, onCancel }) {
                             onChange: handleChange
                         }, void 0, false, {
                             fileName: "[project]/src/components/edit_user_data.jsx",
-                            lineNumber: 140,
+                            lineNumber: 146,
                             columnNumber: 11
                         }, this)
                     ]
                 }, field, true, {
                     fileName: "[project]/src/components/edit_user_data.jsx",
-                    lineNumber: 136,
+                    lineNumber: 142,
                     columnNumber: 9
                 }, this)),
             [
@@ -597,7 +613,7 @@ function EditUserData({ member, onCancel }) {
                             children: field.split('_').map((word)=>word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
                         }, void 0, false, {
                             fileName: "[project]/src/components/edit_user_data.jsx",
-                            lineNumber: 153,
+                            lineNumber: 159,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -608,13 +624,13 @@ function EditUserData({ member, onCancel }) {
                             onChange: handleChange
                         }, void 0, false, {
                             fileName: "[project]/src/components/edit_user_data.jsx",
-                            lineNumber: 156,
+                            lineNumber: 162,
                             columnNumber: 11
                         }, this)
                     ]
                 }, field, true, {
                     fileName: "[project]/src/components/edit_user_data.jsx",
-                    lineNumber: 152,
+                    lineNumber: 158,
                     columnNumber: 9
                 }, this)),
             error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -622,7 +638,7 @@ function EditUserData({ member, onCancel }) {
                 children: error
             }, void 0, false, {
                 fileName: "[project]/src/components/edit_user_data.jsx",
-                lineNumber: 168,
+                lineNumber: 174,
                 columnNumber: 9
             }, this),
             saveSuccess && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -630,7 +646,7 @@ function EditUserData({ member, onCancel }) {
                 children: "User data updated successfully! Redirecting..."
             }, void 0, false, {
                 fileName: "[project]/src/components/edit_user_data.jsx",
-                lineNumber: 173,
+                lineNumber: 179,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -638,13 +654,13 @@ function EditUserData({ member, onCancel }) {
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                         type: "button",
-                        onClick: onCancel,
+                        onClick: handleCancel,
                         className: "w-full border border-gray-500 text-white rounded-lg py-3 hover:bg-[#1a1a1a] transition",
                         disabled: isSaving || saveSuccess,
                         children: "Cancel"
                     }, void 0, false, {
                         fileName: "[project]/src/components/edit_user_data.jsx",
-                        lineNumber: 180,
+                        lineNumber: 186,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -654,19 +670,19 @@ function EditUserData({ member, onCancel }) {
                         children: saveSuccess ? "Redirecting..." : isSaving ? "Saving..." : "Update User Data"
                     }, void 0, false, {
                         fileName: "[project]/src/components/edit_user_data.jsx",
-                        lineNumber: 188,
+                        lineNumber: 194,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/edit_user_data.jsx",
-                lineNumber: 179,
+                lineNumber: 185,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/edit_user_data.jsx",
-        lineNumber: 93,
+        lineNumber: 99,
         columnNumber: 5
     }, this);
 }
@@ -753,6 +769,16 @@ function Inpage_header({ title, member_id, member }) {
         setBlacklistShow(false);
         setEditUserDataShow(false);
     };
+    // Individual close functions for better control
+    const closeEditUserData = ()=>{
+        setEditUserDataShow(false);
+    };
+    const closeRemarks = ()=>{
+        setRemarksShow(false);
+    };
+    const closeBlacklist = ()=>{
+        setBlacklistShow(false);
+    };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "relative flex text-2xl md:text-4xl p-4 md:p-6 lg:p-10 justify-between items-center",
         children: [
@@ -763,12 +789,12 @@ function Inpage_header({ title, member_id, member }) {
                     className: "text-[#FFDD4A]"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                    lineNumber: 63,
+                    lineNumber: 76,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                lineNumber: 62,
+                lineNumber: 75,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
@@ -776,7 +802,7 @@ function Inpage_header({ title, member_id, member }) {
                 children: title
             }, void 0, false, {
                 fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                lineNumber: 65,
+                lineNumber: 78,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -785,12 +811,12 @@ function Inpage_header({ title, member_id, member }) {
                     className: "text-[#ffffff]"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                    lineNumber: 67,
+                    lineNumber: 80,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                lineNumber: 66,
+                lineNumber: 79,
                 columnNumber: 7
             }, this),
             showOptions && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -804,7 +830,7 @@ function Inpage_header({ title, member_id, member }) {
                                 children: "Options"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                                lineNumber: 73,
+                                lineNumber: 86,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$gr$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["GrClose"], {
@@ -813,13 +839,13 @@ function Inpage_header({ title, member_id, member }) {
                                 size: 28
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                                lineNumber: 74,
+                                lineNumber: 87,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                        lineNumber: 72,
+                        lineNumber: 85,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -831,7 +857,7 @@ function Inpage_header({ title, member_id, member }) {
                                 children: "Edit Data"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                                lineNumber: 81,
+                                lineNumber: 94,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -840,7 +866,7 @@ function Inpage_header({ title, member_id, member }) {
                                 children: "Blacklist"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                                lineNumber: 87,
+                                lineNumber: 100,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -849,19 +875,19 @@ function Inpage_header({ title, member_id, member }) {
                                 children: "Remarks"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                                lineNumber: 93,
+                                lineNumber: 106,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                        lineNumber: 80,
+                        lineNumber: 93,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                lineNumber: 71,
+                lineNumber: 84,
                 columnNumber: 9
             }, this),
             remarksShow && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -872,51 +898,51 @@ function Inpage_header({ title, member_id, member }) {
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "sticky top-0 z-10 bg-[#0a0a0a] p-4 border-b border-[#6e6e6e] flex justify-end",
                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$gr$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["GrClose"], {
-                                onClick: closeAllModals,
+                                onClick: closeRemarks,
                                 className: "cursor-pointer text-gray-400 hover:text-white hover:scale-90 transition-transform",
                                 size: 28
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                                lineNumber: 108,
+                                lineNumber: 121,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                            lineNumber: 107,
+                            lineNumber: 120,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "overflow-y-auto p-4 md:p-6 text-sm md:text-base",
                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Remarks_form$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
                                 user_id: member_id,
-                                onSave: closeAllModals,
-                                onCancel: closeAllModals
+                                onSave: closeRemarks,
+                                onCancel: closeRemarks
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                                lineNumber: 115,
+                                lineNumber: 128,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                            lineNumber: 114,
+                            lineNumber: 127,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "h-20"
                         }, void 0, false, {
                             fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                            lineNumber: 117,
+                            lineNumber: 130,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                    lineNumber: 106,
+                    lineNumber: 119,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                lineNumber: 105,
+                lineNumber: 118,
                 columnNumber: 9
             }, this),
             blacklistShow && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -927,17 +953,17 @@ function Inpage_header({ title, member_id, member }) {
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "sticky top-0 z-10 bg-[#0a0a0a] p-4 border-b border-[#6e6e6e] flex justify-end",
                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$gr$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["GrClose"], {
-                                onClick: closeAllModals,
+                                onClick: closeBlacklist,
                                 className: "cursor-pointer text-gray-400 hover:text-white hover:scale-90 transition-transform",
                                 size: 28
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                                lineNumber: 127,
+                                lineNumber: 140,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                            lineNumber: 126,
+                            lineNumber: 139,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -946,35 +972,35 @@ function Inpage_header({ title, member_id, member }) {
                                 user_id: member_id,
                                 onSave: (data)=>{
                                     console.log("Blacklisted:", data);
-                                    closeAllModals();
+                                    closeBlacklist();
                                 },
-                                onCancel: closeAllModals
+                                onCancel: closeBlacklist
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                                lineNumber: 134,
+                                lineNumber: 147,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                            lineNumber: 133,
+                            lineNumber: 146,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "h-20"
                         }, void 0, false, {
                             fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                            lineNumber: 143,
+                            lineNumber: 156,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                    lineNumber: 125,
+                    lineNumber: 138,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                lineNumber: 124,
+                lineNumber: 137,
                 columnNumber: 9
             }, this),
             editUserDataShow && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -985,17 +1011,17 @@ function Inpage_header({ title, member_id, member }) {
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "sticky top-0 z-10 bg-[#0a0a0a] p-4 border-b border-[#6e6e6e] flex justify-end",
                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$gr$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["GrClose"], {
-                                onClick: closeAllModals,
+                                onClick: closeEditUserData,
                                 className: "cursor-pointer text-gray-400 hover:text-white hover:scale-90 transition-transform",
                                 size: 28
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                                lineNumber: 153,
+                                lineNumber: 166,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                            lineNumber: 152,
+                            lineNumber: 165,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1005,41 +1031,41 @@ function Inpage_header({ title, member_id, member }) {
                                 user_id: member_id,
                                 onSave: (data)=>{
                                     console.log("User Data Edited:", data);
-                                    closeAllModals();
+                                    closeEditUserData();
                                 },
-                                onCancel: closeAllModals
+                                onCancel: closeEditUserData
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                                lineNumber: 160,
+                                lineNumber: 173,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                            lineNumber: 159,
+                            lineNumber: 172,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "h-20"
                         }, void 0, false, {
                             fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                            lineNumber: 170,
+                            lineNumber: 183,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                    lineNumber: 151,
+                    lineNumber: 164,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-                lineNumber: 150,
+                lineNumber: 163,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/Inpage_header_3dot.jsx",
-        lineNumber: 61,
+        lineNumber: 74,
         columnNumber: 5
     }, this);
 }

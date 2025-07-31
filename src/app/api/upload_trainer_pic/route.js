@@ -14,7 +14,7 @@ export async function POST(request) {
     const formData = await request.formData();
     const gymId = formData.get('gym_id');
     const file = formData.get('profilePicture');
-    const category = formData.get('category'); // Add category field
+    const category = formData.get('category');
 
     if (!gymId) {
       return new Response(JSON.stringify({ error: 'gym_id is required' }), { status: 400 });
@@ -23,7 +23,6 @@ export async function POST(request) {
       return new Response(JSON.stringify({ error: 'profilePicture is required' }), { status: 400 });
     }
 
-    // Validate category (optional but recommended)
     const validCategories = ['user', 'trainer', 'equipment', 'classes'];
     const selectedCategory = category && validCategories.includes(category) ? category : 'trainers';
 

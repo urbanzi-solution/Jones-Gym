@@ -156,11 +156,15 @@ export default function MemberlistProfile({ member }) {
         <img
           loading="lazy"
           className="object-cover w-full h-full rounded-lg aspect-[3/4] md:max-h-80 lg:max-h-150"
-          src={member.user_id ? `/images/user_pic/${member.user_id}.png` : "/images/user1.jpg"}
+          src={member.user_id 
+            ? `/api/fetch_user_images?user_id=${member.user_id}` 
+            : "/images/user3.jpg"
+          }
+          // src={member.user_id ? `/images/user_pic/${member.user_id}.png` : "/images/user1.jpg"}
           alt="User profile"
         />
         <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/95 via-black/60 to-transparent">
-          <p className="text-white font-medium text-sm md:text-lg">#{member.user_id}</p>
+          <p className="text-white font-medium text-sm md:text-lg">{member.user_id}</p>
           <p className="text-white font-bold text-lg md:text-2xl">{member.name}</p>
         </div>
       </div>

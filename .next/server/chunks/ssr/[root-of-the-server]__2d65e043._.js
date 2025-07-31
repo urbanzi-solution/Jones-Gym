@@ -638,7 +638,6 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$ico
 ;
 ;
 function Staff_listbox({ staff }) {
-    console.log("staff staff client ...", staff);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         children: staff.map((member, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
                 className: "box flex justify-between items-center border border-[#FFDD4A]",
@@ -650,14 +649,14 @@ function Staff_listbox({ staff }) {
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
                                 loading: "lazy",
                                 className: "w-16 h-16 sm:w-32 sm:h-32 lg:w-40 lg:h-40 object-cover border-2 rounded-full",
-                                src: member.trainer_id ? `/images/trainer_pic/${member.trainer_id}.png` : "/images/user1.jpg",
+                                src: member.trainer_id ? `/api/fetch_trainer_images?trainer_id=${member.trainer_id}` : "/images/user3.jpg",
                                 alt: "Staff Member",
                                 onError: (e)=>{
-                                    e.target.src = "/images/user1.jpg";
+                                    e.target.src = "/images/user3.jpg";
                                 }
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Staff_listbox.jsx",
-                                lineNumber: 19,
+                                lineNumber: 17,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -668,26 +667,26 @@ function Staff_listbox({ staff }) {
                                         children: member.name || "Unknown"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Staff_listbox.jsx",
-                                        lineNumber: 29,
+                                        lineNumber: 40,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
                                         children: member.trainer_id || "Unknown"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Staff_listbox.jsx",
-                                        lineNumber: 30,
+                                        lineNumber: 41,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/Staff_listbox.jsx",
-                                lineNumber: 28,
+                                lineNumber: 39,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Staff_listbox.jsx",
-                        lineNumber: 18,
+                        lineNumber: 16,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -697,20 +696,20 @@ function Staff_listbox({ staff }) {
                                 className: "text-[#FFDD4A]"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Staff_listbox.jsx",
-                                lineNumber: 34,
+                                lineNumber: 45,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
                                 children: member.trainerCount
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Staff_listbox.jsx",
-                                lineNumber: 35,
+                                lineNumber: 46,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Staff_listbox.jsx",
-                        lineNumber: 33,
+                        lineNumber: 44,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -721,23 +720,23 @@ function Staff_listbox({ staff }) {
                             children: "Mark attendance"
                         }, void 0, false, {
                             fileName: "[project]/src/components/Staff_listbox.jsx",
-                            lineNumber: 38,
+                            lineNumber: 49,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/Staff_listbox.jsx",
-                        lineNumber: 37,
+                        lineNumber: 48,
                         columnNumber: 11
                     }, this)
                 ]
             }, member.trainer_id || index, true, {
                 fileName: "[project]/src/components/Staff_listbox.jsx",
-                lineNumber: 13,
+                lineNumber: 11,
                 columnNumber: 9
             }, this))
     }, void 0, false, {
         fileName: "[project]/src/components/Staff_listbox.jsx",
-        lineNumber: 11,
+        lineNumber: 9,
         columnNumber: 5
     }, this);
 }
