@@ -75,17 +75,23 @@ export default function Person_understaff() {
             <h2 className="bg-[#FFDD4A] py-4 md:py-6 text-black rounded-2xl">
               {plan.name}
             </h2>
-            {/*<span className="py-4 md:py-6">{plan.plan_name}</span>*/}
-            {/*<span className="flex gap-1 md:gap-2 justify-center items-center">
-              <IoPerson className="text-[#FFDD4A]" />
-              <h2>{plan.count}</h2>
-            </span>*/}
-            
+
+            <span className="py-4 md:py-6">
+              <h2>Plans - {plan.count}</h2>
+            </span>
+
             <span className="flex gap-1 md:gap-2 justify-center items-center">
+              {plan.plan_name}
+            </span>
+
+            <span className="flex gap-1 md:gap-2 justify-center items-center">
+              <h2>{new Date(plan.date).toLocaleDateString()}</h2>
+            </span>
+            
+            {/* <span className="flex gap-1 md:gap-2 justify-center items-center">
               <IoPerson className="text-[#FFDD4A]" />
               <h2>Plans - {plan.count}</h2>
-              {/*<h2>{new Date(plan.date).toLocaleDateString()}</h2>*/}
-            </span>
+            </span> */}
           </div>
         ))
       ) : (
