@@ -53,22 +53,6 @@ const mod = __turbopack_context__.x("@aws-sdk/client-s3", () => require("@aws-sd
 
 module.exports = mod;
 }}),
-"[externals]/fs/promises [external] (fs/promises, cjs)": (function(__turbopack_context__) {
-
-var { g: global, __dirname, m: module, e: exports } = __turbopack_context__;
-{
-const mod = __turbopack_context__.x("fs/promises", () => require("fs/promises"));
-
-module.exports = mod;
-}}),
-"[externals]/path [external] (path, cjs)": (function(__turbopack_context__) {
-
-var { g: global, __dirname, m: module, e: exports } = __turbopack_context__;
-{
-const mod = __turbopack_context__.x("path", () => require("path"));
-
-module.exports = mod;
-}}),
 "[project]/src/app/api/fetch_user_images/route.js [app-route] (ecmascript)": ((__turbopack_context__) => {
 "use strict";
 
@@ -78,21 +62,12 @@ __turbopack_context__.s({
     "GET": (()=>GET)
 });
 var __TURBOPACK__imported__module__$5b$externals$5d2f40$aws$2d$sdk$2f$client$2d$s3__$5b$external$5d$__$2840$aws$2d$sdk$2f$client$2d$s3$2c$__cjs$29$__ = __turbopack_context__.i("[externals]/@aws-sdk/client-s3 [external] (@aws-sdk/client-s3, cjs)");
-var __TURBOPACK__imported__module__$5b$externals$5d2f$fs$2f$promises__$5b$external$5d$__$28$fs$2f$promises$2c$__cjs$29$__ = __turbopack_context__.i("[externals]/fs/promises [external] (fs/promises, cjs)");
-var __TURBOPACK__imported__module__$5b$externals$5d2f$path__$5b$external$5d$__$28$path$2c$__cjs$29$__ = __turbopack_context__.i("[externals]/path [external] (path, cjs)");
 ;
-;
-;
-// Your env vars
 const REGION = 'auto';
 const ENDPOINT = process.env.R2_ENDPOINT;
 const ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID;
 const SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY;
 const BUCKET_NAME = process.env.R2_BUCKET;
-// Helper for fallback image (assume .jpg default)
-async function getDefaultImageBuffer() {
-    return await __TURBOPACK__imported__module__$5b$externals$5d2f$fs$2f$promises__$5b$external$5d$__$28$fs$2f$promises$2c$__cjs$29$__["default"].readFile(__TURBOPACK__imported__module__$5b$externals$5d2f$path__$5b$external$5d$__$28$path$2c$__cjs$29$__["default"].resolve('./public/images/user3.jpg'));
-}
 async function GET(request) {
     const { searchParams } = new URL(request.url);
     const user_id = searchParams.get('user_id');
@@ -115,8 +90,6 @@ async function GET(request) {
         'jpg',
         'jpeg'
     ];
-    let imageBuffer = null;
-    let contentType = null;
     for (const ext of extensions){
         const getObjectParams = {
             Bucket: BUCKET_NAME,
@@ -128,45 +101,31 @@ async function GET(request) {
             for await (const chunk of response.Body){
                 chunks.push(chunk);
             }
-            imageBuffer = Buffer.concat(chunks);
-            contentType = `image/${ext === 'jpg' ? 'jpeg' : ext}`;
-            break; // Found the image
+            const imageBuffer = Buffer.concat(chunks);
+            const contentType = `image/${ext === 'jpg' ? 'jpeg' : ext}`;
+            return new Response(imageBuffer, {
+                status: 200,
+                headers: {
+                    'Content-Type': contentType,
+                    'Cache-Control': 'public, max-age=3600'
+                }
+            });
         } catch (error) {
-            // Only break loop early on actual errors — skip if just "not found"
             if (error.Code !== 'NoSuchKey' && error.name !== 'NoSuchKey') {
                 return new Response('Image not found', {
                     status: 404
                 });
             }
+        // continue to next extension
         }
     }
-    if (imageBuffer) {
-        return new Response(imageBuffer, {
-            status: 200,
-            headers: {
-                'Content-Type': contentType,
-                'Cache-Control': 'public, max-age=3600'
-            }
-        });
-    }
-    // Fallback: serve default user image
-    try {
-        const defaultImageBuffer = await getDefaultImageBuffer();
-        return new Response(defaultImageBuffer, {
-            status: 200,
-            headers: {
-                'Content-Type': 'image/jpeg',
-                'Cache-Control': 'public, max-age=3600'
-            }
-        });
-    } catch  {
-        return new Response('Image not found', {
-            status: 404
-        });
-    }
+    // If not found in any format, respond with 404.
+    return new Response('Image not found', {
+        status: 404
+    });
 }
 }}),
 
 };
 
-//# sourceMappingURL=%5Broot-of-the-server%5D__7e039405._.js.map
+//# sourceMappingURL=%5Broot-of-the-server%5D__b5c952fa._.js.map
