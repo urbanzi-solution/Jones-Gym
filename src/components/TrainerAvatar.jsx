@@ -1,4 +1,5 @@
 // src/components/TrainerAvatar.jsx
+"use client";
 import React, { useState } from "react";
 
 // You can adjust the SVG or use a library icon as you like

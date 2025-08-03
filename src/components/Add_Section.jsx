@@ -1,11 +1,6 @@
 import { FiPlusCircle } from "react-icons/fi";
 
-
-
-
 export default function Add_member({value, Link}) {
-
-  
 
   return (
     <div>
