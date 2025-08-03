@@ -8,6 +8,7 @@ import { GrClose } from "react-icons/gr";
 import RemarksForm from "@/components/Remarks_form";
 import BlacklistForm from "@/components/Blacklist_form";
 import EditUserData from "@/components/edit_user_data";
+import AddProfilePic from "@/components/AddProfilePic";
 
 export default function Inpage_header({ title, member_id, member }) {
   const router = useRouter();
@@ -15,6 +16,8 @@ export default function Inpage_header({ title, member_id, member }) {
   const [remarksShow, setRemarksShow] = useState(false);
   const [blacklistShow, setBlacklistShow] = useState(false);
   const [editUserDataShow, setEditUserDataShow] = useState(false);
+  const [ShowAddPic, setShowAddPic] = useState(false);
+  const [AddMembershipShow, setAddMembershipShow] = useState(false);
 
   const toggleOptions = () => setShowOptions(!showOptions);
 
@@ -24,6 +27,7 @@ export default function Inpage_header({ title, member_id, member }) {
     setBlacklistShow(false);
     setEditUserDataShow(false);
     setShowOptions(false);
+    setShowAddPic(false);
   };
 
   const openRemarks = () => {
@@ -32,6 +36,7 @@ export default function Inpage_header({ title, member_id, member }) {
     setBlacklistShow(false);
     setEditUserDataShow(false);
     setShowOptions(false);
+    setShowAddPic(false);
   };
 
   const openBlacklist = () => {
@@ -40,6 +45,7 @@ export default function Inpage_header({ title, member_id, member }) {
     setRemarksShow(false);
     setEditUserDataShow(false);
     setShowOptions(false);
+    setShowAddPic(false);
   };
 
   const openEditUserData = () => {
@@ -47,6 +53,16 @@ export default function Inpage_header({ title, member_id, member }) {
     setAddMembershipShow(false);
     setRemarksShow(false);
     setBlacklistShow(false);
+    setShowOptions(false);
+    setShowAddPic(false);
+  };
+
+  const openAddPic = () => {
+    setShowAddPic(true);
+    setRemarksShow(false);
+    setAddMembershipShow(false);
+    setBlacklistShow(false);
+    setEditUserDataShow(false);
     setShowOptions(false);
   };
 
@@ -64,11 +80,32 @@ export default function Inpage_header({ title, member_id, member }) {
 
   const closeRemarks = () => {
     setRemarksShow(false);
+    setShowAddPic(false);
   };
 
   const closeBlacklist = () => {
     setBlacklistShow(false);
   };
+
+  const deleteProfilePicHandler = async () => {
+    try {
+      const exts = ['png', 'jpg', 'jpeg'];
+      let deleted = false;
+      for (const ext of exts) {
+        const res = await fetch(`/api/deleteProfilePic?member_id=${member_id}&ext=${ext}`, { method: 'DELETE' });
+        if (res.ok) {
+          alert('Profile picture deleted successfully.');
+          deleted = true;
+          break;
+        }
+      }
+      if (!deleted) alert('Profile picture not found for deletion.');
+    } catch (e) {
+      alert('Failed to delete profile picture.');
+      console.error(e);
+    }
+  };
+
 
   return (
     <div className="relative flex text-2xl md:text-4xl p-4 md:p-6 lg:p-10 justify-between items-center">
@@ -109,7 +146,45 @@ export default function Inpage_header({ title, member_id, member }) {
             >
               Remarks
             </button>
+            <button
+              onClick={openAddPic}
+              className="bg-blue-500 p-3 rounded-2xl hover:border border-[#FFDD4A]"
+            >
+              Add Profile Pic
+            </button>
+            <button
+              onClick={deleteProfilePicHandler}
+              className="bg-red-500 p-3 rounded-2xl hover:border border-[#FFDD4A]"
+            >
+              Delete Profile Pic
+            </button>
+            {/* <button
+              onClick={openRemarks}
+              className="bg-red-500 p-3 rounded-2xl hover:border border-[#FFDD4A]"
+            >
+              Delete Profile Pic
+            </button> */}
           </ul>
+        </div>
+      )}
+
+      {/* Remarks Form */}
+      {ShowAddPic && (
+        <div className="fixed inset-0 z-50 bg-[#0a0a0a]/80 flex justify-center items-center overflow-y-auto p-4">
+          <div className="relative w-full text-center max-w-2xl bg-[#0a0a0a] border border-[#6e6e6e] rounded-xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="sticky top-0 z-10 bg-[#0a0a0a] p-4 border-b border-[#6e6e6e] flex justify-end">
+              <GrClose
+                onClick={closeRemarks}
+                className="cursor-pointer text-gray-400 hover:text-white hover:scale-90 transition-transform"
+                size={28}
+              />
+            </div>
+            <div className="overflow-y-auto p-4 md:p-6 text-sm md:text-base">
+              {/* Profile Picture Upload */}
+              <AddProfilePic member_id={member_id} onSubmit={closeRemarks} onCancel={closeRemarks} />
+            </div>
+            <div className="h-20" />
+          </div>
         </div>
       )}
 

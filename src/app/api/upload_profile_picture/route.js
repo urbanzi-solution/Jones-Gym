@@ -1,3 +1,4 @@
+// src\app\api\upload_profile_picture\route.js
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
 export const config = {

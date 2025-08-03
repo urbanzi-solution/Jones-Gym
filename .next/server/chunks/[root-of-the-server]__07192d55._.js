@@ -58,6 +58,7 @@ module.exports = mod;
 
 var { g: global, __dirname } = __turbopack_context__;
 {
+// src\app\api\upload_profile_picture\route.js
 __turbopack_context__.s({
     "POST": (()=>POST),
     "config": (()=>config)

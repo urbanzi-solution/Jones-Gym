@@ -5,6 +5,7 @@ import { FaRegCheckCircle } from "react-icons/fa";
 import Renew_form from "./Renew_form";
 import { GrClose } from "react-icons/gr";
 import BalanceEditForm from "./Balance_form";
+import MemberProfileAvatar  from "@/components/MemberProfileAvatar";
 
 export default function MemberlistProfile({ member }) {
   const [renewBox, setRenewBox] = useState(false);
@@ -146,23 +147,13 @@ export default function MemberlistProfile({ member }) {
     return { daysUntilExpiry: 0, isExpired: true, formattedExpiry: 'N/A', expiredPlansCount: 1 };
   }, [planExpirations]);
 
-    // console.log("formattedExpiry",formattedExpiry);
-    // console.log("expiredPlansCount",expiredPlansCount);
-
   return (
     <div className="relative grid grid-cols-1 md:grid-cols-2 p-4 md:p-6 lg:p-10 gap-4 md:gap-10">
       {/* Profile Image Section */}
       <div className="relative">
-        <img
-          loading="lazy"
-          className="object-cover w-full h-full rounded-lg aspect-[3/4] md:max-h-80 lg:max-h-150"
-          src={member.user_id 
-            ? `/api/fetch_user_images?user_id=${member.user_id}` 
-            : "/images/user3.jpg"
-          }
-          // src={member.user_id ? `/images/user_pic/${member.user_id}.png` : "/images/user1.jpg"}
-          alt="User profile"
-        />
+
+        <MemberProfileAvatar member={member} />
+        
         <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/95 via-black/60 to-transparent">
           <p className="text-white font-medium text-sm md:text-lg">{member.user_id}</p>
           <p className="text-white font-bold text-lg md:text-2xl">{member.name}</p>

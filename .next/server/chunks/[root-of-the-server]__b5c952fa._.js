@@ -84,7 +84,7 @@ async function GET(request) {
             secretAccessKey: SECRET_ACCESS_KEY
         }
     });
-    // Try image extensions in order
+    // Try all relevant extensions
     const extensions = [
         'png',
         'jpg',
@@ -116,10 +116,9 @@ async function GET(request) {
                     status: 404
                 });
             }
-        // continue to next extension
+        // Otherwise, try next extension
         }
     }
-    // If not found in any format, respond with 404.
     return new Response('Image not found', {
         status: 404
     });

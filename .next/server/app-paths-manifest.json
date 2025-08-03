@@ -1,9 +1,12 @@
 {
+  "/(pages)/member-profile/page": "app/(pages)/member-profile/page.js",
   "/(pages)/members/page": "app/(pages)/members/page.js",
   "/_not-found/page": "app/_not-found/page.js",
+  "/api/deleteProfilePic/route": "app/api/deleteProfilePic/route.js",
   "/api/fetch_membership_plans/route": "app/api/fetch_membership_plans/route.js",
   "/api/fetch_plans/route": "app/api/fetch_plans/route.js",
   "/api/fetch_remark_blcklist/route": "app/api/fetch_remark_blcklist/route.js",
   "/api/fetch_user_images/route": "app/api/fetch_user_images/route.js",
-  "/api/notification/route": "app/api/notification/route.js"
+  "/api/notification/route": "app/api/notification/route.js",
+  "/api/upload_profile_picture/route": "app/api/upload_profile_picture/route.js"
 }

@@ -1,15 +1,12 @@
 "use client";
 import { useState, useEffect } from 'react';
+import MemberAvatar  from "@/components/MemberAvatar";
 
 export default function Memberlist_boxes({ members, filters }) {
   const [membershipPlans, setMembershipPlans] = useState([]);
   const [remarkData, setRemarkData] = useState({});
   const currentDate = new Date();
   const currentDateOnly = currentDate.toISOString().split('T')[0];
-  const [imgError, setImgError] = useState(false);
-
-  // console.log("members", members);
-  // console.log("remarkData", remarkData);
 
   const getDateOnly = (date) => {
     if (!date) return null;
@@ -225,20 +222,9 @@ export default function Memberlist_boxes({ members, filters }) {
               href={`/member-profile?member_id=${member.user_id || 'unknown'}`}
             >
               <div className="flex gap-3 items-center sm:gap-5 lg:gap-10">
-                <img
-                  loading="lazy"
-                  className="w-16 h-16 sm:h-22 sm:w-22 lg:w-40 lg:h-40 object-cover border-2 rounded-full"
-                  src={member.user_id 
-                    ? `/api/fetch_user_images?user_id=${member.user_id}` 
-                    : "/images/user3.jpg"
-                  }
-                  alt={member.name || "Member"}
-                  onError={(e) => {
-                    e.target.src = "/images/user3.jpg";
-                  }}
-                />
 
-                
+                <MemberAvatar member={member} />
+
                 <span className="flex flex-col gap-1 text-sm sm:text-xl lg:text-2xl">
                   <h3 className="font-semibold">{member.name || "Member name"}</h3>
                   <h4>{member.user_id || "member_id"}</h4>

@@ -1,18 +1,18 @@
 # create table commands
 
-### useuser_datar table
+### useuser_data table
 
 ```sql
 CREATE TABLE user_data (
   user_id VARCHAR(10),
   name VARCHAR(30),
-  gender VARCHAR(50),
+  gender VARCHAR(10),
   weight varchar(3),
   date_of_birth DATE,
-  about varchar(150),
+  about varchar(50),
   location VARCHAR(100),
-  phone_no VARCHAR(20),
-  whatsapp_no VARCHAR(20),
+  phone_no VARCHAR(10),
+  whatsapp_no VARCHAR(10),
   joining_date DATE
 );
 ```
@@ -36,13 +36,13 @@ VALUES
 
 ```sql
 CREATE TABLE trainers (
-    trainer_id VARCHAR(6),
+    trainer_id VARCHAR(10),
     name VARCHAR(30),
-    gender VARCHAR(6),
+    gender VARCHAR(10),
     date_of_birth VARCHAR(10),
-    location VARCHAR(50),
-    phone_no VARCHAR(15),
-    whatsapp_number VARCHAR(15),
+    location VARCHAR(100),
+    phone_no VARCHAR(10),
+    whatsapp_number VARCHAR(10),
     joining_date VARCHAR(10)
 );
 ```
@@ -67,10 +67,10 @@ VALUES
 ```sql
 CREATE TABLE plans (
     plan_name VARCHAR(30),
-    description VARCHAR(250),
+    description VARCHAR(100),
     amount INTEGER,
-    duration VARCHAR(10),
-    status VARCHAR(10)
+    duration VARCHAR(3),
+    status VARCHAR(8)
 );
 ```
 ```sql
@@ -92,7 +92,7 @@ VALUES
 
 ```sql
 CREATE TABLE membership_plans (
-  user_id VARCHAR(6),
+  user_id VARCHAR(10),
   plan_name VARCHAR(30),
   bill_no VARCHAR(6),
   amount INTEGER,
@@ -127,10 +127,10 @@ VALUES
 
 ```sql
 CREATE TABLE trainer_attendance (
-    trainer_id VARCHAR(6),
-    user_id VARCHAR(6),
+    trainer_id VARCHAR(10),
+    user_id VARCHAR(10),
     date DATE,
-    status VARCHAR(10)
+    status VARCHAR(5)
 );
 ```
 
@@ -169,6 +169,7 @@ VALUES
 ('TRN001', 'USR005', '2025-07-10', 'A');
 ```
 
+```sql
 INSERT INTO trainer_attendance (trainer_id, user_id, date, status)
 VALUES
 ('TRN001', 'USR009', '2025-07-01', 'P'),
@@ -180,6 +181,7 @@ VALUES
 ('TRN001', 'USR005', '2025-07-01', 'P'),
 ('TRN001', 'USR005', '2025-07-02', 'P'),
 ('TRN001', 'USR005', '2025-07-03', 'A');
+```
 
 ### notification table
 
@@ -189,42 +191,6 @@ VALUES
 
 ```sql
 
-```
-
-### transations table
-
-```sql
-CREATE TABLE transations (
-    user_id VARCHAR(6),
-    bill_no VARCHAR(6),
-    date VARCHAR(10),
-    plan VARCHAR(30),
-    trans_type VARCHAR(20),
-    pay_method VARCHAR(20),
-    amount INTEGER,
-    discount INTEGER,
-    balance INTEGER
-);
-```
-
-```sql
-INSERT INTO transations (user_id, bill_no, date, plan, trans_type, pay_method, amount, discount, balance)
-VALUES
-('USR001', 'BL0001', '2023-01-05', 'Exercise Plan', 'GPay', '', 2200, 200, 2000),
-('USR001', 'BL0002', '2023-01-05', 'Yoga Plan', 'Cash', '', 1100, 100, 1000),
-('USR002', 'BL0003', '2023-02-10', 'Zumba Plan', 'Cash', '', 1650, 150, 1500),
-('USR003', 'BL0004', '2023-03-15', 'Calisthenics Plan', 'Other', '', 3300, 300, 3000),
-('USR003', 'BL0005', '2023-04-15', 'CrossFit Plan', 'GPay', '', 2750, 250, 2500),
-('USR004', 'BL0006', '2023-04-20', 'Yoga Plan', 'GPay', '', 1100, 100, 1000),
-('USR005', 'BL0007', '2023-05-25', 'CrossFit Plan', 'Cash', '', 2750, 250, 2500),
-('USR005', 'BL0008', '2023-06-25', 'CrossFit Plan', 'Other', '', 2750, 250, 2500),
-('USR006', 'BL0009', '2023-06-30', 'Exercise Plan', 'Other', '', 2200, 200, 2000),
-('USR007', 'BL0010', '2023-07-05', 'Zumba Plan', 'GPay', '', 1650, 150, 1500),
-('USR007', 'BL0011', '2023-07-05', 'Yoga Plan', 'Cash', '', 1100, 100, 1000),
-('USR008', 'BL0012', '2023-08-10', 'Calisthenics Plan', 'Cash', '', 3300, 300, 3000),
-('USR009', 'BL0013', '2023-09-15', 'Yoga Plan', 'Other', '', 1100, 100, 1000),
-('USR010', 'BL0014', '2023-10-20', 'CrossFit Plan', 'GPay', '', 2750, 250, 2500),
-('USR010', 'BL0015', '2023-11-20', 'Exercise Plan', 'Cash', '', 2200, 200, 2000);
 ```
 
 ### user_Remark table
@@ -259,6 +225,70 @@ VALUES
 ('TRN007', 'CrossFit Plan missbehave'),
 ('TRN008', 'Drinking'),
 ('TRN008', 'smoking');
+```
+
+### user_cred table
+
+```sql
+CREATE TABLE user_cred (
+    username VARCHAR(15),
+    password VARCHAR(100)
+);
+```
+
+```sql
+INSERT INTO user_cred (username, password)
+VALUES 
+('Manager', '$2b$10$RNEhdAw1oxZKlfTaiSP0wOK49LXq6a/YVNdn2G9HoTcTVxgVRXiam');
+```
+
+### datas
+---
+
+```sql
+INSERT INTO membership_plans (user_id, plan_name, bill_no, amount, discount, balance, trans_type, trainer, date, exp_date)
+VALUES
+('JM240', '6 M PT', '468', 45000, 0, 0, 'Credit Card', '', '2025-08-01', '2026-01-29'),
+('SJ233', '1 M G+P.T', '3684', 13000, 0, 0, 'GPay', '', '2025-08-01', '2025-08-31'),
+('S187', '3 M P.T', '3685', 1000, 0, 0, 'GPay', '', '2025-08-01', '2025-10-31');
+```
+
+```sql
+INSERT INTO plans (plan_name, description, amount, duration, status)
+VALUES
+('1 M Gym', '1 Month Gym', 4000, '30', 'active'),
+('6 M P.T', '6 Months P.T', 45000, '181', 'active'),
+('3 M Gym', '3 Months Gym', 9000, '91', 'active'),
+('6 M Gym', '6 Months Gym', 14000, '182', 'active'),
+('1 Y Gym', '1 Year Gym', 18000, '365', 'active'),
+('1 M P.T', '1 Month P.T', 9000, '30', 'active'),
+('3 M P.T', '3 Months P.T', 24000, '91', 'active'),
+('6 M P.T', '6 Months P.T', 45000, '182', 'active'),
+('1 Y P.T', '1 Year P.T', 84000, '365', 'active'),
+('1 M T.P', '1 Month T.P', 8000, '30', 'active'),
+('3 M T.P', '3 Months T.P', 22000, '91', 'active'),
+('6 M T.P', '6 Months T.P', 35000, '182', 'active'),
+('1 Y T.P', '1 Year T.P', 65000, '365', 'active'),
+('1 M Gym + P.T', '1 Month Gym + P.T', 13000, '30', 'active');
+```
+
+```sql
+INSERT INTO user_data (user_id, name, gender, weight, date_of_birth, about, location, phone_no, whatsapp_no, joining_date)
+VALUES
+('JM240', 'Praveen Nair', 'male', '75', '1980-08-13', '', 'Trivandrum', '9745500684', '9745500684', '2024-06-01'),
+('SJ233', 'Rose Mary Geeja Varghese', 'male', '85', '1980-08-01', '', 'Vadappurath House, TC 15/176(1), Vellayambalam, Trivandrum', '9446221527', '9446221527', '2025-07-01'),
+('S187', 'Anjana Sajikumar', 'female', '93', '2004-01-01', '', 'CRHS-26, KOWDIAR P.O, TRIVANDRUM ', '9778329274', '9778329274', '2025-08-01');
+```
+
+```sql
+INSERT INTO user_remark (user_id, remark)
+VALUES 
+('S187', 'Bill no. 3685 T.P Converted to P.T');
+```
+
+```sql
+INSERT INTO user_cred (username, password)
+VALUES ('Manager', '$2b$10$RNEhdAw1oxZKlfTaiSP0wOK49LXq6a/YVNdn2G9HoTcTVxgVRXiam');
 ```
 
 
