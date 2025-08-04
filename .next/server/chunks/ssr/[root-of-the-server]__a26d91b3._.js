@@ -1462,6 +1462,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navi
 ;
 function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
     console.log(membershipPlans);
+    const today = new Date().toISOString().split('T')[0];
     const [formData, setFormData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])({
         bill_no: '',
         plan: '',
@@ -1472,6 +1473,7 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
         balance: 0,
         transaction_type: '',
         trainer_id: '',
+        renew_date: today,
         expiry_date: ''
     });
     const [plans, setPlans] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
@@ -1502,7 +1504,7 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
         if (formData.plan) {
             const selectedPlan = plans.find((plan)=>plan.name === formData.plan);
             if (selectedPlan) {
-                const currentDate = new Date();
+                const renewDate = new Date(formData.renew_date);
                 const expiryDate = new Date(currentDate);
                 const days = parseInt(formData.days) || parseInt(selectedPlan.duration);
                 expiryDate.setDate(expiryDate.getDate() + parseInt(selectedPlan.duration));
@@ -1536,11 +1538,14 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
             const discount = parseFloat(newData.discount) || 0;
             const amount = parseFloat(newData.amount) || 0;
             const days = parseInt(newData.days) || 0;
-            if (name === 'totalAmount' || name === 'amount' || name === 'discount' || name === 'days') {
+            if (name === 'totalAmount' || name === 'amount' || name === 'discount') {
                 newData.balance = Math.max(0, totalAmount - (amount + discount)).toFixed(2);
+            }
+            // Always calculate expiry_date if days or renew_date changes
+            if (name === 'days' || name === 'renew_date') {
                 if (days > 0) {
-                    const currentDate = new Date();
-                    const expiryDate = new Date(currentDate);
+                    const renewDate = new Date(newData.renew_date || today);
+                    const expiryDate = new Date(renewDate);
                     expiryDate.setDate(expiryDate.getDate() + days);
                     newData.expiry_date = expiryDate.toISOString().split('T')[0];
                 } else {
@@ -1555,15 +1560,15 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
         setError(null);
         setSuccess(null);
         try {
-            const currentDate = new Date();
-            const currentDateString = currentDate.toISOString().split('T')[0];
+            const currentDate1 = new Date();
+            const currentDateString = currentDate1.toISOString().split('T')[0];
             // Check if the selected plan exists in membershipPlans
             const selectedPlan = membershipPlans.find((plan)=>plan.plan_name === formData.plan);
             if (selectedPlan && selectedPlan.exp_date) {
                 const expiryDate = new Date(selectedPlan.exp_date);
-                if (expiryDate > currentDate) {
+                if (expiryDate > currentDate1) {
                     // Calculate remaining days
-                    const timeDifference = expiryDate - currentDate;
+                    const timeDifference = expiryDate - currentDate1;
                     const remainingDays = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
                     setError(`Sorry, the plan already exists and will expire on ${expiryDate.toLocaleDateString()} (${remainingDays} days remaining)`);
                     return;
@@ -1639,7 +1644,7 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                 children: "Renew Membership"
             }, void 0, false, {
                 fileName: "[project]/src/components/Renew_form.jsx",
-                lineNumber: 196,
+                lineNumber: 204,
                 columnNumber: 7
             }, this),
             error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1647,7 +1652,7 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                 children: error
             }, void 0, false, {
                 fileName: "[project]/src/components/Renew_form.jsx",
-                lineNumber: 198,
+                lineNumber: 206,
                 columnNumber: 17
             }, this),
             success && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1655,7 +1660,7 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                 children: success
             }, void 0, false, {
                 fileName: "[project]/src/components/Renew_form.jsx",
-                lineNumber: 199,
+                lineNumber: 207,
                 columnNumber: 19
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -1675,7 +1680,7 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                 children: "Bill No *"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Renew_form.jsx",
-                                                lineNumber: 206,
+                                                lineNumber: 214,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1689,13 +1694,13 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                 required: true
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Renew_form.jsx",
-                                                lineNumber: 209,
+                                                lineNumber: 217,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Renew_form.jsx",
-                                        lineNumber: 205,
+                                        lineNumber: 213,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1706,7 +1711,7 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                 children: "Plan *"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Renew_form.jsx",
-                                                lineNumber: 222,
+                                                lineNumber: 230,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1722,7 +1727,7 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                         children: "Select Plan"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/Renew_form.jsx",
-                                                        lineNumber: 233,
+                                                        lineNumber: 241,
                                                         columnNumber: 17
                                                     }, this),
                                                     plans.map((plan)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1735,19 +1740,19 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                             ]
                                                         }, plan.id, true, {
                                                             fileName: "[project]/src/components/Renew_form.jsx",
-                                                            lineNumber: 235,
+                                                            lineNumber: 243,
                                                             columnNumber: 19
                                                         }, this))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/Renew_form.jsx",
-                                                lineNumber: 225,
+                                                lineNumber: 233,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Renew_form.jsx",
-                                        lineNumber: 221,
+                                        lineNumber: 229,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1758,7 +1763,7 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                 children: "Enter the days *"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Renew_form.jsx",
-                                                lineNumber: 243,
+                                                lineNumber: 251,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1773,13 +1778,13 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                 required: true
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Renew_form.jsx",
-                                                lineNumber: 246,
+                                                lineNumber: 254,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Renew_form.jsx",
-                                        lineNumber: 242,
+                                        lineNumber: 250,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1790,7 +1795,7 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                 children: "Total Amount *"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Renew_form.jsx",
-                                                lineNumber: 260,
+                                                lineNumber: 268,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1805,13 +1810,13 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                 required: true
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Renew_form.jsx",
-                                                lineNumber: 263,
+                                                lineNumber: 271,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Renew_form.jsx",
-                                        lineNumber: 259,
+                                        lineNumber: 267,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1822,7 +1827,7 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                 children: "Amount (₹) *"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Renew_form.jsx",
-                                                lineNumber: 277,
+                                                lineNumber: 285,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1837,19 +1842,19 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                 required: true
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Renew_form.jsx",
-                                                lineNumber: 280,
+                                                lineNumber: 288,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Renew_form.jsx",
-                                        lineNumber: 276,
+                                        lineNumber: 284,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/Renew_form.jsx",
-                                lineNumber: 204,
+                                lineNumber: 212,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1863,7 +1868,7 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                 children: "Discount (₹) *"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Renew_form.jsx",
-                                                lineNumber: 299,
+                                                lineNumber: 307,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1878,13 +1883,13 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                 required: true
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Renew_form.jsx",
-                                                lineNumber: 302,
+                                                lineNumber: 310,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Renew_form.jsx",
-                                        lineNumber: 298,
+                                        lineNumber: 306,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1895,7 +1900,7 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                 children: "Balance (₹) *"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Renew_form.jsx",
-                                                lineNumber: 316,
+                                                lineNumber: 324,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1908,13 +1913,13 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                 required: true
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Renew_form.jsx",
-                                                lineNumber: 319,
+                                                lineNumber: 327,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Renew_form.jsx",
-                                        lineNumber: 315,
+                                        lineNumber: 323,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1925,7 +1930,7 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                 children: "Transaction Type *"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Renew_form.jsx",
-                                                lineNumber: 331,
+                                                lineNumber: 339,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1941,7 +1946,7 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                         children: "Select Type"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/Renew_form.jsx",
-                                                        lineNumber: 342,
+                                                        lineNumber: 350,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1949,7 +1954,7 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                         children: "GPay"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/Renew_form.jsx",
-                                                        lineNumber: 343,
+                                                        lineNumber: 351,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1957,7 +1962,7 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                         children: "Cash"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/Renew_form.jsx",
-                                                        lineNumber: 344,
+                                                        lineNumber: 352,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1965,7 +1970,7 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                         children: "Credit Card"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/Renew_form.jsx",
-                                                        lineNumber: 345,
+                                                        lineNumber: 353,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1973,7 +1978,7 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                         children: "Bank Transfer"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/Renew_form.jsx",
-                                                        lineNumber: 346,
+                                                        lineNumber: 354,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1981,19 +1986,19 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                         children: "Other"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/Renew_form.jsx",
-                                                        lineNumber: 347,
+                                                        lineNumber: 355,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/Renew_form.jsx",
-                                                lineNumber: 334,
+                                                lineNumber: 342,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Renew_form.jsx",
-                                        lineNumber: 330,
+                                        lineNumber: 338,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2004,7 +2009,7 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                 children: "Trainer for the Member"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Renew_form.jsx",
-                                                lineNumber: 352,
+                                                lineNumber: 360,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -2019,7 +2024,7 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                         children: "Select Trainer"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/Renew_form.jsx",
-                                                        lineNumber: 362,
+                                                        lineNumber: 370,
                                                         columnNumber: 17
                                                     }, this),
                                                     trainers.map((trainer)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2027,19 +2032,48 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                             children: trainer.name
                                                         }, trainer.trainer_id, false, {
                                                             fileName: "[project]/src/components/Renew_form.jsx",
-                                                            lineNumber: 364,
+                                                            lineNumber: 372,
                                                             columnNumber: 19
                                                         }, this))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/Renew_form.jsx",
-                                                lineNumber: 355,
+                                                lineNumber: 363,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Renew_form.jsx",
-                                        lineNumber: 351,
+                                        lineNumber: 359,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                htmlFor: "renew_date",
+                                                className: "block text-sm font-medium mb-1 text-gray-300",
+                                                children: "Renew Date"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/components/Renew_form.jsx",
+                                                lineNumber: 380,
+                                                columnNumber: 15
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                type: "date",
+                                                id: "renew_date",
+                                                name: "renew_date",
+                                                value: formData.renew_date,
+                                                onChange: handleChange,
+                                                className: "p-4 w-full bg-[#2E2A2D] rounded-lg border border-[#3E3A3D]"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/components/Renew_form.jsx",
+                                                lineNumber: 383,
+                                                columnNumber: 15
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/components/Renew_form.jsx",
+                                        lineNumber: 379,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2050,7 +2084,7 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                 children: "Expiry Date"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Renew_form.jsx",
-                                                lineNumber: 372,
+                                                lineNumber: 394,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2058,29 +2092,29 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                                 id: "expiry_date",
                                                 name: "expiry_date",
                                                 value: formData.expiry_date,
-                                                // readOnly
+                                                readOnly: true,
                                                 className: "p-4 w-full bg-[#2E2A2D] rounded-lg border border-[#3E3A3D] cursor-not-allowed"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Renew_form.jsx",
-                                                lineNumber: 375,
+                                                lineNumber: 397,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Renew_form.jsx",
-                                        lineNumber: 371,
+                                        lineNumber: 393,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/Renew_form.jsx",
-                                lineNumber: 296,
+                                lineNumber: 304,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Renew_form.jsx",
-                        lineNumber: 202,
+                        lineNumber: 210,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2093,7 +2127,7 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                 children: "Cancel"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Renew_form.jsx",
-                                lineNumber: 387,
+                                lineNumber: 409,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2102,32 +2136,32 @@ function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
                                 children: "Save Renewal"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Renew_form.jsx",
-                                lineNumber: 394,
+                                lineNumber: 416,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Renew_form.jsx",
-                        lineNumber: 386,
+                        lineNumber: 408,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/Renew_form.jsx",
-                lineNumber: 201,
+                lineNumber: 209,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "h-20 xl:h-10"
             }, void 0, false, {
                 fileName: "[project]/src/components/Renew_form.jsx",
-                lineNumber: 402,
+                lineNumber: 424,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/Renew_form.jsx",
-        lineNumber: 195,
+        lineNumber: 203,
         columnNumber: 5
     }, this);
 }

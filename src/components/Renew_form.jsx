@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 
 export default function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
   console.log(membershipPlans)
+  const today = new Date().toISOString().split('T')[0];
   const [formData, setFormData] = useState({
     bill_no: '',
     plan: '',
@@ -15,6 +16,7 @@ export default function RenewalFormSection({ user_id, membershipPlans, onCancel 
     balance: 0,
     transaction_type: '',
     trainer_id: '',
+    renew_date: today,
     expiry_date: ''
   });
   const [plans, setPlans] = useState([]);
@@ -48,7 +50,7 @@ export default function RenewalFormSection({ user_id, membershipPlans, onCancel 
     if (formData.plan) {
       const selectedPlan = plans.find(plan => plan.name === formData.plan);
       if (selectedPlan) {
-        const currentDate = new Date();
+        const renewDate = new Date(formData.renew_date);
         const expiryDate = new Date(currentDate);
         const days = parseInt(formData.days) || parseInt(selectedPlan.duration);
         expiryDate.setDate(expiryDate.getDate() + parseInt(selectedPlan.duration));
@@ -80,20 +82,26 @@ export default function RenewalFormSection({ user_id, membershipPlans, onCancel 
       const amount = parseFloat(newData.amount) || 0;
       const days = parseInt(newData.days) || 0;
 
-      if (name === 'totalAmount' || name === 'amount' || name === 'discount' || name === 'days') {
+      if (name === 'totalAmount' || name === 'amount' || name === 'discount') {
         newData.balance = Math.max(0, totalAmount - (amount + discount)).toFixed(2);
+      }
+
+      // Always calculate expiry_date if days or renew_date changes
+      if (name === 'days' || name === 'renew_date') {
         if (days > 0) {
-          const currentDate = new Date();
-          const expiryDate = new Date(currentDate);
+          const renewDate = new Date(newData.renew_date || today);
+          const expiryDate = new Date(renewDate);
           expiryDate.setDate(expiryDate.getDate() + days);
           newData.expiry_date = expiryDate.toISOString().split('T')[0];
         } else {
           newData.expiry_date = '';
         }
       }
+
       return newData;
     });
   };
+
 
     const handleSubmit = async (e) => {
     e.preventDefault();
@@ -369,6 +377,20 @@ export default function RenewalFormSection({ user_id, membershipPlans, onCancel 
             </div>
 
             <div>
+              <label htmlFor="renew_date" className="block text-sm font-medium mb-1 text-gray-300">
+                Renew Date
+              </label>
+              <input
+                type="date"
+                id="renew_date"
+                name="renew_date"
+                value={formData.renew_date}
+                onChange={handleChange}
+                className="p-4 w-full bg-[#2E2A2D] rounded-lg border border-[#3E3A3D]"
+              />
+            </div>
+
+            <div>
               <label htmlFor="expiry_date" className="block text-sm font-medium mb-1 text-gray-300">
                 Expiry Date
               </label>
@@ -377,7 +399,7 @@ export default function RenewalFormSection({ user_id, membershipPlans, onCancel 
                 id="expiry_date"
                 name="expiry_date"
                 value={formData.expiry_date}
-                // readOnly
+                readOnly
                 className="p-4 w-full bg-[#2E2A2D] rounded-lg border border-[#3E3A3D] cursor-not-allowed"
               />
             </div>

@@ -1,6 +1,7 @@
 {
   "/(pages)/member-profile/page": "app/(pages)/member-profile/page.js",
   "/(pages)/page": "app/(pages)/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
   "/api/fetch_membership_plans/route": "app/api/fetch_membership_plans/route.js",
   "/api/fetch_plans/route": "app/api/fetch_plans/route.js",
   "/api/fetch_remark_blcklist/route": "app/api/fetch_remark_blcklist/route.js",
