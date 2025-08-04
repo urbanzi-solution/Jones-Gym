@@ -24,18 +24,18 @@ function Add_member({ value, Link }) {
                     className: "size-6"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Add_Section.jsx",
-                    lineNumber: 12,
+                    lineNumber: 7,
                     columnNumber: 213
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/Add_Section.jsx",
-            lineNumber: 12,
+            lineNumber: 7,
             columnNumber: 9
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/Add_Section.jsx",
-        lineNumber: 11,
+        lineNumber: 6,
         columnNumber: 5
     }, this);
 }

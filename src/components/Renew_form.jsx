@@ -377,7 +377,7 @@ export default function RenewalFormSection({ user_id, membershipPlans, onCancel 
                 id="expiry_date"
                 name="expiry_date"
                 value={formData.expiry_date}
-                readOnly
+                // readOnly
                 className="p-4 w-full bg-[#2E2A2D] rounded-lg border border-[#3E3A3D] cursor-not-allowed"
               />
             </div>

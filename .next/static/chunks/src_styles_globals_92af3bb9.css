@@ -970,10 +970,6 @@
     background-color: var(--color-gray-300);
   }
 
-  .bg-gray-600 {
-    background-color: var(--color-gray-600);
-  }
-
   .bg-gray-700 {
     background-color: var(--color-gray-700);
   }
@@ -1014,10 +1010,6 @@
 
   .bg-red-100 {
     background-color: var(--color-red-100);
-  }
-
-  .bg-red-400 {
-    background-color: var(--color-red-400);
   }
 
   .bg-red-500 {
@@ -1584,12 +1576,6 @@
   }
 
   @media (hover: hover) {
-    .hover\:bg-blue-500:hover {
-      background-color: var(--color-blue-500);
-    }
-  }
-
-  @media (hover: hover) {
     .hover\:bg-blue-600:hover {
       background-color: var(--color-blue-600);
     }
@@ -1598,12 +1584,6 @@
   @media (hover: hover) {
     .hover\:bg-blue-700:hover {
       background-color: var(--color-blue-700);
-    }
-  }
-
-  @media (hover: hover) {
-    .hover\:bg-gray-500:hover {
-      background-color: var(--color-gray-500);
     }
   }
 
