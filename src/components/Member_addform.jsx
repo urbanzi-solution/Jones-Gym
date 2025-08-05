@@ -789,7 +789,7 @@ export default function Member_addpage() {
               </div>
             ))}
 
-            <div className="mt-4">
+            {/* <div className="mt-4">
               <button
                 type="button"
                 onClick={handleAddPlan}
@@ -797,7 +797,7 @@ export default function Member_addpage() {
               >
                 Add Another Plan
               </button>
-            </div>
+            </div> */}
           </div>
         )}
 

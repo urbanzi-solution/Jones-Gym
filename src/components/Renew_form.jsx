@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 export default function RenewalFormSection({ user_id, membershipPlans, onCancel }) {
   console.log(membershipPlans)
   const today = new Date().toISOString().split('T')[0];
+  const currentDate = new Date().toISOString().split('T')[0];
   const [formData, setFormData] = useState({
     bill_no: '',
     plan: '',
