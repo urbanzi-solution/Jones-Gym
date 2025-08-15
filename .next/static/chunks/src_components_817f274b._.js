@@ -106,28 +106,26 @@ function Report_filter() {
     const [totalReceived, setTotalReceived] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(0);
     const [totalDiscount, setTotalDiscount] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(0);
     const [totalBalance, setTotalBalance] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(0);
+    const [isLoading, setIsLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "Report_filter.useEffect": ()=>{
             const fetchTransactions = {
                 "Report_filter.useEffect.fetchTransactions": async ()=>{
+                    setIsLoading(true);
                     try {
-                        const response = await fetch('/api/fetch_transactions');
-                        const { data } = await response.json();
-                        // Calculate total amount, total discount, and total balance
-                        const totalAmount = data.reduce({
-                            "Report_filter.useEffect.fetchTransactions.totalAmount": (sum, transaction)=>sum + Number(transaction.amount)
-                        }["Report_filter.useEffect.fetchTransactions.totalAmount"], 0);
-                        const totalDisc = data.reduce({
-                            "Report_filter.useEffect.fetchTransactions.totalDisc": (sum, transaction)=>sum + Number(transaction.discount || 0)
-                        }["Report_filter.useEffect.fetchTransactions.totalDisc"], 0);
-                        const totalBal = data.reduce({
-                            "Report_filter.useEffect.fetchTransactions.totalBal": (sum, transaction)=>sum + Number(transaction.balance)
-                        }["Report_filter.useEffect.fetchTransactions.totalBal"], 0);
-                        setTotalReceived(totalAmount);
-                        setTotalDiscount(totalDisc);
-                        setTotalBalance(totalBal);
+                        const response = await fetch('/api/total_amount_recent_tans');
+                        const result = await response.json();
+                        const data = result?.data;
+                        if (data) {
+                            // Set the aggregated values directly from the API response
+                            setTotalReceived(Number(data.total_amount || 0));
+                            setTotalDiscount(Number(data.total_discount || 0));
+                            setTotalBalance(Number(data.total_balance || 0));
+                        }
                     } catch (error) {
                         console.error('Error fetching transactions:', error);
+                    } finally{
+                        setIsLoading(false);
                     }
                 }
             }["Report_filter.useEffect.fetchTransactions"];
@@ -147,7 +145,7 @@ function Report_filter() {
                             children: "Total Received"
                         }, void 0, false, {
                             fileName: "[project]/src/components/Report_filter.jsx",
-                            lineNumber: 33,
+                            lineNumber: 38,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -158,13 +156,13 @@ function Report_filter() {
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/Report_filter.jsx",
-                            lineNumber: 34,
+                            lineNumber: 39,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/Report_filter.jsx",
-                    lineNumber: 32,
+                    lineNumber: 37,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -175,7 +173,7 @@ function Report_filter() {
                             children: "Total Discount"
                         }, void 0, false, {
                             fileName: "[project]/src/components/Report_filter.jsx",
-                            lineNumber: 40,
+                            lineNumber: 45,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -186,13 +184,13 @@ function Report_filter() {
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/Report_filter.jsx",
-                            lineNumber: 41,
+                            lineNumber: 46,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/Report_filter.jsx",
-                    lineNumber: 39,
+                    lineNumber: 44,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -203,7 +201,7 @@ function Report_filter() {
                             children: "Pending Balance"
                         }, void 0, false, {
                             fileName: "[project]/src/components/Report_filter.jsx",
-                            lineNumber: 47,
+                            lineNumber: 52,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -214,28 +212,28 @@ function Report_filter() {
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/Report_filter.jsx",
-                            lineNumber: 48,
+                            lineNumber: 53,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/Report_filter.jsx",
-                    lineNumber: 46,
+                    lineNumber: 51,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/Report_filter.jsx",
-            lineNumber: 31,
+            lineNumber: 36,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/Report_filter.jsx",
-        lineNumber: 30,
+        lineNumber: 35,
         columnNumber: 5
     }, this);
 }
-_s(Report_filter, "HuwM5iEX2UM+dpfRGKvWH6bypLU=");
+_s(Report_filter, "9hMPTIohvxyF1ttIMUTdLFIya7Y=");
 _c = Report_filter;
 var _c;
 __turbopack_context__.k.register(_c, "Report_filter");

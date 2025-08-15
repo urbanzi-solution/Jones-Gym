@@ -3,35 +3,25 @@ import { getClient } from "@/lib/db";
 export async function GET(request) {
   const client = await getClient();
   try {
-    // Extract user_id from query parameters
+    // Extract user_id from query parameters (optional for this aggregated query)
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('user_id');
 
-    if (!userId) {
-      return new Response(JSON.stringify({
-        success: false,
-        error: 'user_id is required'
-      }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-
     const query = `
-      SELECT mp.*, ud.name 
-      FROM membership_plans mp
-      JOIN user_data ud ON mp.user_id = ud.user_id
-      WHERE mp.user_id = $1
-      ORDER BY mp.date DESC;
+      SELECT 
+        SUM(amount) AS total_amount,
+        SUM(discount) AS total_discount,
+        SUM(balance) AS total_balance
+      FROM membership_plans;
     `;
 
-    const result = await client.query(query, [userId]);
+    const result = await client.query(query);
 
-    console.log("result",result);
+    console.log("result", result);
 
     return new Response(JSON.stringify({
       success: true,
-      data: result.rows
+      data: result.rows[0] // Since we're getting aggregated sums, we only need the first row
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }

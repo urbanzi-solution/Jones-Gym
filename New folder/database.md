@@ -20,16 +20,16 @@ CREATE TABLE user_data (
 ```sql
 INSERT INTO user_data (user_id, name, gender, weight, date_of_birth, about, location, phone_no, whatsapp_no, joining_date)
 VALUES
-('USR001', 'John Smith', 'Male', '56', '1985-03-15', 'weight loss', 'New York, USA', '+12125551234', '+12125551234', '2020-01-10'),
-('USR002', 'Emily Johnson', 'Female', '63', '1992-07-22', 'lean gain', 'London, UK', '+442071234567', '+442071234567', '2020-02-15'),
-('USR003', 'Michael Brown', 'Male', '80', '1988-11-05', 'bulking', 'Toronto, Canada', '+14165551234', '+14165551234', '2020-03-20'),
-('USR004', 'Sarah Williams', 'Female', '45', '1995-05-30', 'lean mass gain', 'Sydney, Australia', '+61212345678', '+61212345678', '2020-04-25'),
-('USR005', 'David Lee', 'Male', '50', '1990-09-12', 'lean mass gain', 'Singapore', '+6565123456', '+6565123456', '2020-05-30'),
-('USR006', 'Jennifer Davis', 'Female', '70', '1987-01-18', 'bulking','Berlin, Germany', '+493012345678', '+493012345678', '2020-06-10'),
-('USR007', 'Robert Wilson', 'Male', '52', '1983-12-25', 'weight loss', 'Paris, France', '+33123456789', '+33123456789', '2020-07-15'),
-('USR008', 'Lisa Miller', 'Female', '55', '1993-04-08', 'stamina', 'Tokyo, Japan', '+81312345678', '+81312345678', '2020-08-20'),
-('USR009', 'James Taylor', 'Male', '63', '1991-08-14', 'weight loss', 'Mumbai, India', '+912212345678', '+912212345678', '2020-09-25'),
-('USR010', 'Maria Garcia', 'Female', '60', '1986-06-20', 'flexibility', 'Mexico City, Mexico', '+525512345678', '+525512345678', '2020-10-30');
+('USR001', 'John Smith', 'Male', '56', '1985-03-15', 'weight loss', 'New York, USA', '2125551234', '2125551234', '2020-01-10'),
+('USR002', 'Emily Johnson', 'Female', '63', '1992-07-22', 'lean gain', 'London, UK', '2071234567', '2071234567', '2020-02-15'),
+('USR003', 'Michael Brown', 'Male', '80', '1988-11-05', 'bulking', 'Toronto, Canada', '4165551234', '4165551234', '2020-03-20'),
+('USR004', 'Sarah Williams', 'Female', '45', '1995-05-30', 'lean mass gain', 'Sydney, Australia', '1212345678', '1212345678', '2020-04-25'),
+('USR005', 'David Lee', 'Male', '50', '1990-09-12', 'lean mass gain', 'Singapore', '6565123456', '6565123456', '2020-05-30'),
+('USR006', 'Jennifer Davis', 'Female', '70', '1987-01-18', 'bulking','Berlin, Germany', '3012345678', '3012345678', '2020-06-10'),
+('USR007', 'Robert Wilson', 'Male', '52', '1983-12-25', 'weight loss', 'Paris, France', '3123456789', '3123456789', '2020-07-15'),
+('USR008', 'Lisa Miller', 'Female', '55', '1993-04-08', 'stamina', 'Tokyo, Japan', '1312345678', '1312345678', '2020-08-20'),
+('USR009', 'James Taylor', 'Male', '63', '1991-08-14', 'weight loss', 'Mumbai, India', '2212345678', '2212345678', '2020-09-25'),
+('USR010', 'Maria Garcia', 'Female', '60', '1986-06-20', 'flexibility', 'Mexico City, Mexico', '5512345678', '5512345678', '2020-10-30');
 ```
 
 ### trainers table

@@ -1,6 +1,6 @@
 module.exports = {
 
-"[project]/.next-internal/server/app/api/fetch_transactions/route/actions.js [app-rsc] (server actions loader, ecmascript)": (function(__turbopack_context__) {
+"[project]/.next-internal/server/app/api/total_amount_recent_tans/route/actions.js [app-rsc] (server actions loader, ecmascript)": (function(__turbopack_context__) {
 
 var { g: global, __dirname, m: module, e: exports } = __turbopack_context__;
 {
@@ -95,7 +95,7 @@ async function getClient() {
     };
 }
 }}),
-"[project]/src/app/api/fetch_transactions/route.js [app-route] (ecmascript)": ((__turbopack_context__) => {
+"[project]/src/app/api/total_amount_recent_tans/route.js [app-route] (ecmascript)": ((__turbopack_context__) => {
 "use strict";
 
 var { g: global, __dirname } = __turbopack_context__;
@@ -108,34 +108,21 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$js__$5b$
 async function GET(request) {
     const client = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["getClient"])();
     try {
-        // Extract user_id from query parameters
+        // Extract user_id from query parameters (optional for this aggregated query)
         const { searchParams } = new URL(request.url);
         const userId = searchParams.get('user_id');
-        if (!userId) {
-            return new Response(JSON.stringify({
-                success: false,
-                error: 'user_id is required'
-            }), {
-                status: 400,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-        }
         const query = `
-      SELECT mp.*, ud.name 
-      FROM membership_plans mp
-      JOIN user_data ud ON mp.user_id = ud.user_id
-      WHERE mp.user_id = $1
-      ORDER BY mp.date DESC;
+      SELECT 
+        SUM(amount) AS total_amount,
+        SUM(discount) AS total_discount,
+        SUM(balance) AS total_balance
+      FROM membership_plans;
     `;
-        const result = await client.query(query, [
-            userId
-        ]);
+        const result = await client.query(query);
         console.log("result", result);
         return new Response(JSON.stringify({
             success: true,
-            data: result.rows
+            data: result.rows[0] // Since we're getting aggregated sums, we only need the first row
         }), {
             status: 200,
             headers: {
@@ -160,4 +147,4 @@ async function GET(request) {
 
 };
 
-//# sourceMappingURL=%5Broot-of-the-server%5D__1dad156e._.js.map
+//# sourceMappingURL=%5Broot-of-the-server%5D__a5ea68f4._.js.map

@@ -1,25 +1,30 @@
-"use client";
+"use client"
 import React, { useState, useEffect } from "react";
 
 export default function Report_filter() {
   const [totalReceived, setTotalReceived] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
   const [totalBalance, setTotalBalance] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchTransactions = async () => {
+      setIsLoading(true);
       try {
-        const response = await fetch('/api/fetch_transactions');
-        const { data } = await response.json();
-        // Calculate total amount, total discount, and total balance
-        const totalAmount = data.reduce((sum, transaction) => sum + Number(transaction.amount), 0);
-        const totalDisc = data.reduce((sum, transaction) => sum + Number(transaction.discount || 0), 0);
-        const totalBal = data.reduce((sum, transaction) => sum + Number(transaction.balance), 0);
-        setTotalReceived(totalAmount);
-        setTotalDiscount(totalDisc);
-        setTotalBalance(totalBal);
+        const response = await fetch('/api/total_amount_recent_tans');
+        const result = await response.json();
+        const data = result?.data;
+        
+        if (data) {
+          // Set the aggregated values directly from the API response
+          setTotalReceived(Number(data.total_amount || 0));
+          setTotalDiscount(Number(data.total_discount || 0));
+          setTotalBalance(Number(data.total_balance || 0));
+        }
       } catch (error) {
         console.error('Error fetching transactions:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
