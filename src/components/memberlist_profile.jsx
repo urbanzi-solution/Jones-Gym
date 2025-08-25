@@ -197,9 +197,9 @@ export default function MemberlistProfile({ member }) {
           {loading ? (
             <h3 className="text-xl font-semibold md:text-2xl">Loading...</h3>
           ) : (
-            planExpirations.filter(plan => !plan.isExpired && plan.daysUntilExpiry <= 60).length > 0 ? (
+            planExpirations.filter(plan => !plan.isExpired).length > 0 ? (
               planExpirations
-                .filter(plan => !plan.isExpired && plan.daysUntilExpiry <= 60)
+                .filter(plan => !plan.isExpired)
                 .map((plan, index) => (
                   <p key={index} className="text-sm md:text-lg font-semibold">
                     {plan.planName} - {plan.daysUntilExpiry} Days Remaining, Expires {plan.formattedExpiry}
