@@ -1,8 +1,8 @@
 // Bulk Insert Script
 
-// npm install pg
+// prerequirest to make changes in the table
 
-// Autamed these Functions and also create table if not exist
+// npm install pg
 
 // ALTER TABLE user_data ADD CONSTRAINT users_user_id_unique UNIQUE (user_id);
 // \d user_data
@@ -99,7 +99,7 @@ async function insertJsonDataToDatabase(batchSize = 1000) {
         user.user_id,
         user.name,
         user.gender,
-        user.weight, // Keep as string since table expects varchar(3)
+        parseInt(user.weight),
         user.date_of_birth,
         user.about || '',
         user.location,
@@ -139,76 +139,29 @@ async function createTableIfNotExists() {
   try {
     client = await pool.connect();
     
-    // Check if table exists
-    const tableCheckQuery = `
-      SELECT EXISTS (
-        SELECT FROM information_schema.tables 
-        WHERE table_schema = 'public' 
-        AND table_name = 'user_data'
-      );
+    const createTableQuery = `
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        user_id VARCHAR(50) UNIQUE NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        gender VARCHAR(10),
+        weight INTEGER,
+        date_of_birth DATE,
+        about TEXT,
+        location TEXT,
+        phone_no VARCHAR(15),
+        whatsapp_no VARCHAR(15),
+        joining_date DATE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
     `;
     
-    const tableExists = await client.query(tableCheckQuery);
-    
-    if (!tableExists.rows[0].exists) {
-      console.log('Table "user_data" does not exist. Creating...');
-      
-      // Create table with your specified query
-      const createTableQuery = `
-        CREATE TABLE user_data (
-          user_id VARCHAR(10),
-          name VARCHAR(30),
-          gender VARCHAR(10),
-          weight varchar(6),
-          date_of_birth DATE,
-          about varchar(50),
-          location VARCHAR(100),
-          phone_no VARCHAR(10),
-          whatsapp_no VARCHAR(10),
-          joining_date DATE
-        );
-      `;
-      
-      await client.query(createTableQuery);
-      console.log('✓ Table "user_data" created successfully');
-      
-      // Add unique constraint
-      const addConstraintQuery = `
-        ALTER TABLE user_data ADD CONSTRAINT users_user_id_unique UNIQUE (user_id);
-      `;
-      
-      await client.query(addConstraintQuery);
-      console.log('✓ Unique constraint added to user_id column');
-      
-    } else {
-      console.log('✓ Table "user_data" already exists');
-      
-      // Check if unique constraint exists
-      const constraintCheckQuery = `
-        SELECT EXISTS (
-          SELECT FROM information_schema.table_constraints 
-          WHERE table_name = 'user_data' 
-          AND constraint_name = 'users_user_id_unique'
-        );
-      `;
-      
-      const constraintExists = await client.query(constraintCheckQuery);
-      
-      if (!constraintExists.rows[0].exists) {
-        console.log('Adding unique constraint to existing table...');
-        const addConstraintQuery = `
-          ALTER TABLE user_data ADD CONSTRAINT users_user_id_unique UNIQUE (user_id);
-        `;
-        
-        await client.query(addConstraintQuery);
-        console.log('✓ Unique constraint added to user_id column');
-      } else {
-        console.log('✓ Unique constraint already exists on user_id column');
-      }
-    }
+    await client.query(createTableQuery);
+    console.log('✓ Table "users" is ready (with unique user_id)');
     
   } catch (error) {
-    console.error('Error creating table or adding constraint:', error);
+    console.error('Error creating table:', error);
     throw error;
     
   } finally {
@@ -229,7 +182,7 @@ async function main() {
     testClient.release();
     console.log('✓ Database connection successful');
     
-    // Create table if it doesn't exist and add unique constraint
+    // Create table if it doesn't exist
     await createTableIfNotExists();
     
     // Insert data from JSON file (in batches of 1000)
@@ -255,4 +208,5 @@ if (require.main === module) {
 module.exports = {
   insertJsonDataToDatabase,
   createTableIfNotExists
+
 };

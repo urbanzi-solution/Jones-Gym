@@ -1,12 +1,6 @@
-ALTER TABLE users ADD CONSTRAINT users_user_id_unique UNIQUE (user_id);
-
-\d users
-
-"users_user_id_unique" UNIQUE CONSTRAINT, btree (user_id)
-
 # create table commands
 
-### user_data table
+### useuser_data table
 
 ```sql
 CREATE TABLE user_data (

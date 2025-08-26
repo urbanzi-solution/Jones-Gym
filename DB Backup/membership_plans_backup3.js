@@ -4,8 +4,8 @@
 
 // Autamed these Functions and also create table if not exist
 
-// ALTER TABLE user_data ADD CONSTRAINT users_user_id_unique UNIQUE (user_id);
-// \d user_data
+// ALTER TABLE membership_plans ADD CONSTRAINT users_user_id_unique UNIQUE (user_id);
+// \d membership_plans
 // "users_user_id_unique" UNIQUE CONSTRAINT, btree (user_id)
 
 const { Pool } = require('pg');
@@ -26,7 +26,7 @@ async function insertJsonDataToDatabase(batchSize = 1000) {
   
   try {
     // Read the JSON file
-    const jsonFilePath = path.join(__dirname, 'user_data.json');
+    const jsonFilePath = path.join(__dirname, 'membership_plans.json');
     const jsonData = await fs.readFile(jsonFilePath, 'utf8');
     const userData = JSON.parse(jsonData);
 
@@ -58,17 +58,17 @@ async function insertJsonDataToDatabase(batchSize = 1000) {
       const batch = uniqueData.slice(i, i + batchSize);
 
       const insertQuery = `
-        INSERT INTO user_data (
+        INSERT INTO membership_plans (
           user_id, 
-          name, 
-          gender, 
-          weight, 
-          date_of_birth, 
-          about, 
-          location, 
-          phone_no, 
-          whatsapp_no, 
-          joining_date
+          plan_name, 
+          bill_no, 
+          amount, 
+          discount, 
+          balance, 
+          trans_type, 
+          trainer, 
+          date, 
+          exp_date
         ) VALUES ${batch.map(
           (_, idx) => `(
             $${idx * 10 + 1}, 
@@ -84,28 +84,28 @@ async function insertJsonDataToDatabase(batchSize = 1000) {
           )`
         ).join(",")}
         ON CONFLICT (user_id) DO UPDATE SET
-          name = EXCLUDED.name,
-          gender = EXCLUDED.gender,
-          weight = EXCLUDED.weight,
-          date_of_birth = EXCLUDED.date_of_birth,
-          about = EXCLUDED.about,
-          location = EXCLUDED.location,
-          phone_no = EXCLUDED.phone_no,
-          whatsapp_no = EXCLUDED.whatsapp_no,
-          joining_date = EXCLUDED.joining_date
+          plan_name = EXCLUDED.plan_name,
+          bill_no = EXCLUDED.bill_no,
+          amount = EXCLUDED.amount,
+          discount = EXCLUDED.discount,
+          balance = EXCLUDED.balance,
+          trans_type = EXCLUDED.trans_type,
+          trainer = EXCLUDED.trainer,
+          date = EXCLUDED.date,
+          exp_date = EXCLUDED.exp_date
       `;
 
       const values = batch.flatMap(user => [
         user.user_id,
-        user.name,
-        user.gender,
-        user.weight, // Keep as string since table expects varchar(3)
-        user.date_of_birth,
-        user.about || '',
-        user.location,
-        user.phone_no,
-        user.whatsapp_no,
-        user.joining_date
+        user.plan_name,
+        user.bill_no,
+        user.amount,
+        user.discount,
+        user.balance,
+        user.trans_type,
+        user.trainer,
+        user.date,
+        user.exp_date
       ]);
 
       await client.query(insertQuery, values);
@@ -144,51 +144,51 @@ async function createTableIfNotExists() {
       SELECT EXISTS (
         SELECT FROM information_schema.tables 
         WHERE table_schema = 'public' 
-        AND table_name = 'user_data'
+        AND table_name = 'membership_plans'
       );
     `;
     
     const tableExists = await client.query(tableCheckQuery);
     
     if (!tableExists.rows[0].exists) {
-      console.log('Table "user_data" does not exist. Creating...');
+      console.log('Table "membership_plans" does not exist. Creating...');
       
       // Create table with your specified query
       const createTableQuery = `
-        CREATE TABLE user_data (
+        CREATE TABLE membership_plans (
           user_id VARCHAR(10),
-          name VARCHAR(30),
-          gender VARCHAR(10),
-          weight varchar(6),
-          date_of_birth DATE,
-          about varchar(50),
-          location VARCHAR(100),
-          phone_no VARCHAR(10),
-          whatsapp_no VARCHAR(10),
-          joining_date DATE
+          plan_name VARCHAR(30),
+          bill_no VARCHAR(6),
+          amount INTEGER,
+          discount INTEGER,
+          balance INTEGER,
+          trans_type VARCHAR(15),
+          trainer VARCHAR(30),
+          date DATE,
+          exp_date DATE
         );
       `;
       
       await client.query(createTableQuery);
-      console.log('✓ Table "user_data" created successfully');
+      console.log('✓ Table "membership_plans" created successfully');
       
       // Add unique constraint
       const addConstraintQuery = `
-        ALTER TABLE user_data ADD CONSTRAINT users_user_id_unique UNIQUE (user_id);
+        ALTER TABLE membership_plans ADD CONSTRAINT membership_user_id_unique UNIQUE (user_id);
       `;
       
       await client.query(addConstraintQuery);
       console.log('✓ Unique constraint added to user_id column');
       
     } else {
-      console.log('✓ Table "user_data" already exists');
+      console.log('✓ Table "membership_plans" already exists');
       
       // Check if unique constraint exists
       const constraintCheckQuery = `
         SELECT EXISTS (
           SELECT FROM information_schema.table_constraints 
-          WHERE table_name = 'user_data' 
-          AND constraint_name = 'users_user_id_unique'
+          WHERE table_name = 'membership_plans' 
+          AND constraint_name = 'membership_user_id_unique'
         );
       `;
       
@@ -197,7 +197,7 @@ async function createTableIfNotExists() {
       if (!constraintExists.rows[0].exists) {
         console.log('Adding unique constraint to existing table...');
         const addConstraintQuery = `
-          ALTER TABLE user_data ADD CONSTRAINT users_user_id_unique UNIQUE (user_id);
+          ALTER TABLE membership_plans ADD CONSTRAINT membership_user_id_unique UNIQUE (user_id);
         `;
         
         await client.query(addConstraintQuery);

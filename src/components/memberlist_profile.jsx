@@ -13,7 +13,7 @@ export default function MemberlistProfile({ member }) {
   const [membershipPlans, setMembershipPlans] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // console.log("membershipPlans", membershipPlans);
+  console.log("membershipPlans", membershipPlans);
 
   const toggleRenewBox = () => {
     setRenewBox(!renewBox);
@@ -61,6 +61,8 @@ export default function MemberlistProfile({ member }) {
       ? membershipPlans.map(plan => plan.plan_name).join(', ')
       : 'Basic Gym';
   }, [membershipPlans]);
+
+  // console.log("planNames", planNames);
 
   // Calculate expiration details for each plan using useMemo
   const planExpirations = useMemo(() => {
