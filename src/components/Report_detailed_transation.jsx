@@ -27,22 +27,44 @@ export default function DetailedTransactions() {
     const fetchTransactions = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/api/fetch_membership_plans');
-        const data = await response.json();
-        
-        if (data.success) {
+        const membershipResponse = await fetch('/api/fetch_membership_plans');
+        const membershipData = await membershipResponse.json();
+
+        // Fetch transactions data
+        const transactionsResponse = await fetch('/api/fetch_transactions_report');
+        const transactionsData = await transactionsResponse.json();
+
+        console.log("transactionsData...", transactionsData);
+        console.log("membershipData...", membershipData);
+
+        // Check if both API calls were successful
+        if (membershipData.success && transactionsData.success) {
+          // Combine both datasets
+          const combinedData = [
+            ...(membershipData.data || []),
+            ...(transactionsData.data || [])
+          ];
+          
           // Remove duplicates based on bill_no (keep the first occurrence)
-          const uniqueTransactions = data.data.filter((transaction, index, self) =>
+          const uniqueTransactions = combinedData.filter((transaction, index, self) =>
             index === self.findIndex(t => t.bill_no === transaction.bill_no)
           );
           
-          console.log("Original data:", data.data);
-          console.log("Unique transactions:", uniqueTransactions);
+          // Sort by date (newest first) - adjust the date field name as needed
+          const sortedTransactions = uniqueTransactions.sort((a, b) => {
+            const dateA = new Date(a.created_at || a.date || a.transaction_date);
+            const dateB = new Date(b.created_at || b.date || b.transaction_date);
+            return dateB - dateA; // For descending order (newest first)
+            // return dateA - dateB; // For ascending order (oldest first)
+          });
           
-          setAllTransactions(uniqueTransactions);
-          setTransactions(uniqueTransactions); // Show all transactions by default
+          setAllTransactions(sortedTransactions);
+          setTransactions(sortedTransactions); // Show all transactions by default
         } else {
-          setError(data.error || 'Failed to fetch transactions');
+          // Handle API errors
+          const error = (!membershipData.success ? membershipData.error : '') + 
+                      (!transactionsData.success ? transactionsData.error : '');
+          setError(error || 'Failed to fetch transactions');
         }
       } catch (err) {
         setError('Error fetching transactions');
@@ -51,14 +73,10 @@ export default function DetailedTransactions() {
         setLoading(false);
       }
     };
+    
     fetchTransactions();
   }, []);
 
-  // Only filter when user actively selects a filter option
-  // Remove the automatic filtering useEffect
-
-  console.log("transactions", transactions);
-  console.log("allTransactions", allTransactions);
 
   // Export to Excel function
   const exportToExcel = () => {
@@ -459,8 +477,12 @@ export default function DetailedTransactions() {
             </tr>
           </thead>
           <tbody>
-            {transactions.map((transaction) => (
+            {transactions.map((transaction, index) => (
               <tr key={transaction.bill_no} className="group text-sm">
+                {/* Serial No Column */}
+                <td className="p-3 py-6 bg-[#404346] text-white group-hover:bg-[#505356] border-r">
+                  {index + 1}
+                </td>
                 <td className="p-3 py-6 bg-[#404346] text-white group-hover:bg-[#505356] border-r">
                   {transaction.user_id}
                 </td>

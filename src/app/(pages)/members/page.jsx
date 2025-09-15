@@ -1,5 +1,4 @@
 import { query } from '@/lib/db';
-// import Inpage_header from "@/components/Inpage_header";
 import MembersClient from "@/components/MembersClient";
 import Dashboardgreeting from "@/components/Dashboard_greeting";
 
@@ -15,7 +14,6 @@ export default async function Members({ searchParams }) {
 
   const queryString = inactiveFilter
     ? 'SELECT * FROM user_data'
-    // ? 'SELECT * FROM user_data WHERE joining_date < $1'
     : 'SELECT * FROM user_data';
   const queryParams = inactiveFilter ? [oneYearAgo.toISOString()] : [];
 

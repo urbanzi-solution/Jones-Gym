@@ -1,3 +1,5 @@
+// src\components\Recent_transations.jsx
+
 "use client";
 import { useState, useEffect } from 'react';
 import { FaArrowRight } from "react-icons/fa";
@@ -6,40 +8,109 @@ import { FaPiggyBank } from "react-icons/fa";
 import { HiOutlineCash } from "react-icons/hi";
 import { CiCreditCard1 } from "react-icons/ci";
 
-export default function Recent_transations({ userId }) {
+export default function Recent_transactions({ userId }) {
   const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    console.log('userId:', userId); // Debug userId
-    const fetchTransactions = async () => {
-      try {
-        const response = await fetch('/api/fetch_membership_plans');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const { success, data, error } = await response.json();
-        if (!success) {
-          throw new Error(error || 'API request failed');
-        }
-        const filteredTransactions = data
-          .filter(transaction => transaction.user_id == userId) // Use == for type coercion
-          .map(transaction => {
-            console.log('Transaction date:', transaction.date); // Debug date
-            return transaction;
-          })
-          .sort((a, b) => new Date(b.date) - new Date(a.date))
-          .slice(0, 3);
-        setTransactions(filteredTransactions);
-      } catch (error) {
-        console.error('Error fetching transactions:', error);
-        setTransactions([]);
-      }
-    };
+    console.log('=== COMPONENT MOUNTED ===');
+    console.log('Props received:', { userId });
+    console.log('userId type:', typeof userId);
+    console.log('userId value:', userId);
+    
+    // Force the function to run regardless of userId
+    fetchAllTransactions();
+  }, []); // Remove userId dependency to force immediate execution
 
+  useEffect(() => {
+    console.log('=== userId CHANGED ===');
+    console.log('New userId:', userId);
     if (userId) {
-      fetchTransactions();
+      fetchAllTransactions();
     }
-  }, [userId]);
+  }, [userId]); // Separate effect for when userId changes
+
+  const fetchAllTransactions = async () => {
+    console.log('=== FETCH FUNCTION STARTED ===');
+    console.log('Current userId in fetch:', userId);
+    
+    setLoading(true);
+    setError(null);
+    
+    try {
+      // Test 1: Always try to call fetch_transactions API (even without userId)
+      console.log('=== ATTEMPTING API CALLS ===');
+      
+      // Create URLs
+      const membershipUrl = '/api/fetch_membership_plans';
+      const transactionsUrl = `/api/fetch_transactions?user_id=${userId || 'test'}`;
+      
+      console.log('Membership URL:', membershipUrl);
+      console.log('Transactions URL:', transactionsUrl);
+      
+      // Force both API calls
+      console.log('Making membership API call...');
+      const membershipResponse = fetch(membershipUrl);
+      
+      console.log('Making transactions API call...');
+      const transactionsResponse = fetch(transactionsUrl);
+      
+      const [membershipRes, transactionsRes] = await Promise.all([
+        membershipResponse,
+        transactionsResponse
+      ]);
+      
+      console.log('=== API RESPONSES RECEIVED ===');
+      console.log('Membership response status:', membershipRes.status);
+      console.log('Transactions response status:', transactionsRes.status);
+      
+      // Parse responses
+      const membershipData = await membershipRes.json();
+      const transactionsData = await transactionsRes.json();
+      
+      console.log('=== PARSED DATA ===');
+      console.log('Membership data:', membershipData);
+      console.log('Transactions data:', transactionsData);
+      
+      // Process data
+      let allTransactions = [];
+      
+      if (membershipData.success && membershipData.data) {
+        const userMembershipPlans = membershipData.data.filter(
+          plan => plan.user_id == userId
+        );
+        console.log('Filtered membership plans:', userMembershipPlans);
+        allTransactions = [...userMembershipPlans];
+      }
+      
+      if (transactionsData.success && transactionsData.data) {
+        console.log('Adding transactions data:', transactionsData.data);
+        allTransactions = [...allTransactions, ...transactionsData.data];
+      }
+      
+      console.log('=== COMBINED DATA ===');
+      console.log('All transactions:', allTransactions);
+      
+      // Sort and limit
+      const recentTransactions = allTransactions
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, 10);
+      
+      console.log('=== FINAL RESULT ===');
+      console.log('Recent transactions:', recentTransactions);
+      
+      setTransactions(recentTransactions);
+      
+    } catch (error) {
+      console.error('=== ERROR OCCURRED ===');
+      console.error('Error details:', error);
+      setError(error.message);
+      setTransactions([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Function to render the appropriate icon based on trans_type
   const getTransactionIcon = (transType) => {
@@ -53,9 +124,9 @@ export default function Recent_transations({ userId }) {
       case 'Bank Transfer':
         return <FaPiggyBank className="size-8 md:size-12" />;
       case 'Other':
-        return <span className="text-lg md:text-xl">Other</span>;
+        return <span className="text-lg md:text-xl">💳</span>;
       default:
-        return null;
+        return <span className="text-lg md:text-xl">💳</span>;
     }
   };
 

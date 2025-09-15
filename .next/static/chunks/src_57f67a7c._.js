@@ -484,7 +484,7 @@ function Inpage_header({ title, onExport }) {
                 href: "#",
                 onClick: (e)=>{
                     e.preventDefault();
-                    onExport();
+                    window.print();
                 },
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$ci$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CiExport"], {
                     className: "text-[#FFDD4A]"
@@ -557,6 +557,7 @@ function DetailedTransactions({ userId }) {
     const [selectedOption, setSelectedOption] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('Today');
     const [selectedDate, setSelectedDate] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(new Date());
     const [showCustomDate, setShowCustomDate] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [openDropdownBillNo, setOpenDropdownBillNo] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null); // NEW
     // Fetch transactions from the API and filter by userId
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "DetailedTransactions.useEffect": ()=>{
@@ -564,18 +565,35 @@ function DetailedTransactions({ userId }) {
                 "DetailedTransactions.useEffect.fetchTransactions": async ()=>{
                     try {
                         setLoading(true);
-                        const response = await fetch(`/api/fetch_transactions?user_id=${encodeURIComponent(userId)}`);
-                        const data = await response.json();
-                        if (data.success) {
+                        // Fetch data from both APIs concurrently
+                        const [membershipResponse, transactionsResponse] = await Promise.all([
+                            fetch(`/api/fetch_transactions?user_id=${encodeURIComponent(userId)}`),
+                            fetch(`/api/fetch_transactions_report?user_id=${encodeURIComponent(userId)}`)
+                        ]);
+                        // Parse both responses
+                        const membershipData = await membershipResponse.json();
+                        const transactionsData = await transactionsResponse.json();
+                        console.log("Membership data...", membershipData);
+                        console.log("Transactions data...", transactionsData);
+                        // Check if both API calls were successful
+                        if (membershipData.success && transactionsData.success) {
+                            // Merge the data arrays from both APIs
+                            const mergedData = [
+                                ...membershipData.data || [],
+                                ...transactionsData.data || []
+                            ];
+                            console.log("Merged data...", mergedData);
                             // Filter transactions by userId
-                            const filteredTransactions = data.data.filter({
+                            const filteredTransactions = mergedData.filter({
                                 "DetailedTransactions.useEffect.fetchTransactions.filteredTransactions": (transaction)=>transaction.user_id === userId
                             }["DetailedTransactions.useEffect.fetchTransactions.filteredTransactions"]);
                             setAllTransactions(filteredTransactions);
                             setTransactions(filteredTransactions);
                             filterTransactions('Today', new Date());
                         } else {
-                            setError(data.error || 'Failed to fetch transactions');
+                            // Handle errors from either API
+                            const error = membershipData.error || transactionsData.error || 'Failed to fetch transactions';
+                            setError(error);
                         }
                     } catch (err) {
                         setError('Error fetching transactions');
@@ -636,6 +654,7 @@ function DetailedTransactions({ userId }) {
     const handleEdit = (transaction)=>{
         setSelectedTransaction(transaction);
         setIsModalOpen(true);
+        setOpenDropdownBillNo(null);
     };
     // Function to handle delete action
     const handleDelete = async (bill_no)=>{
@@ -667,6 +686,8 @@ function DetailedTransactions({ userId }) {
         } catch (error) {
             console.error('Delete error:', error);
             alert(error.message || 'Error deleting transaction');
+        } finally{
+            setOpenDropdownBillNo(null);
         }
     };
     const handleSave = (updatedTransaction)=>{
@@ -785,6 +806,7 @@ function DetailedTransactions({ userId }) {
     const closeAll = ()=>{
         setIsDropdownOpen(false);
         setIsCalendarOpen(false);
+        setOpenDropdownBillNo(null);
     };
     const options = [
         'Today',
@@ -802,7 +824,7 @@ function DetailedTransactions({ userId }) {
                 onExport: exportToExcel
             }, void 0, false, {
                 fileName: "[project]/src/components/Detailed_transations.jsx",
-                lineNumber: 276,
+                lineNumber: 306,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -823,13 +845,13 @@ function DetailedTransactions({ userId }) {
                                         className: "ml-1"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Detailed_transations.jsx",
-                                        lineNumber: 287,
+                                        lineNumber: 317,
                                         columnNumber: 30
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/Detailed_transations.jsx",
-                                lineNumber: 281,
+                                lineNumber: 311,
                                 columnNumber: 11
                             }, this),
                             isDropdownOpen && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -844,23 +866,23 @@ function DetailedTransactions({ userId }) {
                                             children: option
                                         }, option, false, {
                                             fileName: "[project]/src/components/Detailed_transations.jsx",
-                                            lineNumber: 297,
+                                            lineNumber: 327,
                                             columnNumber: 19
                                         }, this))
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/Detailed_transations.jsx",
-                                    lineNumber: 295,
+                                    lineNumber: 325,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Detailed_transations.jsx",
-                                lineNumber: 291,
+                                lineNumber: 321,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Detailed_transations.jsx",
-                        lineNumber: 280,
+                        lineNumber: 310,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -874,12 +896,12 @@ function DetailedTransactions({ userId }) {
                                     className: "h-5 w-5"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/Detailed_transations.jsx",
-                                    lineNumber: 320,
+                                    lineNumber: 350,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Detailed_transations.jsx",
-                                lineNumber: 315,
+                                lineNumber: 345,
                                 columnNumber: 11
                             }, this),
                             isCalendarOpen && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -912,17 +934,17 @@ function DetailedTransactions({ userId }) {
                                                             d: "M15 19l-7-7 7-7"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/Detailed_transations.jsx",
-                                                            lineNumber: 353,
+                                                            lineNumber: 383,
                                                             columnNumber: 25
                                                         }, void 0)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/Detailed_transations.jsx",
-                                                        lineNumber: 346,
+                                                        lineNumber: 376,
                                                         columnNumber: 23
                                                     }, void 0)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/Detailed_transations.jsx",
-                                                    lineNumber: 342,
+                                                    lineNumber: 372,
                                                     columnNumber: 21
                                                 }, void 0),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -933,7 +955,7 @@ function DetailedTransactions({ userId }) {
                                                     })
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/Detailed_transations.jsx",
-                                                    lineNumber: 361,
+                                                    lineNumber: 391,
                                                     columnNumber: 21
                                                 }, void 0),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -952,53 +974,53 @@ function DetailedTransactions({ userId }) {
                                                             d: "M9 5l7 7-7 7"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/Detailed_transations.jsx",
-                                                            lineNumber: 378,
+                                                            lineNumber: 408,
                                                             columnNumber: 25
                                                         }, void 0)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/Detailed_transations.jsx",
-                                                        lineNumber: 371,
+                                                        lineNumber: 401,
                                                         columnNumber: 23
                                                     }, void 0)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/Detailed_transations.jsx",
-                                                    lineNumber: 367,
+                                                    lineNumber: 397,
                                                     columnNumber: 21
                                                 }, void 0)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/Detailed_transations.jsx",
-                                            lineNumber: 341,
+                                            lineNumber: 371,
                                             columnNumber: 19
                                         }, void 0)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/Detailed_transations.jsx",
-                                    lineNumber: 328,
+                                    lineNumber: 358,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Detailed_transations.jsx",
-                                lineNumber: 324,
+                                lineNumber: 354,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Detailed_transations.jsx",
-                        lineNumber: 314,
+                        lineNumber: 344,
                         columnNumber: 9
                     }, this),
-                    (isDropdownOpen || isCalendarOpen) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    (isDropdownOpen || isCalendarOpen || openDropdownBillNo) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "fixed inset-0 z-10 bg-transparent",
                         onClick: closeAll
                     }, void 0, false, {
                         fileName: "[project]/src/components/Detailed_transations.jsx",
-                        lineNumber: 395,
+                        lineNumber: 424,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/Detailed_transations.jsx",
-                lineNumber: 278,
+                lineNumber: 308,
                 columnNumber: 7
             }, this),
             loading && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1006,7 +1028,7 @@ function DetailedTransactions({ userId }) {
                 children: "Loading transactions..."
             }, void 0, false, {
                 fileName: "[project]/src/components/Detailed_transations.jsx",
-                lineNumber: 403,
+                lineNumber: 432,
                 columnNumber: 19
             }, this),
             error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1014,7 +1036,7 @@ function DetailedTransactions({ userId }) {
                 children: error
             }, void 0, false, {
                 fileName: "[project]/src/components/Detailed_transations.jsx",
-                lineNumber: 404,
+                lineNumber: 433,
                 columnNumber: 17
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1024,7 +1046,7 @@ function DetailedTransactions({ userId }) {
                     children: "No transactions found"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Detailed_transations.jsx",
-                    lineNumber: 409,
+                    lineNumber: 438,
                     columnNumber: 11
                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("table", {
                     className: "min-w-full text-center",
@@ -1038,7 +1060,7 @@ function DetailedTransactions({ userId }) {
                                         children: "Bill Number"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Detailed_transations.jsx",
-                                        lineNumber: 414,
+                                        lineNumber: 443,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1046,7 +1068,7 @@ function DetailedTransactions({ userId }) {
                                         children: "Plan"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Detailed_transations.jsx",
-                                        lineNumber: 415,
+                                        lineNumber: 444,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1054,7 +1076,7 @@ function DetailedTransactions({ userId }) {
                                         children: "Date"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Detailed_transations.jsx",
-                                        lineNumber: 416,
+                                        lineNumber: 445,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1062,7 +1084,7 @@ function DetailedTransactions({ userId }) {
                                         children: "Amount Paid"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Detailed_transations.jsx",
-                                        lineNumber: 417,
+                                        lineNumber: 446,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1070,7 +1092,7 @@ function DetailedTransactions({ userId }) {
                                         children: "Discount"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Detailed_transations.jsx",
-                                        lineNumber: 418,
+                                        lineNumber: 447,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1078,7 +1100,7 @@ function DetailedTransactions({ userId }) {
                                         children: "Balance"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Detailed_transations.jsx",
-                                        lineNumber: 419,
+                                        lineNumber: 448,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1086,7 +1108,7 @@ function DetailedTransactions({ userId }) {
                                         children: "Transaction Type"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Detailed_transations.jsx",
-                                        lineNumber: 420,
+                                        lineNumber: 449,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1094,108 +1116,112 @@ function DetailedTransactions({ userId }) {
                                         children: "Actions"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Detailed_transations.jsx",
-                                        lineNumber: 421,
+                                        lineNumber: 450,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/Detailed_transations.jsx",
-                                lineNumber: 413,
+                                lineNumber: 442,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/Detailed_transations.jsx",
-                            lineNumber: 412,
+                            lineNumber: 441,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
                             children: transactions.map((transaction)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
-                                    className: "group text-sm",
+                                    className: "text-sm",
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                            className: "p-3 py-6 bg-[#404346] text-white group-hover:bg-[#505356] border-r",
+                                            className: "p-3 py-6 bg-[#404346] text-white border-r",
                                             children: transaction.bill_no
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/Detailed_transations.jsx",
-                                            lineNumber: 427,
+                                            lineNumber: 456,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                            className: "p-3 py-6 bg-[#404346] text-white group-hover:bg-[#505356] border-r",
+                                            className: "p-3 py-6 bg-[#404346] text-white border-r",
                                             children: transaction.plan_name
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/Detailed_transations.jsx",
-                                            lineNumber: 430,
+                                            lineNumber: 459,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                            className: "p-3 py-6 bg-[#404346] text-white border-r group-hover:bg-[#505356]",
+                                            className: "p-3 py-6 bg-[#404346] text-white border-r",
                                             children: new Date(transaction.date).toISOString().split('T')[0]
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/Detailed_transations.jsx",
-                                            lineNumber: 433,
+                                            lineNumber: 462,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                            className: "p-3 py-6 bg-[#404346] text-white group-hover:bg-[#505356] border-r",
+                                            className: "p-3 py-6 bg-[#404346] text-white border-r",
                                             children: [
                                                 "$",
                                                 transaction.amount
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/Detailed_transations.jsx",
-                                            lineNumber: 436,
+                                            lineNumber: 465,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                            className: "p-3 py-6 bg-[#404346] text-white group-hover:bg-[#505356] border-r",
+                                            className: "p-3 py-6 bg-[#404346] text-white border-r",
                                             children: [
                                                 "$",
                                                 transaction.discount
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/Detailed_transations.jsx",
-                                            lineNumber: 439,
+                                            lineNumber: 468,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                            className: "p-3 py-6 bg-[#404346] text-white group-hover:bg-[#505356] border-r",
+                                            className: "p-3 py-6 bg-[#404346] text-white border-r",
                                             children: [
                                                 "$",
                                                 transaction.balance
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/Detailed_transations.jsx",
-                                            lineNumber: 442,
+                                            lineNumber: 471,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                            className: "p-3 py-6 bg-[#404346] text-white group-hover:bg-[#505356] border-r",
+                                            className: "p-3 py-6 bg-[#404346] text-white border-r",
                                             children: transaction.trans_type
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/Detailed_transations.jsx",
-                                            lineNumber: 445,
+                                            lineNumber: 474,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                            className: "p-3 py-6 bg-[#404346] text-white group-hover:bg-[#505356] relative",
+                                            className: "p-3 py-6 bg-[#404346] text-white relative",
                                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "dropdown",
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                         className: "text-white hover:text-gray-300",
+                                                        onClick: (e)=>{
+                                                            e.stopPropagation();
+                                                            setOpenDropdownBillNo(openDropdownBillNo === transaction.bill_no ? null : transaction.bill_no);
+                                                        },
                                                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FaEllipsisV"], {}, void 0, false, {
                                                             fileName: "[project]/src/components/Detailed_transations.jsx",
-                                                            lineNumber: 451,
+                                                            lineNumber: 488,
                                                             columnNumber: 25
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/Detailed_transations.jsx",
-                                                        lineNumber: 450,
+                                                        lineNumber: 479,
                                                         columnNumber: 23
                                                     }, this),
-                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                        className: "dropdown-menu absolute right-0 mt-2 w-48 bg-[#404346] rounded-md shadow-lg z-10 hidden group-hover:block",
+                                                    openDropdownBillNo === transaction.bill_no && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                        className: "dropdown-menu absolute right-0 mt-2 w-48 bg-[#404346] rounded-md shadow-lg z-20",
                                                         children: [
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                                 onClick: ()=>handleEdit(transaction),
@@ -1203,8 +1229,8 @@ function DetailedTransactions({ userId }) {
                                                                 children: "Edit"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/Detailed_transations.jsx",
-                                                                lineNumber: 454,
-                                                                columnNumber: 25
+                                                                lineNumber: 492,
+                                                                columnNumber: 27
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                                 onClick: ()=>handleDelete(transaction.bill_no),
@@ -1212,46 +1238,46 @@ function DetailedTransactions({ userId }) {
                                                                 children: "Delete"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/Detailed_transations.jsx",
-                                                                lineNumber: 460,
-                                                                columnNumber: 25
+                                                                lineNumber: 498,
+                                                                columnNumber: 27
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/Detailed_transations.jsx",
-                                                        lineNumber: 453,
-                                                        columnNumber: 23
+                                                        lineNumber: 491,
+                                                        columnNumber: 25
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/Detailed_transations.jsx",
-                                                lineNumber: 449,
+                                                lineNumber: 478,
                                                 columnNumber: 21
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/Detailed_transations.jsx",
-                                            lineNumber: 448,
+                                            lineNumber: 477,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, transaction.bill_no, true, {
                                     fileName: "[project]/src/components/Detailed_transations.jsx",
-                                    lineNumber: 426,
+                                    lineNumber: 455,
                                     columnNumber: 17
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/src/components/Detailed_transations.jsx",
-                            lineNumber: 424,
+                            lineNumber: 453,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/Detailed_transations.jsx",
-                    lineNumber: 411,
+                    lineNumber: 440,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/Detailed_transations.jsx",
-                lineNumber: 407,
+                lineNumber: 436,
                 columnNumber: 7
             }, this),
             isModalOpen && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1264,27 +1290,27 @@ function DetailedTransactions({ userId }) {
                         onCancel: handleCancel
                     }, void 0, false, {
                         fileName: "[project]/src/components/Detailed_transations.jsx",
-                        lineNumber: 479,
+                        lineNumber: 518,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/Detailed_transations.jsx",
-                    lineNumber: 478,
+                    lineNumber: 517,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/Detailed_transations.jsx",
-                lineNumber: 477,
+                lineNumber: 516,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/Detailed_transations.jsx",
-        lineNumber: 275,
+        lineNumber: 305,
         columnNumber: 5
     }, this);
 }
-_s(DetailedTransactions, "UlTYSCNPsrD52hD859/vCiSYMaQ=");
+_s(DetailedTransactions, "MiXr+4Wt8qL2kjdAH3pSYdqQevo=");
 _c = DetailedTransactions;
 var _c;
 __turbopack_context__.k.register(_c, "DetailedTransactions");
@@ -1298,18 +1324,21 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
 var { g: global, __dirname, k: __turbopack_refresh__, m: module } = __turbopack_context__;
 {
 __turbopack_context__.s({
-    "default": (()=>Page)
+    "default": (()=>Page),
+    "dynamic": (()=>dynamic)
 });
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
-// import Inpage_header from "@/components/Inpage_header"
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Detailed_transations$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/Detailed_transations.jsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/navigation.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature();
 'use client';
 ;
 ;
-function Page() {
+;
+const dynamic = 'force-dynamic';
+function TransactionsContent() {
     _s();
     const searchParams = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useSearchParams"])();
     const userId = searchParams.get('userId');
@@ -1320,31 +1349,53 @@ function Page() {
                 userId: userId
             }, void 0, false, {
                 fileName: "[project]/src/app/(pages)/transations/page.jsx",
-                lineNumber: 14,
+                lineNumber: 17,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "h-20"
             }, void 0, false, {
                 fileName: "[project]/src/app/(pages)/transations/page.jsx",
-                lineNumber: 15,
+                lineNumber: 18,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/(pages)/transations/page.jsx",
-        lineNumber: 12,
+        lineNumber: 15,
         columnNumber: 5
     }, this);
 }
-_s(Page, "a+DZx9DY26Zf8FVy1bxe3vp9l1w=", false, function() {
+_s(TransactionsContent, "a+DZx9DY26Zf8FVy1bxe3vp9l1w=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useSearchParams"]
     ];
 });
-_c = Page;
-var _c;
-__turbopack_context__.k.register(_c, "Page");
+_c = TransactionsContent;
+function Page() {
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Suspense"], {
+        fallback: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            children: "Loading..."
+        }, void 0, false, {
+            fileName: "[project]/src/app/(pages)/transations/page.jsx",
+            lineNumber: 25,
+            columnNumber: 25
+        }, void 0),
+        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(TransactionsContent, {}, void 0, false, {
+            fileName: "[project]/src/app/(pages)/transations/page.jsx",
+            lineNumber: 26,
+            columnNumber: 7
+        }, this)
+    }, void 0, false, {
+        fileName: "[project]/src/app/(pages)/transations/page.jsx",
+        lineNumber: 25,
+        columnNumber: 5
+    }, this);
+}
+_c1 = Page;
+var _c, _c1;
+__turbopack_context__.k.register(_c, "TransactionsContent");
+__turbopack_context__.k.register(_c1, "Page");
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(module, globalThis.$RefreshHelpers$);
 }

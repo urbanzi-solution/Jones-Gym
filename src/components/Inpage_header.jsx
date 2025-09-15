@@ -12,7 +12,7 @@ export default function Inpage_header({ title, onExport }) {
         <LuUndo2 className="text-[#FFDD4A]" />
       </a>
       <h1 className="text-center w-full font-bold">{title}</h1>
-      <a href="#" onClick={(e) => { e.preventDefault(); onExport(); }}>
+      <a href="#" onClick={(e) => { e.preventDefault(); window.print(); }}>
         <CiExport className="text-[#FFDD4A]" />
       </a>
     </div>

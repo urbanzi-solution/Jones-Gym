@@ -37,13 +37,13 @@ module.exports = mod;
 
 var { g: global, __dirname } = __turbopack_context__;
 {
-// Session management utility for client-side storage
+// src\utils\sessionManager.js
 __turbopack_context__.s({
     "SessionManager": (()=>SessionManager)
 });
 class SessionManager {
     static SESSION_KEY = 'user_session';
-    static EXPIRY_DAYS = 2;
+    static EXPIRY_DAYS = 1;
     // Create a new session
     static createSession(userData) {
         const sessionData = {
@@ -143,6 +143,7 @@ const LoginPage = ()=>{
         // Clear error when user starts typing
         if (error) setError('');
     };
+    // login/page.jsx (handleSubmit function - only the relevant part)
     const handleSubmit = async (e)=>{
         e.preventDefault();
         setIsLoading(true);
@@ -157,14 +158,14 @@ const LoginPage = ()=>{
             });
             const data = await response.json();
             if (response.ok) {
-                // Login successful - create session and redirect
+                // Store role information in session
                 __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$sessionManager$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SessionManager"].createSession({
                     username: data.username,
+                    role: data.role,
                     loginTime: new Date().toISOString()
                 });
                 router.push('/');
             } else {
-                // Login failed - show error (no session created)
                 setError(data.error || 'Login failed');
             }
         } catch (error) {
@@ -184,7 +185,7 @@ const LoginPage = ()=>{
                     children: "Login"
                 }, void 0, false, {
                     fileName: "[project]/src/app/login/page.jsx",
-                    lineNumber: 70,
+                    lineNumber: 69,
                     columnNumber: 9
                 }, this),
                 error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -194,12 +195,12 @@ const LoginPage = ()=>{
                         children: error
                     }, void 0, false, {
                         fileName: "[project]/src/app/login/page.jsx",
-                        lineNumber: 74,
+                        lineNumber: 73,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/login/page.jsx",
-                    lineNumber: 73,
+                    lineNumber: 72,
                     columnNumber: 11
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -214,7 +215,7 @@ const LoginPage = ()=>{
                                     children: "Username"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/login/page.jsx",
-                                    lineNumber: 80,
+                                    lineNumber: 79,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -228,13 +229,13 @@ const LoginPage = ()=>{
                                     maxLength: 15
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/login/page.jsx",
-                                    lineNumber: 83,
+                                    lineNumber: 82,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/login/page.jsx",
-                            lineNumber: 79,
+                            lineNumber: 78,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -245,7 +246,7 @@ const LoginPage = ()=>{
                                     children: "Password"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/login/page.jsx",
-                                    lineNumber: 96,
+                                    lineNumber: 95,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -258,13 +259,13 @@ const LoginPage = ()=>{
                                     required: true
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/login/page.jsx",
-                                    lineNumber: 99,
+                                    lineNumber: 98,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/login/page.jsx",
-                            lineNumber: 95,
+                            lineNumber: 94,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -274,24 +275,24 @@ const LoginPage = ()=>{
                             children: isLoading ? 'Logging in...' : 'Login'
                         }, void 0, false, {
                             fileName: "[project]/src/app/login/page.jsx",
-                            lineNumber: 110,
+                            lineNumber: 109,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/login/page.jsx",
-                    lineNumber: 78,
+                    lineNumber: 77,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/login/page.jsx",
-            lineNumber: 69,
+            lineNumber: 68,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/login/page.jsx",
-        lineNumber: 68,
+        lineNumber: 67,
         columnNumber: 5
     }, this);
 };

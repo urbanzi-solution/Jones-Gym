@@ -28,11 +28,11 @@ const LoginPage = () => {
     if (error) setError('');
   };
 
+  // login/page.jsx (handleSubmit function - only the relevant part)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
-
     try {
       const response = await fetch('/api/login', {
         method: 'POST',
@@ -41,19 +41,17 @@ const LoginPage = () => {
         },
         body: JSON.stringify(formData),
       });
-
       const data = await response.json();
-
       if (response.ok) {
-        // Login successful - create session and redirect
+        // Store role information in session
         SessionManager.createSession({
           username: data.username,
+          role: data.role,
           loginTime: new Date().toISOString()
         });
         
         router.push('/');
       } else {
-        // Login failed - show error (no session created)
         setError(data.error || 'Login failed');
       }
     } catch (error) {
@@ -63,6 +61,7 @@ const LoginPage = () => {
       setIsLoading(false);
     }
   };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black">

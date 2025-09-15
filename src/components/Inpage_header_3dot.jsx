@@ -1,4 +1,3 @@
-// src\components\Inpage_header_3dot.jsx
 "use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -106,6 +105,92 @@ export default function Inpage_header({ title, member_id, member }) {
     }
   };
 
+  const deleteUserHandler = async () => {
+    // Get user details for confirmation
+    const userName = member?.name || member?.username || 'Unknown User';
+    const userEmail = member?.email || '';
+    const userPhone = member?.phone || '';
+    
+    // Create detailed confirmation message
+    let confirmMessage = `⚠️ DELETE USER CONFIRMATION ⚠️\n\n`;
+    confirmMessage += `You are about to permanently delete:\n`;
+    confirmMessage += `• User ID: ${member_id}\n`;
+    confirmMessage += `• Name: ${userName}\n`;
+    
+    if (userEmail) {
+      confirmMessage += `• Email: ${userEmail}\n`;
+    }
+    
+    if (userPhone) {
+      confirmMessage += `• Phone: ${userPhone}\n`;
+    }
+    
+    confirmMessage += `\n🚨 WARNING: This action cannot be undone!\n`;
+    confirmMessage += `All user data, profile information, and associated records will be permanently deleted.\n\n`;
+    confirmMessage += `Are you absolutely sure you want to proceed?`;
+
+    // Show detailed confirmation dialog
+    const confirmed = window.confirm(confirmMessage);
+    
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/delete_user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: member_id
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        // Show detailed success message
+        let successMessage = `✅ USER DELETED SUCCESSFULLY\n\n`;
+        successMessage += `The following user has been permanently deleted:\n`;
+        successMessage += `• User ID: ${member_id}\n`;
+        successMessage += `• Name: ${userName}\n`;
+        
+        if (userEmail) {
+          successMessage += `• Email: ${userEmail}\n`;
+        }
+        
+        successMessage += `\nAll associated data has been removed from the system.`;
+        
+        alert(successMessage);
+        
+        // Navigate back to the previous page or home after successful deletion
+        router.back();
+      } else {
+        // Show detailed error message
+        let errorMessage = `❌ DELETION FAILED\n\n`;
+        errorMessage += `Failed to delete user:\n`;
+        errorMessage += `• User ID: ${member_id}\n`;
+        errorMessage += `• Name: ${userName}\n\n`;
+        errorMessage += `Error: ${result.error || 'Unknown error occurred'}\n\n`;
+        errorMessage += `Please try again or contact system administrator.`;
+        
+        alert(errorMessage);
+      }
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      
+      // Show detailed network error message
+      let networkErrorMessage = `🔌 CONNECTION ERROR\n\n`;
+      networkErrorMessage += `Failed to delete user due to network error:\n`;
+      networkErrorMessage += `• User ID: ${member_id}\n`;
+      networkErrorMessage += `• Name: ${userName}\n\n`;
+      networkErrorMessage += `Please check your internet connection and try again.\n`;
+      networkErrorMessage += `If the problem persists, contact system administrator.`;
+      
+      alert(networkErrorMessage);
+    }
+  };
 
   return (
     <div className="relative flex text-2xl md:text-4xl p-4 md:p-6 lg:p-10 justify-between items-center">
@@ -158,12 +243,12 @@ export default function Inpage_header({ title, member_id, member }) {
             >
               Delete Profile Pic
             </button>
-            {/* <button
-              onClick={openRemarks}
+            <button
+              onClick={deleteUserHandler}
               className="bg-red-500 p-3 rounded-2xl hover:border border-[#FFDD4A]"
             >
-              Delete Profile Pic
-            </button> */}
+              Delete User
+            </button>
           </ul>
         </div>
       )}

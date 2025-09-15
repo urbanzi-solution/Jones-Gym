@@ -13,6 +13,10 @@ export default function MemberSearchFilter({ setFilters }) {
   const [showFilters, setShowFilters] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [expiryStartDate, setExpiryStartDate] = useState(null);
+  const [expiryEndDate, setExpiryEndDate] = useState(null);
+  const [expiryWithinStartDate, setExpiryWithinStartDate] = useState(null);
+  const [expiryWithinEndDate, setExpiryWithinEndDate] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [gender, setGender] = useState("");
   const [status, setStatus] = useState("");
@@ -53,8 +57,16 @@ export default function MemberSearchFilter({ setFilters }) {
     setExpiryWithin(params.get("expiryWithin") || "");
     const start = params.get("startDate");
     const end = params.get("endDate");
+    const expiryStart = params.get("expiryStartDate");
+    const expiryEnd = params.get("expiryEndDate");
+    const expiryWithinStart = params.get("expiryWithinStartDate");
+    const expiryWithinEnd = params.get("expiryWithinEndDate");
     if (start) setStartDate(new Date(start));
     if (end) setEndDate(new Date(end));
+    if (expiryStart) setExpiryStartDate(new Date(expiryStart));
+    if (expiryEnd) setExpiryEndDate(new Date(expiryEnd));
+    if (expiryWithinStart) setExpiryWithinStartDate(new Date(expiryWithinStart));
+    if (expiryWithinEnd) setExpiryWithinEndDate(new Date(expiryWithinEnd));
   }, [searchParams]);
 
   // Update parent filters whenever filter states change
@@ -69,8 +81,12 @@ export default function MemberSearchFilter({ setFilters }) {
       expiryWithin,
       startDate,
       endDate,
+      expiryStartDate,
+      expiryEndDate,
+      expiryWithinStartDate,
+      expiryWithinEndDate,
     });
-  }, [inactive, searchQuery, gender, status, payment, plan, expiryWithin, startDate, endDate, setFilters]);
+  }, [inactive, searchQuery, gender, status, payment, plan, expiryWithin, startDate, endDate, expiryStartDate, expiryEndDate, expiryWithinStartDate, expiryWithinEndDate, setFilters]);
 
   const updateQueryParams = (newFilters) => {
     const params = new URLSearchParams();
@@ -84,21 +100,11 @@ export default function MemberSearchFilter({ setFilters }) {
     if (newFilters.expiryWithin) params.set("expiryWithin", newFilters.expiryWithin);
     if (newFilters.startDate) params.set("startDate", newFilters.startDate.toISOString());
     if (newFilters.endDate) params.set("endDate", newFilters.endDate.toISOString());
+    if (newFilters.expiryStartDate) params.set("expiryStartDate", newFilters.expiryStartDate.toISOString());
+    if (newFilters.expiryEndDate) params.set("expiryEndDate", newFilters.expiryEndDate.toISOString());
+    if (newFilters.expiryWithinStartDate) params.set("expiryWithinStartDate", newFilters.expiryWithinStartDate.toISOString());
+    if (newFilters.expiryWithinEndDate) params.set("expiryWithinEndDate", newFilters.expiryWithinEndDate.toISOString());
     router.push(`/members?${params.toString()}`);
-  };
-
-  const handleActiveClick = () => {
-    const newActive = !active;
-    setActive(newActive);
-    setInactive(false);
-    updateQueryParams({ active: newActive, inactive: false, searchQuery, gender, status, payment, plan, expiryWithin, startDate, endDate });
-  };
-
-  const handleInactiveClick = () => {
-    const newInactive = !inactive;
-    setInactive(newInactive);
-    setActive(false);
-    updateQueryParams({ active: false, inactive: newInactive, searchQuery, gender, status, payment, plan, expiryWithin, startDate, endDate });
   };
 
   const toggleFilters = () => {
@@ -109,43 +115,57 @@ export default function MemberSearchFilter({ setFilters }) {
     const [start, end] = dates;
     setStartDate(start);
     setEndDate(end);
-    updateQueryParams({ active, inactive, searchQuery, gender, status, payment, plan, expiryWithin, startDate: start, endDate: end });
+    updateQueryParams({ active, inactive, searchQuery, gender, status, payment, plan, expiryWithin, startDate: start, endDate: end, expiryStartDate, expiryEndDate, expiryWithinStartDate, expiryWithinEndDate });
+  };
+
+  const handleExpiryDateChange = (dates) => {
+    const [start, end] = dates;
+    setExpiryStartDate(start);
+    setExpiryEndDate(end);
+    updateQueryParams({ active, inactive, searchQuery, gender, status, payment, plan, expiryWithin, startDate, endDate, expiryStartDate: start, expiryEndDate: end, expiryWithinStartDate, expiryWithinEndDate });
+  };
+
+  const handleExpiryWithinDateChange = (dates) => {
+    const [start, end] = dates;
+    setExpiryWithinStartDate(start);
+    setExpiryWithinEndDate(end);
+    updateQueryParams({ active, inactive, searchQuery, gender, status, payment, plan, expiryWithin, startDate, endDate, expiryStartDate, expiryEndDate, expiryWithinStartDate: start, expiryWithinEndDate: end });
   };
 
   const handleSearchChange = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
-    updateQueryParams({ active, inactive, searchQuery: query, gender, status, payment, plan, expiryWithin, startDate, endDate });
+    updateQueryParams({ active, inactive, searchQuery: query, gender, status, payment, plan, expiryWithin, startDate, endDate, expiryStartDate, expiryEndDate, expiryWithinStartDate, expiryWithinEndDate });
   };
 
   const handleGenderClick = (value) => {
     const newGender = gender === value ? "" : value;
     setGender(newGender);
-    updateQueryParams({ active, inactive, searchQuery, gender: newGender, status, payment, plan, expiryWithin, startDate, endDate });
+    updateQueryParams({ active, inactive, searchQuery, gender: newGender, status, payment, plan, expiryWithin, startDate, endDate, expiryStartDate, expiryEndDate, expiryWithinStartDate, expiryWithinEndDate });
   };
 
   const handleStatusClick = (value) => {
     const newStatus = status === value ? "" : value;
     setStatus(newStatus);
-    updateQueryParams({ active, inactive, searchQuery, gender, status: newStatus, payment, plan, expiryWithin, startDate, endDate });
+    updateQueryParams({ active, inactive, searchQuery, gender, status: newStatus, payment, plan, expiryWithin, startDate, endDate, expiryStartDate, expiryEndDate, expiryWithinStartDate, expiryWithinEndDate });
   };
 
   const handlePaymentClick = (value) => {
     const newPayment = payment === value ? "" : value;
     setPayment(newPayment);
-    updateQueryParams({ active, inactive, searchQuery, gender, status, payment: newPayment, plan, expiryWithin, startDate, endDate });
+    updateQueryParams({ active, inactive, searchQuery, gender, status, payment: newPayment, plan, expiryWithin, startDate, endDate, expiryStartDate, expiryEndDate, expiryWithinStartDate, expiryWithinEndDate });
   };
 
   const handlePlanClick = (value) => {
     const newPlan = plan === value ? "" : value;
     setPlan(newPlan);
-    updateQueryParams({ active, inactive, searchQuery, gender, status, payment, plan: newPlan, expiryWithin, startDate, endDate, });
+    updateQueryParams({ active, inactive, searchQuery, gender, status, payment, plan: newPlan, expiryWithin, startDate, endDate, expiryStartDate, expiryEndDate, expiryWithinStartDate, expiryWithinEndDate });
   };
 
   const handleExpiryWithinClick = (value) => {
     const newExpiryWithin = expiryWithin === value ? "" : value;
     setExpiryWithin(newExpiryWithin);
-    updateQueryParams({ active, inactive, searchQuery, gender, status, payment, plan, expiryWithin: newExpiryWithin, startDate, endDate });
+    updateQueryParams({ active, inactive, searchQuery, gender, status, payment, plan, expiryWithin: newExpiryWithin, startDate, endDate, expiryStartDate, expiryEndDate, expiryWithinStartDate, expiryWithinEndDate });
   };
 
   const handleReset = () => {
@@ -159,6 +179,10 @@ export default function MemberSearchFilter({ setFilters }) {
     setExpiryWithin("");
     setStartDate(null);
     setEndDate(null);
+    setExpiryStartDate(null);
+    setExpiryEndDate(null);
+    setExpiryWithinStartDate(null);
+    setExpiryWithinEndDate(null);
     router.push("/members");
     setFilters({
       inactive: false,
@@ -170,6 +194,10 @@ export default function MemberSearchFilter({ setFilters }) {
       expiryWithin: "",
       startDate: null,
       endDate: null,
+      expiryStartDate: null,
+      expiryEndDate: null,
+      expiryWithinStartDate: null,
+      expiryWithinEndDate: null,
     });
   };
 
@@ -193,26 +221,7 @@ export default function MemberSearchFilter({ setFilters }) {
       <div className="mt-4 relative">
         <div className="flex justify-between items-center md:text-xl p-3 rounded-lg">
           <span className="flex gap-2 md:gap-5">
-            {/* <button
-              onClick={handleActiveClick}
-              className={`px-4 py-2 md:px-6 md:py-3 rounded-xl ${
-                active
-                  ? "bg-black border border-[#FFDD4A]"
-                  : "bg-[#2B2E32] border border-transparent hover:border hover:border-[#FFDD4A]"
-              }`}
-            >
-              Active
-            </button> */}
-            {/* <button
-              onClick={handleInactiveClick}
-              className={`px-4 py-2 md:px-6 md:py-3 rounded-xl ${
-                inactive
-                  ? "bg-black border border-[#FFDD4A]"
-                  : "bg-[#2B2E32] border border-transparent hover:border hover:border-[#FFDD4A]"
-              }`}
-            >
-              Inactive
-            </button> */}
+
           </span>
           <button
             onClick={toggleFilters}
@@ -344,6 +353,19 @@ export default function MemberSearchFilter({ setFilters }) {
                       {e}
                     </button>
                   ))}
+                </div>
+                <h3 className="text-sm mb-2 mt-4">Expiry Within The range</h3>
+                <div className="grid grid-row-3 gap-2">
+                  <DatePicker
+                    selectsRange
+                    startDate={expiryWithinStartDate}
+                    endDate={expiryWithinEndDate}
+                    onChange={handleExpiryWithinDateChange}
+                    isClearable
+                    placeholderText="Select expiry within date range"
+                    className="w-full p-2 rounded-lg bg-[#232024] border border-[#3E3A3D] text-sm text-center"
+                    dateFormat="dd MMM yyyy"
+                  />
                 </div>
               </div>
             </div>

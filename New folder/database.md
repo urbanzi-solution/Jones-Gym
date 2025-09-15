@@ -1,5 +1,24 @@
 # create table commands
 
+### transactions table
+
+```sql
+CREATE TABLE transactions (
+  user_id VARCHAR(8),
+  old_bill VARCHAR(8),
+  bill_no VARCHAR(8),
+  plan_name VARCHAR(20),
+  amount INTEGER,
+  balance INTEGER,
+  date DATE
+);
+```
+
+```sql
+ALTER TABLE transactions
+ADD COLUMN trans_type varchar(15) ;
+```
+
 ### useuser_data table
 
 ```sql
@@ -123,6 +142,7 @@ VALUES
 ('USR005', 'PT', 'BL005', 2500, 250, 2250, 'Cash', 'TRN001', '2025-07-2', '2025-08-2');
 ```
 
+### PT Attendace
 ### trainer_attendance table
 
 ```sql
@@ -182,6 +202,33 @@ VALUES
 ('TRN001', 'USR005', '2025-07-02', 'P'),
 ('TRN001', 'USR005', '2025-07-03', 'A');
 ```
+
+### Staff_attendance table
+
+```sql
+CREATE TABLE staff_attendance (
+    trainer_id VARCHAR(10),
+    date DATE,
+    mrng_from VARCHAR(8),
+    mrng_to VARCHAR(8),
+    mrng_status VARCHAR(2),
+    evng_from VARCHAR(8),
+    evng_to VARCHAR(8),
+    evng_status VARCHAR(2)
+);
+```
+
+CREATE TABLE staff_attendance (
+    trainer_id VARCHAR(10),
+    date DATE,
+    mrng_from VARCHAR(8),
+    mrng_to VARCHAR(8),
+    mrng_status VARCHAR(2),
+    evng_from VARCHAR(8),
+    evng_to VARCHAR(8),
+    evng_status VARCHAR(2),
+    PRIMARY KEY (trainer_id, date)
+);
 
 ### notification table
 
@@ -291,4 +338,46 @@ INSERT INTO user_cred (username, password)
 VALUES ('Manager', '$2b$10$RNEhdAw1oxZKlfTaiSP0wOK49LXq6a/YVNdn2G9HoTcTVxgVRXiam');
 ```
 
+### Commnads Used
+
+### Remove the constraints
+
+`-- Drop the existing unique constraint on user_id`
+
+ALTER TABLE public.membership_plans
+DROP CONSTRAINT membership_user_id_unique;
+
+`-- Add a unique constraint to bill_no`
+
+ALTER TABLE public.membership_plans
+ADD CONSTRAINT membership_bill_no_unique UNIQUE (bill_no);
+
+`Checking the count of bill no grouping by bill_no in membership_plans`
+
+SELECT bill_no, COUNT(*) AS count
+FROM public.membership_plans
+GROUP BY bill_no
+HAVING COUNT(*) > 1;
+
+### Find the plans in the membership_plans contains P T
+
+SELECT *
+FROM membership_plans
+WHERE plan_name ILIKE '%P%T%' OR plan_name ILIKE '%T%P%';
+
+SELECT *
+FROM membership_plans
+WHERE plan_name ILIKE '%P%T%';
+
+`trainer with having the members with P T`
+
+SELECT t.*
+FROM trainers t
+WHERE t.trainer_id IN (
+    SELECT trainer
+    FROM membership_plans
+    WHERE (plan_name ILIKE '%P%T%')
+    AND trainer IS NOT NULL
+    AND trainer != ''
+);
 

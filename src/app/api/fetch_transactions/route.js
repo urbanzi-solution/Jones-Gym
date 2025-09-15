@@ -1,3 +1,4 @@
+//src\app\api\fetch_transactions\route.js
 import { getClient } from "@/lib/db";
 
 export async function GET(request) {
@@ -6,6 +7,8 @@ export async function GET(request) {
     // Extract user_id from query parameters
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('user_id');
+
+    // console.log("userId", userId)
 
     if (!userId) {
       return new Response(JSON.stringify({
@@ -17,17 +20,16 @@ export async function GET(request) {
       });
     }
 
+    // Fixed query to use parameterized query properly
     const query = `
-      SELECT mp.*, ud.name 
-      FROM membership_plans mp
-      JOIN user_data ud ON mp.user_id = ud.user_id
-      WHERE mp.user_id = $1
-      ORDER BY mp.date DESC;
+      SELECT * FROM transactions 
+      WHERE user_id = $1
+      ORDER BY ctid DESC;
     `;
 
     const result = await client.query(query, [userId]);
 
-    console.log("result",result);
+    console.log("result", result);
 
     return new Response(JSON.stringify({
       success: true,
@@ -40,6 +42,7 @@ export async function GET(request) {
   } catch (error) {
     console.error("Error fetching transactions:", error);
     return new Response(JSON.stringify({
+      success: false,
       error: error.message || "Failed to fetch transactions"
     }), {
       status: 500,

@@ -100,6 +100,7 @@ async function getClient() {
 
 var { g: global, __dirname } = __turbopack_context__;
 {
+//src\app\api\fetch_transactions\route.js
 __turbopack_context__.s({
     "GET": (()=>GET)
 });
@@ -111,6 +112,7 @@ async function GET(request) {
         // Extract user_id from query parameters
         const { searchParams } = new URL(request.url);
         const userId = searchParams.get('user_id');
+        // console.log("userId", userId)
         if (!userId) {
             return new Response(JSON.stringify({
                 success: false,
@@ -122,12 +124,11 @@ async function GET(request) {
                 }
             });
         }
+        // Fixed query to use parameterized query properly
         const query = `
-      SELECT mp.*, ud.name 
-      FROM membership_plans mp
-      JOIN user_data ud ON mp.user_id = ud.user_id
-      WHERE mp.user_id = $1
-      ORDER BY mp.date DESC;
+      SELECT * FROM transactions 
+      WHERE user_id = $1
+      ORDER BY ctid DESC;
     `;
         const result = await client.query(query, [
             userId
@@ -145,6 +146,7 @@ async function GET(request) {
     } catch (error) {
         console.error("Error fetching transactions:", error);
         return new Response(JSON.stringify({
+            success: false,
             error: error.message || "Failed to fetch transactions"
         }), {
             status: 500,

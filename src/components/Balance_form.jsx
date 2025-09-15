@@ -2,28 +2,55 @@
 "use client";
 import { useState, useEffect } from 'react';
 
-export default function Balance_form({ user_id, membershipPlans, onCancel }) {
-  const [selectedPlan, setSelectedPlan] = useState(membershipPlans[0]?.plan_name || '');
+export default function Balance_form({ user_id, membershipPlans, onCancel, username }) {
+  const [selectedPlan, setSelectedPlan] = useState(membershipPlans?.[0]?.plan_name || '');
   const [newAmountReceived, setNewAmountReceived] = useState(0);
   const [formData, setFormData] = useState({
-    amountPaid: membershipPlans[0]?.amount || 0,
-    discount: membershipPlans[0]?.discount || 0,
-    bill_no: membershipPlans[0]?.bill_no || '',
-    trainer: membershipPlans[0]?.trainer || '',
+    amountPaid: membershipPlans?.[0]?.amount || 0,
+    discount: membershipPlans?.[0]?.discount || 0,
+    bill_no: membershipPlans?.[0]?.bill_no || '',
+    new_bill_no: membershipPlans?.[0]?.new_bill_no || '',
+    trainer: membershipPlans?.[0]?.trainer || '',
+    balance: membershipPlans?.[0]?.balance || 0,
+    transaction_type: '', // Added transaction_type to formData
   });
-
-  // console.log("formData", formData)
-
+  const [transactionsData, setTransactionsData] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState({ text: '', type: '' });
   const [trainers, setTrainers] = useState([]);
 
-  const selectedPlanData = membershipPlans.find(p => p.plan_name === selectedPlan) || {};
-  const totalPlanAmount = (selectedPlanData.amount || 0) + (selectedPlanData.discount || 0) + (selectedPlanData.balance || 0);
-
-  const balance = Math.max(0, totalPlanAmount - (formData.amountPaid || 0) - (formData.discount || 0) - (newAmountReceived || 0));
-  
+  // Calculate balance using transaction data if available, otherwise use form balance
+  const balance = Math.max(0, (formData.balance || 0) - (newAmountReceived || 0));
   const totalAmountReceived = (formData.amountPaid || 0) + (newAmountReceived || 0);
+
+  // Fetch transactions data from API using URL parameters
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const response = await fetch(`/api/fetch_transactions?user_id=${encodeURIComponent(user_id)}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        if (response.ok) {
+          const response_data = await response.json();
+          const transactions = response_data.data || [];
+          setTransactionsData(transactions);
+          console.log("Fetched transactions:", transactions);
+        } else {
+          throw new Error('Failed to fetch transactions');
+        }
+      } catch (error) {
+        console.error('Error fetching transactions:', error);
+        setMessage({ text: 'Failed to load transaction data. Please try again.', type: 'error' });
+      }
+    };
+    
+    if (user_id) {
+      fetchTransactions();
+    }
+  }, [user_id]);
 
   // Fetch trainers from API
   useEffect(() => {
@@ -37,7 +64,7 @@ export default function Balance_form({ user_id, membershipPlans, onCancel }) {
         });
         if (response.ok) {
           const data = await response.json();
-          setTrainers(data); // Expecting array of { trainer_id, name }
+          setTrainers(data);
           console.log("Fetched trainers:", data);
         } else {
           throw new Error('Failed to fetch trainers');
@@ -48,19 +75,60 @@ export default function Balance_form({ user_id, membershipPlans, onCancel }) {
       }
     };
     fetchTrainers();
-  }, [])
+  }, []);
 
+  // Update form data when selected plan changes
   useEffect(() => {
-    const plan = membershipPlans.find(p => p.plan_name === selectedPlan) || membershipPlans[0] || {};
-    setFormData({
+    // Get the base plan data from membershipPlans
+    const plan = membershipPlans?.find(p => p.plan_name === selectedPlan) || membershipPlans?.[0] || {};
+    
+    // Update form with base plan data - ensure all values have defaults
+    let updatedFormData = {
       amountPaid: plan.amount || 0,
       discount: plan.discount || 0,
       bill_no: plan.bill_no || '',
+      new_bill_no: plan.new_bill_no || '',
       trainer: plan.trainer || '',
-    });
+      balance: plan.balance || 0,
+      transaction_type: '', // Reset transaction_type when plan changes
+    };
+
+    // If transactions are available, find the latest transaction matching the bill_no
+    if (transactionsData.length > 0 && selectedPlan && updatedFormData.bill_no) {
+      const matchingTransactions = transactionsData.filter(
+        transaction => 
+          transaction.old_bill === updatedFormData.bill_no && 
+          transaction.user_id === user_id &&
+          transaction.plan_name === selectedPlan
+      );
+      
+      if (matchingTransactions.length > 0) {
+        // Find the latest transaction by created_at timestamp
+        const latestTransaction = matchingTransactions.reduce((latest, current) => {
+          const latestDate = new Date(latest.created_at);
+          const currentDate = new Date(current.created_at);
+          return currentDate > latestDate ? current : latest;
+        });
+
+        console.log("Latest transaction matching bill_no:", updatedFormData.bill_no, latestTransaction);
+        
+        // Update form with the latest transaction data - ensure all values have defaults
+        updatedFormData = {
+          amountPaid: latestTransaction.amount || 0,
+          discount: updatedFormData.discount || 0,
+          bill_no: latestTransaction.old_bill || updatedFormData.bill_no || '',
+          new_bill_no: updatedFormData.new_bill_no || '',
+          trainer: latestTransaction.trainer || updatedFormData.trainer || '',
+          balance: latestTransaction.balance || 0,
+          transaction_type: '', // Keep transaction_type empty for new transactions
+        };
+      }
+    }
+
+    setFormData(updatedFormData);
     setNewAmountReceived(0);
     setMessage({ text: '', type: '' });
-  }, [selectedPlan, membershipPlans]);
+  }, [selectedPlan, transactionsData, membershipPlans, user_id]);
 
   const handlePlanChange = (e) => {
     setSelectedPlan(e.target.value);
@@ -68,7 +136,7 @@ export default function Balance_form({ user_id, membershipPlans, onCancel }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const numValue = name === 'bill_no' || name === 'trainer' ? value : parseFloat(value) || 0;
+    const numValue = name === 'bill_no' || name === 'new_bill_no' || name === 'trainer' || name === 'transaction_type' ? value : parseFloat(value) || 0;
 
     if (name === 'newAmountReceived') {
       setNewAmountReceived(numValue);
@@ -96,23 +164,18 @@ export default function Balance_form({ user_id, membershipPlans, onCancel }) {
           user_id,
           selectedPlan,
           bill_no: formData.bill_no,
+          new_bill_no: formData.new_bill_no,
           totalAmountReceived,
+          amountPaid: formData.amountPaid,
           discount: formData.discount,
           balance, 
           trainer: formData.trainer,
+          newAmountReceived,
+          transaction_type: formData.transaction_type, // Added transaction_type to API request
         }),
       });
 
       if (response.ok) {
-        console.log('Form submitted:', { 
-          selectedPlan, 
-          bill_no: formData.bill_no,
-          trainer: formData.trainer,
-          ...formData, 
-          newAmountReceived,
-          totalAmountReceived,
-          balance
-        });
         setMessage({ text: 'Balance updated successfully!', type: 'success' });
         setTimeout(() => {
           window.location.href = `/member-profile?member_id=${user_id}`;
@@ -129,26 +192,92 @@ export default function Balance_form({ user_id, membershipPlans, onCancel }) {
   };
 
   const handleCancel = () => {
-    // Reset form data to original values
-    const plan = membershipPlans.find(p => p.plan_name === selectedPlan) || membershipPlans[0] || {};
-    setFormData({
+    // Reset to original values - same logic as useEffect with proper defaults
+    const plan = membershipPlans?.find(p => p.plan_name === selectedPlan) || membershipPlans?.[0] || {};
+    
+    let resetFormData = {
       amountPaid: plan.amount || 0,
       discount: plan.discount || 0,
       bill_no: plan.bill_no || '',
+      new_bill_no: plan.new_bill_no || '',
       trainer: plan.trainer || '',
-    });
+      balance: plan.balance || 0,
+      transaction_type: '', // Reset transaction_type
+    };
+
+    // Update with latest transaction data if available
+    if (transactionsData.length > 0 && resetFormData.bill_no) {
+      const matchingTransactions = transactionsData.filter(
+        transaction => 
+          transaction.old_bill === resetFormData.bill_no && 
+          transaction.user_id === user_id &&
+          transaction.plan_name === selectedPlan
+      );
+      
+      if (matchingTransactions.length > 0) {
+        const latestTransaction = matchingTransactions.reduce((latest, current) => {
+          const latestDate = new Date(latest.created_at);
+          const currentDate = new Date(current.created_at);
+          return currentDate > latestDate ? current : latest;
+        });
+        
+        // Ensure all values have defaults
+        resetFormData = {
+          amountPaid: latestTransaction.amount || 0,
+          discount: resetFormData.discount || 0,
+          bill_no: latestTransaction.old_bill || resetFormData.bill_no || '',
+          new_bill_no: resetFormData.new_bill_no || '',
+          trainer: latestTransaction.trainer || resetFormData.trainer || '',
+          balance: latestTransaction.balance || 0,
+          transaction_type: '', // Keep transaction_type empty for reset
+        };
+      }
+    }
+
+    setFormData(resetFormData);
     setNewAmountReceived(0);
     setMessage({ text: '', type: '' });
     
-    // Close the component by calling the onCancel prop
     if (onCancel) {
       onCancel();
     }
   };
 
-  const handleWriteOff = () => {
-    console.log('Write off initiated for balance:', balance);
-    setMessage({ text: 'Write off logged to console', type: 'success' });
+  const handleWriteOff = async () => {
+    const confirmMessage = `Are you sure you want to write off the balance for:\n\nPlan: ${selectedPlan}\nUser: ${username || 'N/A'}\nUser ID: ${user_id}\n\nThis will set the balance to ₹0 and cannot be undone.`;
+    
+    if (window.confirm(confirmMessage)) {
+      setIsSubmitting(true);
+      setMessage({ text: '', type: '' });
+      
+      try {
+        const response = await fetch('/api/write0ff', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user_id,
+            selectedPlan,
+            username: username || '',
+          }),
+        });
+
+        if (response.ok) {
+          setMessage({ text: 'Balance has been written off successfully!', type: 'success' });
+          setTimeout(() => {
+            window.location.href = `/member-profile?member_id=${user_id}`;
+          }, 1000);
+        } else {
+          throw new Error('Failed to write off balance');
+        }
+      } catch (error) {
+        console.error('Error writing off balance:', error);
+        setMessage({ text: 'Failed to write off balance. Please try again.', type: 'error' });
+      } finally {
+        setIsSubmitting(false);
+      }
+    }
   };
 
   // Validate membershipPlans
@@ -158,7 +287,7 @@ export default function Balance_form({ user_id, membershipPlans, onCancel }) {
 
   return (
     <div className="p-4 sm:p-6 border-t border-[#3E3A3D]">
-      <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-gray-300">Edit Balance</h2>
+      <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-gray-300">Edit Balance/Add Payment</h2>
       
       {message.text && (
         <div className={`mb-4 p-3 rounded-lg text-sm sm:text-base ${
@@ -178,8 +307,8 @@ export default function Balance_form({ user_id, membershipPlans, onCancel }) {
             onChange={handlePlanChange}
             className="w-full p-2 sm:p-3 bg-[#2E2A2D] border border-[#3E3A3D] rounded-lg text-sm sm:text-base"
           >
-            {membershipPlans.map((plan) => (
-              <option key={plan.plan_name} value={plan.plan_name}>
+            {membershipPlans.map((plan, index) => (
+              <option key={`${plan.plan_name}-${index}`} value={plan.plan_name}>
                 {plan.plan_name}
               </option>
             ))}
@@ -188,17 +317,33 @@ export default function Balance_form({ user_id, membershipPlans, onCancel }) {
 
         <div className="mb-3 sm:mb-4">
           <label htmlFor="bill_no" className="block text-sm font-medium mb-1 text-gray-300">
-            Bill Number
+            Bill Number*
           </label>
           <input
             type="text"
             id="bill_no"
             name="bill_no"
-            value={formData.bill_no}
+            value={formData.bill_no || ''}
             onChange={handleChange}
             placeholder="Enter bill number"
             className="w-full p-2 sm:p-3 bg-[#232024] border border-[#3E3A3D] rounded-lg text-sm sm:text-base"
             readOnly
+          />
+        </div>
+
+        <div className="mb-3 sm:mb-4">
+          <label htmlFor="new_bill_no" className="block text-sm font-medium mb-1 text-gray-300">
+            New Bill Number*
+          </label>
+          <input
+            type="text"
+            id="new_bill_no"
+            name="new_bill_no"
+            value={formData.new_bill_no || ''}
+            onChange={handleChange}
+            placeholder="Enter new bill number"
+            className="w-full p-2 sm:p-3 bg-[#232024] border border-[#3E3A3D] rounded-lg text-sm sm:text-base"
+            required
           />
         </div>
 
@@ -208,16 +353,11 @@ export default function Balance_form({ user_id, membershipPlans, onCancel }) {
           </label>
           <select 
             name="trainer"
-            value={formData.trainer || ''} // Bind to formData.trainer to reflect the selected plan's trainer
+            value={formData.trainer || ''}
             onChange={handleChange}
             className="w-full p-2 sm:p-3 bg-[#2E2A2D] border border-[#3E3A3D] rounded-lg text-sm sm:text-base"
           >
-            {/*{membershipPlans.map((plan, index) => (
-              <option key={`plan-${index}-${plan.trainer}`} value={plan.trainer}>
-                {plan.trainer} ({plan.plan_name}) 
-              </option>
-            ))}*/}
-
+            <option value="">Select a trainer</option>
             {trainers.map((trainer, index) => (
               <option key={`trainer-${index}-${trainer.trainer_id}`} value={trainer.trainer_id}>
                 {trainer.trainer_id} - {trainer.name}
@@ -234,7 +374,7 @@ export default function Balance_form({ user_id, membershipPlans, onCancel }) {
             type="number"
             id="amountPaid"
             name="amountPaid"
-            value={formData.amountPaid}
+            value={formData.amountPaid || 0}
             onChange={handleChange}
             placeholder="Enter amount paid"
             className="w-full p-2 sm:p-3 bg-[#232024] border border-[#3E3A3D] rounded-lg text-sm sm:text-base"
@@ -248,6 +388,7 @@ export default function Balance_form({ user_id, membershipPlans, onCancel }) {
             Total Amount Received (₹)
           </label>
           <input
+            type="number"
             value={totalAmountReceived}
             readOnly
             className="w-full p-2 sm:p-3 bg-[#232024] border border-[#3E3A3D] rounded-lg text-sm sm:text-base text-gray-400"
@@ -263,7 +404,7 @@ export default function Balance_form({ user_id, membershipPlans, onCancel }) {
             id="discount"
             name="discount"
             placeholder="Enter discount"
-            value={formData.discount}
+            value={formData.discount || 0}
             onChange={handleChange}
             className="w-full p-2 sm:p-3 bg-[#232024] border border-[#3E3A3D] rounded-lg text-sm sm:text-base"
           />
@@ -274,13 +415,35 @@ export default function Balance_form({ user_id, membershipPlans, onCancel }) {
             Balance Amount (₹)
           </label>
           <input
+            type="number"
             value={balance}
             readOnly
             className="w-full p-2 sm:p-3 bg-[#232024] border border-[#3E3A3D] rounded-lg text-sm sm:text-base text-gray-400"
           />
         </div>
 
-        <div className="mb-3 sm:mb-4">
+        <div className="mb-4 sm:mb-6">
+          <label htmlFor="transaction_type" className="block text-sm font-medium mb-1 text-gray-300">
+            Transaction Type *
+          </label>
+          <select
+            id="transaction_type"
+            name="transaction_type"
+            value={formData.transaction_type}
+            onChange={handleChange}
+            className="w-full p-2 sm:p-3 bg-[#2E2A2D] border border-[#3E3A3D] rounded-lg text-sm sm:text-base"
+            required
+          >
+            <option value="">Select Type</option>
+            <option value="GPay">GPay</option>
+            <option value="Cash">Cash</option>
+            <option value="Credit Card">Credit Card</option>
+            <option value="Bank Transfer">Bank Transfer</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div className="mb-4 sm:mb-4">
           <label htmlFor="newAmountReceived" className="block text-sm font-medium mb-1 text-gray-300">
             New Amount Received (₹)
           </label>
@@ -300,7 +463,10 @@ export default function Balance_form({ user_id, membershipPlans, onCancel }) {
             <button
               type="button"
               onClick={handleWriteOff}
-              className="w-full sm:w-auto px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm"
+              disabled={isSubmitting}
+              className={`w-full sm:w-auto px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm ${
+                isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
             >
               Write Off
             </button>

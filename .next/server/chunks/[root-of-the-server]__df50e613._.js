@@ -117,9 +117,21 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$serv
 ;
 async function POST(request) {
     try {
-        const { user_id, selectedPlan, bill_no, totalAmountReceived, discount, balance, trainer } = await request.json();
+        const { user_id, selectedPlan, bill_no, new_bill_no, totalAmountReceived, newAmountReceived, discount, balance, trainer, transaction_type } = await request.json();
+        console.log("✅ Received data from client:", {
+            user_id,
+            selectedPlan,
+            bill_no,
+            new_bill_no,
+            totalAmountReceived,
+            newAmountReceived,
+            discount,
+            balance,
+            trainer,
+            transaction_type
+        });
         // Validate input data
-        if (!user_id || !selectedPlan || !bill_no || totalAmountReceived == null || discount == null || balance == null || trainer == null) {
+        if (!user_id || !selectedPlan || !bill_no || !new_bill_no || totalAmountReceived == null || newAmountReceived == null || discount == null || balance == null || trainer == null) {
             return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
                 error: 'Missing required fields'
             }, {
@@ -128,45 +140,66 @@ async function POST(request) {
         }
         const client = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["getClient"])();
         try {
-            // Update existing record in user_balances table
-            const queryText = `
+            // Start a transaction to ensure both operations succeed or fail together
+            await client.query('BEGIN');
+            // Update existing record in membership_plans table
+            const updateQueryText = `
         UPDATE membership_plans 
         SET 
-          amount = $1,
-          discount = $2,
-          balance = $3,
-          trainer = $7
-        WHERE user_id = $4 AND plan_name = $5 AND bill_no = $6
+          discount = $1,
+          trainer = $5
+        WHERE user_id = $2 AND plan_name = $3 AND bill_no = $4
         RETURNING *;
       `;
-            const values = [
-                totalAmountReceived,
+            const updateValues = [
                 discount,
-                balance,
                 user_id,
                 selectedPlan,
                 bill_no,
                 trainer
             ];
-            const result = await client.query(queryText, values);
-            if (result.rowCount === 0) {
+            const updateResult = await client.query(updateQueryText, updateValues);
+            if (updateResult.rowCount === 0) {
+                await client.query('ROLLBACK');
                 return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
                     error: 'No matching record found to update'
                 }, {
                     status: 404
                 });
             }
+            const insertQueryText = `
+        INSERT INTO transactions (user_id, old_bill, bill_no, plan_name, amount, balance, date, trans_type)
+        VALUES ($1, $2, $3, $4, $5, $6, CURRENT_DATE, $7)
+        RETURNING *;
+      `;
+            const insertValues = [
+                user_id,
+                bill_no,
+                new_bill_no,
+                selectedPlan,
+                newAmountReceived,
+                balance,
+                transaction_type // $7 - transaction_type
+            ];
+            const insertResult = await client.query(insertQueryText, insertValues);
+            // Commit the transaction
+            await client.query('COMMIT');
             return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
-                message: 'Balance updated successfully',
-                data: result.rows[0]
+                message: 'Balance updated and transaction recorded successfully',
+                membershipData: updateResult.rows[0],
+                transactionData: insertResult.rows[0]
             }, {
                 status: 200
             });
+        } catch (queryError) {
+            // Rollback the transaction on error
+            await client.query('ROLLBACK');
+            throw queryError;
         } finally{
-        //   await client.end();
+        // await client.end();
         }
     } catch (error) {
-        console.error('Error updating balance:', error);
+        console.error('Error updating balance and recording transaction:', error);
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
             error: 'Internal server error'
         }, {

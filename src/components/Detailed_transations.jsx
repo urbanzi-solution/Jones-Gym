@@ -27,18 +27,42 @@ export default function DetailedTransactions({ userId }) {
     const fetchTransactions = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/fetch_transactions?user_id=${encodeURIComponent(userId)}`);
-        const data = await response.json();
-        if (data.success) {
+
+        // Fetch data from both APIs concurrently
+        const [membershipResponse, transactionsResponse] = await Promise.all([
+          fetch(`/api/fetch_transactions?user_id=${encodeURIComponent(userId)}`),
+          fetch(`/api/fetch_transactions_report?user_id=${encodeURIComponent(userId)}`)
+        ]);
+
+        // Parse both responses
+        const membershipData = await membershipResponse.json();
+        const transactionsData = await transactionsResponse.json();
+
+        console.log("Membership data...", membershipData);
+        console.log("Transactions data...", transactionsData);
+
+        // Check if both API calls were successful
+        if (membershipData.success && transactionsData.success) {
+          // Merge the data arrays from both APIs
+          const mergedData = [
+            ...(membershipData.data || []),
+            ...(transactionsData.data || [])
+          ];
+
+          console.log("Merged data...", mergedData);
+
           // Filter transactions by userId
-          const filteredTransactions = data.data.filter(
+          const filteredTransactions = mergedData.filter(
             transaction => transaction.user_id === userId
           );
+
           setAllTransactions(filteredTransactions);
           setTransactions(filteredTransactions);
           filterTransactions('Today', new Date());
         } else {
-          setError(data.error || 'Failed to fetch transactions');
+          // Handle errors from either API
+          const error = membershipData.error || transactionsData.error || 'Failed to fetch transactions';
+          setError(error);
         }
       } catch (err) {
         setError('Error fetching transactions');
@@ -47,6 +71,7 @@ export default function DetailedTransactions({ userId }) {
         setLoading(false);
       }
     };
+
     if (userId) {
       fetchTransactions();
     }

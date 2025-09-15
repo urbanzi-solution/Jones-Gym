@@ -58,78 +58,70 @@ module.exports = mod;
 
 var { g: global, __dirname } = __turbopack_context__;
 {
-// src/app/api/fetch_trainer_images/route.js
 __turbopack_context__.s({
     "GET": (()=>GET)
 });
 var __TURBOPACK__imported__module__$5b$externals$5d2f40$aws$2d$sdk$2f$client$2d$s3__$5b$external$5d$__$2840$aws$2d$sdk$2f$client$2d$s3$2c$__cjs$29$__ = __turbopack_context__.i("[externals]/@aws-sdk/client-s3 [external] (@aws-sdk/client-s3, cjs)");
 ;
-// Load environment variables using your .env.local variable names
-const REGION = 'auto'; // Cloudflare R2 uses 'auto'
+const REGION = 'auto';
 const ENDPOINT = process.env.R2_ENDPOINT;
 const ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID;
 const SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY;
 const BUCKET_NAME = process.env.R2_BUCKET;
-// Not used directly, but available if you need it
-const ACCOUNT_ID = process.env.R2_ACCOUNT_ID;
-// Helper to check if all required variables are present
-function hasValidEnv() {
-    return ENDPOINT && ACCESS_KEY_ID && SECRET_ACCESS_KEY && BUCKET_NAME;
-}
 async function GET(request) {
-    if (!hasValidEnv()) {
-        return new Response('Server configuration error: One or more required Cloudflare R2 environment variables are missing. Please check .env.local and restart the server.', {
-            status: 500
+    const { searchParams } = new URL(request.url);
+    const user_id = searchParams.get('user_id');
+    if (!user_id) {
+        return new Response('Missing user_id', {
+            status: 400
         });
     }
-    try {
-        const { searchParams } = new URL(request.url);
-        const trainer_id = searchParams.get('trainer_id');
-        if (!trainer_id) {
-            return new Response('Missing trainer_id', {
-                status: 400
-            });
+    const s3Client = new __TURBOPACK__imported__module__$5b$externals$5d2f40$aws$2d$sdk$2f$client$2d$s3__$5b$external$5d$__$2840$aws$2d$sdk$2f$client$2d$s3$2c$__cjs$29$__["S3Client"]({
+        region: REGION,
+        endpoint: ENDPOINT,
+        credentials: {
+            accessKeyId: ACCESS_KEY_ID,
+            secretAccessKey: SECRET_ACCESS_KEY
         }
-        const s3Client = new __TURBOPACK__imported__module__$5b$externals$5d2f40$aws$2d$sdk$2f$client$2d$s3__$5b$external$5d$__$2840$aws$2d$sdk$2f$client$2d$s3$2c$__cjs$29$__["S3Client"]({
-            region: REGION,
-            endpoint: ENDPOINT,
-            credentials: {
-                accessKeyId: ACCESS_KEY_ID,
-                secretAccessKey: SECRET_ACCESS_KEY
-            }
-        });
+    });
+    // Try all relevant extensions
+    const extensions = [
+        'png',
+        'jpg',
+        'jpeg'
+    ];
+    for (const ext of extensions){
         const getObjectParams = {
             Bucket: BUCKET_NAME,
-            Key: `trainers/${trainer_id}.png`
+            Key: `trainers/${trainer_id}.${ext}`
         };
-        const command = new __TURBOPACK__imported__module__$5b$externals$5d2f40$aws$2d$sdk$2f$client$2d$s3__$5b$external$5d$__$2840$aws$2d$sdk$2f$client$2d$s3$2c$__cjs$29$__["GetObjectCommand"](getObjectParams);
-        // Fetch image from R2
-        const response = await s3Client.send(command);
-        // Stream/buffer the image
-        const stream = response.Body;
-        const chunks = [];
-        for await (const chunk of stream){
-            chunks.push(chunk);
-        }
-        const imageBuffer = Buffer.concat(chunks);
-        return new Response(imageBuffer, {
-            status: 200,
-            headers: {
-                'Content-Type': 'image/png',
-                'Cache-Control': 'public, max-age=3600'
+        try {
+            const response = await s3Client.send(new __TURBOPACK__imported__module__$5b$externals$5d2f40$aws$2d$sdk$2f$client$2d$s3__$5b$external$5d$__$2840$aws$2d$sdk$2f$client$2d$s3$2c$__cjs$29$__["GetObjectCommand"](getObjectParams));
+            const chunks = [];
+            for await (const chunk of response.Body){
+                chunks.push(chunk);
             }
-        });
-    } catch (error) {
-        console.error('Error fetching image:', error);
-        if (error.name === 'NoSuchKey') {
-            return new Response('Image not found', {
-                status: 404
+            const imageBuffer = Buffer.concat(chunks);
+            const contentType = `image/${ext === 'jpg' ? 'jpeg' : ext}`;
+            return new Response(imageBuffer, {
+                status: 200,
+                headers: {
+                    'Content-Type': contentType,
+                    'Cache-Control': 'public, max-age=3600'
+                }
             });
+        } catch (error) {
+            if (error.Code !== 'NoSuchKey' && error.name !== 'NoSuchKey') {
+                return new Response('Image not found', {
+                    status: 404
+                });
+            }
+        // Otherwise, try next extension
         }
-        return new Response('Internal Server Error', {
-            status: 500
-        });
     }
+    return new Response('Image not found', {
+        status: 404
+    });
 }
 }}),
 

@@ -28,10 +28,20 @@ export default function Staff_listbox({ staff }) {
             <h2>{member.trainerCount}</h2>
           </span>
           <span className="md:flex flex-col gap-2 items-end justify-center text-[10px] sm:text-lg lg:text-xl hidden">
-            <button className="bg-[#232024] px-10 py-5 rounded-lg border-1 text-center" href="#">
-              Mark attendance
-            </button>
+            <a 
+              className="bg-[#232024] hover:bg-[#FFDD4A] hover:text-black px-10 py-5 rounded-lg border-1 text-center inline-block" 
+              href={
+                member?.trainer_id
+                  ? `/staff-attendance?trainer_id=${member.trainer_id}&name=${encodeURIComponent(member.name || 'Unknown')}`
+                  : '#'
+              }
+            >
+              Mark Attendance
+            </a>
           </span>
+
+          
+          
         </a>
       ))}
     </div>

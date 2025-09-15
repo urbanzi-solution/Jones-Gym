@@ -54,7 +54,7 @@ function Inpage_header({ title, onExport }) {
                 href: "#",
                 onClick: (e)=>{
                     e.preventDefault();
-                    onExport();
+                    window.print();
                 },
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$ci$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CiExport"], {
                     className: "text-[#FFDD4A]"
@@ -276,12 +276,22 @@ function Recent_transations() {
             const fetchTransactions = {
                 "Recent_transations.useEffect.fetchTransactions": async ()=>{
                     try {
-                        const response = await fetch('/api/fetch_membership_plans');
-                        const { data } = await response.json();
+                        // Fetch membership plans data
+                        const membershipResponse = await fetch('/api/fetch_membership_plans');
+                        const membershipData = await membershipResponse.json();
+                        // Fetch transactions data
+                        const transactionsResponse = await fetch('/api/fetch_transactions_report');
+                        const transactionsData = await transactionsResponse.json();
+                        console.log("transactionsData...", transactionsData);
+                        // Combine both datasets
+                        const combinedData = [
+                            ...membershipData.data || [],
+                            ...transactionsData.data || []
+                        ];
                         // Sort by date and take last 10
-                        const sortedTransactions = data.sort({
+                        const sortedTransactions = combinedData.sort({
                             "Recent_transations.useEffect.fetchTransactions.sortedTransactions": (a, b)=>new Date(b.date) - new Date(a.date)
-                        }["Recent_transations.useEffect.fetchTransactions.sortedTransactions"]).slice(0, 10);
+                        }["Recent_transations.useEffect.fetchTransactions.sortedTransactions"]).slice(0, 15);
                         setTransactions(sortedTransactions);
                     } catch (error) {
                         console.error('Error fetching transactions:', error);
@@ -338,7 +348,7 @@ function Recent_transations() {
                     className: "size-8 md:size-12"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Report_Rencent_transation.jsx",
-                    lineNumber: 67,
+                    lineNumber: 82,
                     columnNumber: 16
                 }, this);
             case 'Cash':
@@ -346,7 +356,7 @@ function Recent_transations() {
                     className: "size-8 md:size-12"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Report_Rencent_transation.jsx",
-                    lineNumber: 69,
+                    lineNumber: 84,
                     columnNumber: 16
                 }, this);
             case 'Credit Card':
@@ -354,7 +364,7 @@ function Recent_transations() {
                     className: "size-8 md:size-12"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Report_Rencent_transation.jsx",
-                    lineNumber: 71,
+                    lineNumber: 86,
                     columnNumber: 16
                 }, this);
             case 'Bank Transfer':
@@ -362,20 +372,27 @@ function Recent_transations() {
                     className: "size-8 md:size-12"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Report_Rencent_transation.jsx",
-                    lineNumber: 73,
+                    lineNumber: 88,
                     columnNumber: 16
                 }, this);
             case 'Other':
                 return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                     className: "text-lg md:text-xl",
-                    children: "Other"
+                    children: "💳"
                 }, void 0, false, {
                     fileName: "[project]/src/components/Report_Rencent_transation.jsx",
-                    lineNumber: 75,
+                    lineNumber: 90,
                     columnNumber: 16
                 }, this);
             default:
-                return null;
+                return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                    className: "text-lg md:text-xl",
+                    children: "💳"
+                }, void 0, false, {
+                    fileName: "[project]/src/components/Report_Rencent_transation.jsx",
+                    lineNumber: 92,
+                    columnNumber: 16
+                }, this);
         }
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -385,7 +402,7 @@ function Recent_transations() {
                 onExport: exportToExcel
             }, void 0, false, {
                 fileName: "[project]/src/components/Report_Rencent_transation.jsx",
-                lineNumber: 85,
+                lineNumber: 100,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -395,25 +412,25 @@ function Recent_transations() {
                         children: "Recent Transactions"
                     }, void 0, false, {
                         fileName: "[project]/src/components/Report_Rencent_transation.jsx",
-                        lineNumber: 88,
+                        lineNumber: 103,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
                         href: "/report-transations",
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FaArrowRight"], {}, void 0, false, {
                             fileName: "[project]/src/components/Report_Rencent_transation.jsx",
-                            lineNumber: 89,
+                            lineNumber: 104,
                             columnNumber: 39
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/Report_Rencent_transation.jsx",
-                        lineNumber: 89,
+                        lineNumber: 104,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/Report_Rencent_transation.jsx",
-                lineNumber: 87,
+                lineNumber: 102,
                 columnNumber: 7
             }, this),
             transactions.map((transaction, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -430,33 +447,33 @@ function Recent_transations() {
                                             children: transaction.name
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/Report_Rencent_transation.jsx",
-                                            lineNumber: 100,
+                                            lineNumber: 115,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
                                             children: transaction.plan_name
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/Report_Rencent_transation.jsx",
-                                            lineNumber: 101,
+                                            lineNumber: 116,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                             children: transaction.bill_no
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/Report_Rencent_transation.jsx",
-                                            lineNumber: 102,
+                                            lineNumber: 117,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/Report_Rencent_transation.jsx",
-                                    lineNumber: 99,
+                                    lineNumber: 114,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/Report_Rencent_transation.jsx",
-                            lineNumber: 97,
+                            lineNumber: 112,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -464,7 +481,7 @@ function Recent_transations() {
                             children: transaction.amount
                         }, void 0, false, {
                             fileName: "[project]/src/components/Report_Rencent_transation.jsx",
-                            lineNumber: 105,
+                            lineNumber: 120,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -472,19 +489,19 @@ function Recent_transations() {
                             children: transaction.balance
                         }, void 0, false, {
                             fileName: "[project]/src/components/Report_Rencent_transation.jsx",
-                            lineNumber: 106,
+                            lineNumber: 121,
                             columnNumber: 11
                         }, this)
                     ]
                 }, index, true, {
                     fileName: "[project]/src/components/Report_Rencent_transation.jsx",
-                    lineNumber: 93,
+                    lineNumber: 108,
                     columnNumber: 9
                 }, this))
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/Report_Rencent_transation.jsx",
-        lineNumber: 83,
+        lineNumber: 98,
         columnNumber: 5
     }, this);
 }

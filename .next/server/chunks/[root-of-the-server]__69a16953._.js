@@ -116,6 +116,7 @@ module.exports = mod;
 
 var { g: global, __dirname } = __turbopack_context__;
 {
+// src\app\api\login\route.js
 __turbopack_context__.s({
     "POST": (()=>POST)
 });
@@ -128,9 +129,7 @@ var __TURBOPACK__imported__module__$5b$externals$5d2f$bcrypt__$5b$external$5d$__
 async function POST(request) {
     let client;
     try {
-        // Parse the request body
         const { username, password } = await request.json();
-        // Validate input
         if (!username || !password) {
             return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
                 error: 'Username and password are required'
@@ -138,14 +137,12 @@ async function POST(request) {
                 status: 400
             });
         }
-        // Get database client
         client = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["getClient"])();
-        // Query user from database
+        // Modified query to include role/user type
         const query = 'SELECT username, password FROM user_cred WHERE username = $1';
         const result = await client.query(query, [
             username
         ]);
-        // Check if user exists
         if (result.rows.length === 0) {
             return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
                 error: 'Username or password incorrect'
@@ -154,7 +151,6 @@ async function POST(request) {
             });
         }
         const user = result.rows[0];
-        // Compare password with hash using bcrypt
         const passwordMatch = await __TURBOPACK__imported__module__$5b$externals$5d2f$bcrypt__$5b$external$5d$__$28$bcrypt$2c$__cjs$29$__["default"].compare(password, user.password);
         if (!passwordMatch) {
             return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
@@ -163,11 +159,13 @@ async function POST(request) {
                 status: 401
             });
         }
-        // Login successful
+        // Return user data with role information
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
             success: true,
             message: 'Login successful',
-            username: user.username
+            username: user.username,
+            // Since you're determining role by username, we'll set it here
+            role: username === 'Manager2' ? 'restricted_manager' : 'manager'
         }, {
             status: 200
         });
@@ -179,7 +177,6 @@ async function POST(request) {
             status: 500
         });
     } finally{
-        // Release the client back to the pool
         if (client) {
             client.release();
         }

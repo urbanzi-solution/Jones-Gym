@@ -8,6 +8,9 @@ export default function Memberlist_boxes({ members, filters }) {
   const currentDate = new Date();
   const currentDateOnly = currentDate.toISOString().split('T')[0];
 
+  console.log("filters",filters)
+  console.log("members",members)
+
   const getDateOnly = (date) => {
     if (!date) return null;
     try {
@@ -119,9 +122,9 @@ export default function Memberlist_boxes({ members, filters }) {
         }
       }
     }
-
-    console.log(`Member ${member.user_id} blacklist status:`, 
-      remarkData[member.user_id]?.blacklistStatus || 'Not in remarkData');
+    
+    // console.log(`Member ${member.user_id} blacklist status:`, 
+    //   remarkData[member.user_id]?.blacklistStatus || 'Not in remarkData');
 
     // Joining Date Range filter
     if (filters.startDate && filters.endDate && joiningDate) {
@@ -129,6 +132,24 @@ export default function Memberlist_boxes({ members, filters }) {
       const startDateOnly = getDateOnly(filters.startDate);
       const endDateOnly = getDateOnly(filters.endDate);
       if (joiningDateOnly < startDateOnly || joiningDateOnly > endDateOnly) {
+        return false;
+      }
+    }
+
+    // Expiry Date Range filter
+    if (filters.expiryStartDate && filters.expiryEndDate && expiryDateOnly) {
+      const expiryStartDateOnly = getDateOnly(filters.expiryStartDate);
+      const expiryEndDateOnly = getDateOnly(filters.expiryEndDate);
+      if (expiryDateOnly < expiryStartDateOnly || expiryDateOnly > expiryEndDateOnly) {
+        return false;
+      }
+    }
+
+    // Expiry Within Date Range filter
+    if (filters.expiryWithinStartDate && filters.expiryWithinEndDate && expiryDateOnly) {
+      const expiryWithinStartDateOnly = getDateOnly(filters.expiryWithinStartDate);
+      const expiryWithinEndDateOnly = getDateOnly(filters.expiryWithinEndDate);
+      if (expiryDateOnly < expiryWithinStartDateOnly || expiryDateOnly > expiryWithinEndDateOnly) {
         return false;
       }
     }
@@ -178,10 +199,17 @@ export default function Memberlist_boxes({ members, filters }) {
     return passesActiveInactive;
   });
 
+  // Sort filtered members by joining date in descending order (newest first)
+  const sortedMembers = filteredMembers.sort((a, b) => {
+    const dateA = a.joining_date ? new Date(a.joining_date) : new Date('1900-01-01');
+    const dateB = b.joining_date ? new Date(b.joining_date) : new Date('1900-01-01');
+    return dateB - dateA; // Descending order (newest first)
+  });
+
   return (
     <div className="p-4">
-      {filteredMembers.length > 0 ? (
-        filteredMembers.map((member, index) => {
+      {sortedMembers.length > 0 ? (
+        sortedMembers.map((member, index) => {
           const memberPlan = membershipPlans.find(
             (plan) => plan.user_id === member.user_id
           );

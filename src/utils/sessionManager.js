@@ -1,7 +1,7 @@
-// Session management utility for client-side storage
+// src\utils\sessionManager.js
 export class SessionManager {
   static SESSION_KEY = 'user_session';
-  static EXPIRY_DAYS = 2;
+  static EXPIRY_DAYS = 1;
 
   // Create a new session
   static createSession(userData) {

@@ -8,7 +8,7 @@ export default function Staff_profile({ trainer }) {
     <div className="grid grid-cols-2 p-4 md:p-6 lg:p-10 gap-4 md:gap-10">
       <div className="relative">
 
-        <TrainerProfileAvatar trainer={member} />
+        {/* <TrainerProfileAvatar trainer={member} /> */}
         
         <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/95 via-black/60 to-transparent">
           <p className="text-white font-medium text-sm md:text-lg">{trainer?.trainer_id || '124'}</p>
@@ -28,10 +28,19 @@ export default function Staff_profile({ trainer }) {
         >
           PT Attendance <FaArrowRight />
         </a>
-        <p className="bg-[#FFDD4A] px-4 py-2 font-semibold rounded-lg text-black border-2 md:py-4 lg:py-6 md:text-2xl">
+        <a
+          href={
+            trainer?.trainer_id
+              ? `/staff-attendance?trainer_id=${trainer.trainer_id}&name=${encodeURIComponent(trainer.name || 'Unknown')}`
+              : '#'
+          }
+          className={`bg-[#FFDD4A] hover:bg-[#c2a836] px-4 py-2 font-semibold rounded-lg text-black border-2 md:py-4 lg:py-6 md:text-2xl ${
+            !trainer?.trainer_id ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
+        >
           Staff Attendance
-          <p>Currently Unavailable</p>
-        </p>
+        </a>
+        
       </div>
     </div>
   );

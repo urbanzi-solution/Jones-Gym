@@ -273,7 +273,7 @@ export default function member_addpage() {
                     className="hidden" 
                     accept="image/*"
                     onChange={handleFileChange}
-                    required
+                    // required
                   />
                 </label>
               </div>

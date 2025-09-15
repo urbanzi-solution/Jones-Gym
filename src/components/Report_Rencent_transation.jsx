@@ -15,12 +15,27 @@ export default function Recent_transations() {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await fetch('/api/fetch_membership_plans');
-        const { data } = await response.json();
+        // Fetch membership plans data
+        const membershipResponse = await fetch('/api/fetch_membership_plans');
+        const membershipData = await membershipResponse.json();
+        
+        // Fetch transactions data
+        const transactionsResponse = await fetch('/api/fetch_transactions_report');
+        const transactionsData = await transactionsResponse.json();
+
+        console.log("transactionsData...", transactionsData)
+        
+        // Combine both datasets
+        const combinedData = [
+          ...(membershipData.data || []),
+          ...(transactionsData.data || [])
+        ];
+        
         // Sort by date and take last 10
-        const sortedTransactions = data
+        const sortedTransactions = combinedData
           .sort((a, b) => new Date(b.date) - new Date(a.date))
-          .slice(0, 10);
+          .slice(0, 15);
+        
         setTransactions(sortedTransactions);
       } catch (error) {
         console.error('Error fetching transactions:', error);
@@ -72,9 +87,9 @@ export default function Recent_transations() {
       case 'Bank Transfer':
         return <FaPiggyBank className="size-8 md:size-12" />;
       case 'Other':
-        return <span className="text-lg md:text-xl">Other</span>;
+        return <span className="text-lg md:text-xl">💳</span>;
       default:
-        return null;
+        return <span className="text-lg md:text-xl">💳</span>;
     }
   };
 

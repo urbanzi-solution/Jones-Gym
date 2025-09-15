@@ -59,7 +59,7 @@ export default function MemberlistProfile({ member }) {
   const planNames = useMemo(() => {
     return membershipPlans.length > 0 
       ? membershipPlans.map(plan => plan.plan_name).join(', ')
-      : 'Basic Gym';
+      : 'No Plan Existing';
   }, [membershipPlans]);
 
   // console.log("planNames", planNames);
@@ -110,7 +110,7 @@ export default function MemberlistProfile({ member }) {
       }).split('/').join('-');
 
       return [{
-        planName: 'Basic Gym',
+        planName: 'No Plans Taken',
         daysUntilExpiry,
         formattedExpiry,
         isExpired: expiryDate < today
@@ -167,31 +167,13 @@ export default function MemberlistProfile({ member }) {
         {/* Paid Button */}
         <div className="relative">
           <button
-            onClick={toggleBalanceBox}
+            // onClick={toggleBalanceBox}
             className={`w-full ${isExpired ? 'bg-red-500' : 'bg-[#71CA35]'} flex gap-2 justify-center items-center rounded-lg text-black font-semibold px-4 py-2 text-xl md:text-3xl md:py-4`}
           >
             {isExpired ? `${expiredPlansCount} Plan${expiredPlansCount > 1 ? 's' : ''} Expired` : 'Not Expired'} <FaRegCheckCircle />
           </button>
           
-          {/* Balance Form Modal */}
-          {balanceBox && (
-            <div className="absolute top-full left-0 right-0 z-50 mt-4 bg-[#0a0a0a] rounded-xl shadow-lg p-4 md:p-8 text-center border border-[#6e6e6e]">
-              <div className="flex justify-end items-center mb-4 pb-2 border-b border-[#6e6e6e]">
-                <GrClose
-                  onClick={toggleBalanceBox}
-                  className="cursor-pointer hover:scale-90 transition-transform text-gray-400 hover:text-white"
-                  size={28}
-                />
-              </div>
 
-              {/* <Balance_form /> */}
-              <BalanceEditForm 
-                user_id={member.user_id} 
-                membershipPlans={membershipPlans} 
-                onCancel={toggleBalanceBox}
-              />
-            </div>
-          )}
         </div>
 
         {/* Membership Info */}
@@ -217,12 +199,42 @@ export default function MemberlistProfile({ member }) {
 
         {/* Renew Button */}
         <div className="relative">
+        <div className="flex flex-row gap-6">
           <button
             onClick={toggleRenewBox}
             className="w-full bg-[#2B2E32] px-4 py-2 font-semibold rounded-lg text-[#FFDD4A] border-2 border-[#FFDD4A] md:py-4 md:text-2xl"
           >
-            Renew
+            Renew Plan
           </button>
+          <button
+            onClick={toggleBalanceBox}
+            className="w-full bg-[#2B2E32] px-4 py-2 font-semibold rounded-lg text-[#FFDD4A] border-2 border-[#FFDD4A] md:py-4 md:text-2xl"
+          >
+            Add Transactions
+          </button>
+
+          {/* Balance Form Modal */}
+          {balanceBox && (
+            <div className="absolute top-full left-0 right-0 z-50 mt-4 bg-[#0a0a0a] rounded-xl shadow-lg p-4 md:p-8 text-center border border-[#6e6e6e]">
+              <div className="flex justify-end items-center mb-4 pb-2 border-b border-[#6e6e6e]">
+                <GrClose
+                  onClick={toggleBalanceBox}
+                  className="cursor-pointer hover:scale-90 transition-transform text-gray-400 hover:text-white"
+                  size={28}
+                />
+              </div>
+
+              {/* <Balance_form /> */}
+              <BalanceEditForm 
+                user_id={member.user_id} 
+                membershipPlans={membershipPlans} 
+                onCancel={toggleBalanceBox}
+              />
+            </div>
+          )}
+
+        </div>
+          
           
           {/* Renew Form Modal */}
           {renewBox && (

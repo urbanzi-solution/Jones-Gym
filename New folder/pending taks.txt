@@ -1,81 +1,72 @@
-add days and total amount in renew plan - amount discount balance calculation int renew plan
+trainer attentande
 > completed
 
-add days calculation in add member and renew plan
+login and logout
 > completed
 
-Add wieght field in add member and membership plan
+manager login and page only pt trainers > client attendance
+> pending
+
+---------------------------------------------------------
+
+add transactions/payment
 > completed
 
-additional data field in add member and membership plan
+memberlistbox sort with date in member list page
 > completed
 
-assign trainer in the expire banner
+write off
 > completed
 
-2 month expired plan drop functions, plan name duplication expiration update in member profile
+Delete user with the alert
 > completed
 
-create aditional page with trainer on PT filter for admininstrator login
+---------------------------------------------------------
 
-disable sunday in PT attendance
-> completed
+testing url
 
-Correction
--------
+http://localhost:3000/api/fetch_transactions
 
-no plans in member profile 
-> completed
+http://localhost:3000/member-profile?member_id=SJ30
 
-expire banner trainer section 1 commenting
-> completed
+---------------------------------------------------------
 
-pt attendance > sunday
-> completed
+UPDATE membership_plans
+SET amount = '8000', balance = '1000'
+WHERE bill_no='469';
 
-plan drop if the same plan exist in the member list
-> completed
+select * from membership_plans where bill_no='469';
 
-plan drop if the same plan exist in the member profile
-> completed
+select * from transactions;
 
-renew plan existing plan validation
-> completed
+select * from transactions where user_id='469';
 
-Blacklisted user no plans and blacklist banner in member list
-> completed
+---------------------------------------------------------
 
--------
+ALTER TABLE transactions
+ADD COLUMN trans_type varchar(15) ;
 
-add form days and exp date calculations 
-> completed
 
-login page
-> completed
 
-close button in renew form and balance form (icon close button)
-> completed
+SELECT *
+FROM transactions
+WHERE user_id = 'SJ30'
+  AND old_bill = '469'
+ORDER BY ctid DESC
+LIMIT 1;
 
-close button in member profile edit form (icon close button)
-> completed
 
-back button working
-> completed
+user_id: 'SJ30',
+      old_bill: '469',
+      bill_no: 'ttt',
+      plan_name: '1 M P.T',
+      amount: 1000,
+      balance: 5000,
+      date: 2025-09-13T18:30:00.000Z,
+      created_at: 2025-09-14T13:11:34.349Z
 
--------
 
-pt attendance > sunday red
 
-disable holidays days in PT attendance, admin single marking (update)
 
-login logout - normal user / administrator
 
-disable date/day option in PT attendance, sunday holidays days, admin single marking (update)
 
-terminate all bouwser (update)
-
-notification (update)
-
-write off in expire banner (update)
-
-write off in recent transaction in member profile (update)

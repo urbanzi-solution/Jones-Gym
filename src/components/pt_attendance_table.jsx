@@ -363,7 +363,11 @@ export default function PTAttendanceTable({ trainerId, name }) {
               </tr>
             ) : attendanceData.length > 0 ? (
               (() => {
-                const ptMembers = attendanceData.filter((record) => record.plan_name === "PT");
+                // const ptMembers = attendanceData.filter((record) => record.plan_name === "3 M P.T");
+                const ptMembers = attendanceData.filter((record) => 
+                  record.plan_name && /^(.*\s)?P[\s.]?T$/i.test(record.plan_name.trim())
+                );
+                // console.log("ptMembers",ptMembers)
                 if (ptMembers.length === 0) {
                   return (
                     <tr>

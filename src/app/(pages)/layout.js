@@ -1,7 +1,7 @@
 import Header from '../../components/Header.jsx'
 import Nav from '../../components/Nav.jsx'
 import '../../styles/globals.css';
-
+import RoleProtectedRoute from '@/components/RoleProtectedRoute';
 
 export default function Layout({ children }) {
   return (
@@ -14,9 +14,11 @@ export default function Layout({ children }) {
         <link rel="shortcut icon" href="/logo.png" type="image/png" />
       </head>
       <body>
-        <Header />
-        <main>{children}</main>
-        <Nav />
+        <RoleProtectedRoute>
+          <Header />
+          <main>{children}</main>
+          <Nav />
+        </RoleProtectedRoute>
       </body>
     </html>
   );

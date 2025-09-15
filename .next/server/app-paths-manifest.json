@@ -2,9 +2,19 @@
   "/(pages)/member-profile/page": "app/(pages)/member-profile/page.js",
   "/(pages)/members/page": "app/(pages)/members/page.js",
   "/(pages)/page": "app/(pages)/page.js",
+  "/(pages)/report-transations/page": "app/(pages)/report-transations/page.js",
+  "/(pages)/reports/page": "app/(pages)/reports/page.js",
+  "/(pages)/transations/page": "app/(pages)/transations/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
   "/api/fetch_membership_plans/route": "app/api/fetch_membership_plans/route.js",
   "/api/fetch_plans/route": "app/api/fetch_plans/route.js",
   "/api/fetch_remark_blcklist/route": "app/api/fetch_remark_blcklist/route.js",
+  "/api/fetch_trainer_images/route": "app/api/fetch_trainer_images/route.js",
+  "/api/fetch_transactions/route": "app/api/fetch_transactions/route.js",
+  "/api/fetch_transactions_report/route": "app/api/fetch_transactions_report/route.js",
   "/api/fetch_user_images/route": "app/api/fetch_user_images/route.js",
-  "/api/notification/route": "app/api/notification/route.js"
+  "/api/login/route": "app/api/login/route.js",
+  "/api/notification/route": "app/api/notification/route.js",
+  "/api/total_amount_recent_tans/route": "app/api/total_amount_recent_tans/route.js",
+  "/login/page": "app/login/page.js"
 }

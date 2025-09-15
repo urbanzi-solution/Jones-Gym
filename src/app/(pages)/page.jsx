@@ -6,12 +6,13 @@ import Dashboardgreeting from "@/components/Dashboard_greeting";
 import DashboardPlan from "@/components/Dashboard_plan";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { SessionManager } from "@/utils/sessionManager";
+import RoleProtectedRoute from '@/components/RoleProtectedRoute';
 
 export const dynamic = 'force-dynamic'
 
 export default function Dashboard() {
   return (
-    <ProtectedRoute>
+    <RoleProtectedRoute>
       <div>
         <Dashboardgreeting />
         <DashboardGeneral />
@@ -20,6 +21,6 @@ export default function Dashboard() {
         <DashboardPlan />
         <div className="h-20"></div>
       </div>
-    </ProtectedRoute>
+    </RoleProtectedRoute>
   );
 }

@@ -54,7 +54,7 @@ function Inpage_header({ title, onExport }) {
                 href: "#",
                 onClick: (e)=>{
                     e.preventDefault();
-                    onExport();
+                    window.print();
                 },
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$ci$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CiExport"], {
                     className: "text-[#FFDD4A]"
@@ -594,21 +594,41 @@ function DetailedTransactions() {
                 "DetailedTransactions.useEffect.fetchTransactions": async ()=>{
                     try {
                         setLoading(true);
-                        const response = await fetch('/api/fetch_membership_plans');
-                        const data = await response.json();
-                        if (data.success) {
+                        const membershipResponse = await fetch('/api/fetch_membership_plans');
+                        const membershipData = await membershipResponse.json();
+                        // Fetch transactions data
+                        const transactionsResponse = await fetch('/api/fetch_transactions_report');
+                        const transactionsData = await transactionsResponse.json();
+                        console.log("transactionsData...", transactionsData);
+                        console.log("membershipData...", membershipData);
+                        // Check if both API calls were successful
+                        if (membershipData.success && transactionsData.success) {
+                            // Combine both datasets
+                            const combinedData = [
+                                ...membershipData.data || [],
+                                ...transactionsData.data || []
+                            ];
                             // Remove duplicates based on bill_no (keep the first occurrence)
-                            const uniqueTransactions = data.data.filter({
+                            const uniqueTransactions = combinedData.filter({
                                 "DetailedTransactions.useEffect.fetchTransactions.uniqueTransactions": (transaction, index, self)=>index === self.findIndex({
                                         "DetailedTransactions.useEffect.fetchTransactions.uniqueTransactions": (t)=>t.bill_no === transaction.bill_no
                                     }["DetailedTransactions.useEffect.fetchTransactions.uniqueTransactions"])
                             }["DetailedTransactions.useEffect.fetchTransactions.uniqueTransactions"]);
-                            console.log("Original data:", data.data);
-                            console.log("Unique transactions:", uniqueTransactions);
-                            setAllTransactions(uniqueTransactions);
-                            setTransactions(uniqueTransactions); // Show all transactions by default
+                            // Sort by date (newest first) - adjust the date field name as needed
+                            const sortedTransactions = uniqueTransactions.sort({
+                                "DetailedTransactions.useEffect.fetchTransactions.sortedTransactions": (a, b)=>{
+                                    const dateA = new Date(a.created_at || a.date || a.transaction_date);
+                                    const dateB = new Date(b.created_at || b.date || b.transaction_date);
+                                    return dateB - dateA; // For descending order (newest first)
+                                // return dateA - dateB; // For ascending order (oldest first)
+                                }
+                            }["DetailedTransactions.useEffect.fetchTransactions.sortedTransactions"]);
+                            setAllTransactions(sortedTransactions);
+                            setTransactions(sortedTransactions); // Show all transactions by default
                         } else {
-                            setError(data.error || 'Failed to fetch transactions');
+                            // Handle API errors
+                            const error = (!membershipData.success ? membershipData.error : '') + (!transactionsData.success ? transactionsData.error : '');
+                            setError(error || 'Failed to fetch transactions');
                         }
                     } catch (err) {
                         setError('Error fetching transactions');
@@ -621,10 +641,6 @@ function DetailedTransactions() {
             fetchTransactions();
         }
     }["DetailedTransactions.useEffect"], []);
-    // Only filter when user actively selects a filter option
-    // Remove the automatic filtering useEffect
-    console.log("transactions", transactions);
-    console.log("allTransactions", allTransactions);
     // Export to Excel function
     const exportToExcel = ()=>{
         const data = transactions.map((transaction)=>({
@@ -855,7 +871,7 @@ function DetailedTransactions() {
                 onExport: exportToExcel
             }, void 0, false, {
                 fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                lineNumber: 300,
+                lineNumber: 318,
                 columnNumber: 7
             }, this),
             loading && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -863,7 +879,7 @@ function DetailedTransactions() {
                 children: "Loading transactions..."
             }, void 0, false, {
                 fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                lineNumber: 303,
+                lineNumber: 321,
                 columnNumber: 19
             }, this),
             error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -871,7 +887,7 @@ function DetailedTransactions() {
                 children: error
             }, void 0, false, {
                 fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                lineNumber: 304,
+                lineNumber: 322,
                 columnNumber: 17
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -892,13 +908,13 @@ function DetailedTransactions() {
                                         className: "ml-1"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                        lineNumber: 315,
+                                        lineNumber: 333,
                                         columnNumber: 30
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                lineNumber: 309,
+                                lineNumber: 327,
                                 columnNumber: 11
                             }, this),
                             isDropdownOpen && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -913,23 +929,23 @@ function DetailedTransactions() {
                                             children: option
                                         }, option, false, {
                                             fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                            lineNumber: 325,
+                                            lineNumber: 343,
                                             columnNumber: 19
                                         }, this))
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                    lineNumber: 323,
+                                    lineNumber: 341,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                lineNumber: 319,
+                                lineNumber: 337,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                        lineNumber: 308,
+                        lineNumber: 326,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -952,17 +968,17 @@ function DetailedTransactions() {
                                         d: "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                        lineNumber: 349,
+                                        lineNumber: 367,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                    lineNumber: 348,
+                                    lineNumber: 366,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                lineNumber: 343,
+                                lineNumber: 361,
                                 columnNumber: 11
                             }, this),
                             isCalendarOpen && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -995,17 +1011,17 @@ function DetailedTransactions() {
                                                             d: "M15 19l-7-7 7-7"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                                            lineNumber: 383,
+                                                            lineNumber: 401,
                                                             columnNumber: 25
                                                         }, void 0)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                                        lineNumber: 376,
+                                                        lineNumber: 394,
                                                         columnNumber: 23
                                                     }, void 0)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                                    lineNumber: 372,
+                                                    lineNumber: 390,
                                                     columnNumber: 21
                                                 }, void 0),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1016,7 +1032,7 @@ function DetailedTransactions() {
                                                     })
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                                    lineNumber: 391,
+                                                    lineNumber: 409,
                                                     columnNumber: 21
                                                 }, void 0),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1035,39 +1051,39 @@ function DetailedTransactions() {
                                                             d: "M9 5l7 7-7 7"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                                            lineNumber: 408,
+                                                            lineNumber: 426,
                                                             columnNumber: 25
                                                         }, void 0)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                                        lineNumber: 401,
+                                                        lineNumber: 419,
                                                         columnNumber: 23
                                                     }, void 0)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                                    lineNumber: 397,
+                                                    lineNumber: 415,
                                                     columnNumber: 21
                                                 }, void 0)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                            lineNumber: 371,
+                                            lineNumber: 389,
                                             columnNumber: 19
                                         }, void 0)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                    lineNumber: 358,
+                                    lineNumber: 376,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                lineNumber: 354,
+                                lineNumber: 372,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                        lineNumber: 342,
+                        lineNumber: 360,
                         columnNumber: 9
                     }, this),
                     (isDropdownOpen || isCalendarOpen) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1075,13 +1091,13 @@ function DetailedTransactions() {
                         onClick: closeAll
                     }, void 0, false, {
                         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                        lineNumber: 425,
+                        lineNumber: 443,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                lineNumber: 306,
+                lineNumber: 324,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1094,7 +1110,7 @@ function DetailedTransactions() {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                        lineNumber: 434,
+                        lineNumber: 452,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1104,7 +1120,7 @@ function DetailedTransactions() {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                        lineNumber: 435,
+                        lineNumber: 453,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1114,13 +1130,13 @@ function DetailedTransactions() {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                        lineNumber: 436,
+                        lineNumber: 454,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                lineNumber: 433,
+                lineNumber: 451,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1130,7 +1146,7 @@ function DetailedTransactions() {
                     children: selectedOption === 'All' ? 'No transactions found' : `No transactions found for ${selectedOption}`
                 }, void 0, false, {
                     fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                    lineNumber: 442,
+                    lineNumber: 460,
                     columnNumber: 11
                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("table", {
                     className: "min-w-full text-center",
@@ -1144,7 +1160,7 @@ function DetailedTransactions() {
                                         children: "User id"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                        lineNumber: 449,
+                                        lineNumber: 467,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1152,7 +1168,7 @@ function DetailedTransactions() {
                                         children: "User name"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                        lineNumber: 450,
+                                        lineNumber: 468,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1160,7 +1176,7 @@ function DetailedTransactions() {
                                         children: "Bill No"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                        lineNumber: 451,
+                                        lineNumber: 469,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1168,7 +1184,7 @@ function DetailedTransactions() {
                                         children: "Plan"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                        lineNumber: 452,
+                                        lineNumber: 470,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1176,7 +1192,7 @@ function DetailedTransactions() {
                                         children: "Date"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                        lineNumber: 453,
+                                        lineNumber: 471,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1184,7 +1200,7 @@ function DetailedTransactions() {
                                         children: "Amount Paid"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                        lineNumber: 454,
+                                        lineNumber: 472,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1192,7 +1208,7 @@ function DetailedTransactions() {
                                         children: "Discount"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                        lineNumber: 455,
+                                        lineNumber: 473,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1200,7 +1216,7 @@ function DetailedTransactions() {
                                         children: "Balance"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                        lineNumber: 456,
+                                        lineNumber: 474,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1208,7 +1224,7 @@ function DetailedTransactions() {
                                         children: "Transaction Type"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                        lineNumber: 457,
+                                        lineNumber: 475,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1216,30 +1232,38 @@ function DetailedTransactions() {
                                         children: "Actions"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                        lineNumber: 458,
+                                        lineNumber: 476,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                lineNumber: 448,
+                                lineNumber: 466,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                            lineNumber: 447,
+                            lineNumber: 465,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
-                            children: transactions.map((transaction)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
+                            children: transactions.map((transaction, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                     className: "group text-sm",
                                     children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
+                                            className: "p-3 py-6 bg-[#404346] text-white group-hover:bg-[#505356] border-r",
+                                            children: index + 1
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/components/Report_detailed_transation.jsx",
+                                            lineNumber: 483,
+                                            columnNumber: 17
+                                        }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                             className: "p-3 py-6 bg-[#404346] text-white group-hover:bg-[#505356] border-r",
                                             children: transaction.user_id
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                            lineNumber: 464,
+                                            lineNumber: 486,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1247,7 +1271,7 @@ function DetailedTransactions() {
                                             children: transaction.name
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                            lineNumber: 467,
+                                            lineNumber: 489,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1255,7 +1279,7 @@ function DetailedTransactions() {
                                             children: transaction.bill_no
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                            lineNumber: 470,
+                                            lineNumber: 492,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1263,7 +1287,7 @@ function DetailedTransactions() {
                                             children: transaction.plan_name
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                            lineNumber: 473,
+                                            lineNumber: 495,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1271,7 +1295,7 @@ function DetailedTransactions() {
                                             children: new Date(transaction.date).toISOString().split('T')[0]
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                            lineNumber: 476,
+                                            lineNumber: 498,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1282,7 +1306,7 @@ function DetailedTransactions() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                            lineNumber: 479,
+                                            lineNumber: 501,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1293,7 +1317,7 @@ function DetailedTransactions() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                            lineNumber: 482,
+                                            lineNumber: 504,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1304,7 +1328,7 @@ function DetailedTransactions() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                            lineNumber: 485,
+                                            lineNumber: 507,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1312,7 +1336,7 @@ function DetailedTransactions() {
                                             children: transaction.trans_type
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                            lineNumber: 488,
+                                            lineNumber: 510,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1324,12 +1348,12 @@ function DetailedTransactions() {
                                                         className: "text-white hover:text-gray-300",
                                                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FaEllipsisV"], {}, void 0, false, {
                                                             fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                                            lineNumber: 496,
+                                                            lineNumber: 518,
                                                             columnNumber: 23
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                                        lineNumber: 493,
+                                                        lineNumber: 515,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1341,7 +1365,7 @@ function DetailedTransactions() {
                                                                 children: "Edit"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                                                lineNumber: 499,
+                                                                lineNumber: 521,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1350,46 +1374,46 @@ function DetailedTransactions() {
                                                                 children: "Delete"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                                                lineNumber: 505,
+                                                                lineNumber: 527,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                                        lineNumber: 498,
+                                                        lineNumber: 520,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                                lineNumber: 492,
+                                                lineNumber: 514,
                                                 columnNumber: 19
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                            lineNumber: 491,
+                                            lineNumber: 513,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, transaction.bill_no, true, {
                                     fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                                    lineNumber: 463,
+                                    lineNumber: 481,
                                     columnNumber: 15
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                            lineNumber: 461,
+                            lineNumber: 479,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                    lineNumber: 446,
+                    lineNumber: 464,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                lineNumber: 440,
+                lineNumber: 458,
                 columnNumber: 7
             }, this),
             isEditModalOpen && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1402,23 +1426,23 @@ function DetailedTransactions() {
                         onCancel: ()=>setIsEditModalOpen(false)
                     }, void 0, false, {
                         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                        lineNumber: 525,
+                        lineNumber: 547,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                    lineNumber: 524,
+                    lineNumber: 546,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/Report_detailed_transation.jsx",
-                lineNumber: 523,
+                lineNumber: 545,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/Report_detailed_transation.jsx",
-        lineNumber: 299,
+        lineNumber: 317,
         columnNumber: 5
     }, this);
 }
