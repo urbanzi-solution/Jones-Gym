@@ -11,17 +11,34 @@ export default function Memberlist_boxes({ members, filters }) {
   console.log("filters",filters)
   console.log("members",members)
 
-  const getDateOnly = (date) => {
-    if (!date) return null;
-    try {
-      const parsedDate = new Date(date);
-      if (isNaN(parsedDate)) return null;
-      return parsedDate.toISOString().split('T')[0];
-    } catch (error) {
-      console.error(`Error parsing date ${date}:`, error);
-      return null;
-    }
+  // Convert any date string or Date object to IST Date object
+  const toISTDate = (dateInput) => {
+    if (!dateInput) return null;
+    const date = new Date(dateInput);
+    if (isNaN(date)) return null;
+    // Get UTC time, add IST offset (5.5 hours)
+    return new Date(date.getTime() + (5.5 * 60 * 60 * 1000));
   };
+
+  // Extracts only the date part (YYYY-MM-DD) from ISO string
+  const getDateOnly = (dateStr) => {
+    if (!dateStr) return '';
+    if (typeof dateStr === 'string' && dateStr.includes('T')) {
+      return dateStr.split('T')[0];
+    }
+    const date = new Date(dateStr);
+    if (isNaN(date)) return '';
+    return date.toISOString().split('T')[0];
+  };
+
+  // Formats YYYY-MM-DD as dd/mm/yyyy
+  const formatDateIndian = (dateStr) => {
+    const dateOnly = getDateOnly(dateStr);
+    if (!dateOnly) return '';
+    const [year, month, day] = dateOnly.split('-');
+    return `${day}/${month}/${year}`;
+  };
+
 
   // Fetch membership plans data
   useEffect(() => {
@@ -87,7 +104,6 @@ export default function Memberlist_boxes({ members, filters }) {
       (plan) => plan.user_id === member.user_id
     );
     const expiryDateOnly = memberPlan ? getDateOnly(memberPlan.exp_date) : null;
-    const joiningDate = member.joining_date ? new Date(member.joining_date) : null;
 
     // Active/Inactive filter
     let passesActiveInactive = true;
@@ -145,11 +161,13 @@ export default function Memberlist_boxes({ members, filters }) {
       }
     }
 
-    // Expiry Within Date Range filter
+    // Expiry Within Date Range filter (in IST)
     if (filters.expiryWithinStartDate && filters.expiryWithinEndDate && expiryDateOnly) {
-      const expiryWithinStartDateOnly = getDateOnly(filters.expiryWithinStartDate);
-      const expiryWithinEndDateOnly = getDateOnly(filters.expiryWithinEndDate);
-      if (expiryDateOnly < expiryWithinStartDateOnly || expiryDateOnly > expiryWithinEndDateOnly) {
+      const expiryWithinStartIST = toISTDate(filters.expiryWithinStartDate);
+      const expiryWithinEndIST = toISTDate(filters.expiryWithinEndDate);
+      const expiryDateIST = toISTDate(expiryDateOnly);
+
+      if (!expiryDateIST || expiryDateIST < expiryWithinStartIST || expiryDateIST > expiryWithinEndIST) {
         return false;
       }
     }
@@ -199,11 +217,13 @@ export default function Memberlist_boxes({ members, filters }) {
     return passesActiveInactive;
   });
 
-  // Sort filtered members by joining date in descending order (newest first)
+  // Sort filtered members by expiry date in IST
   const sortedMembers = filteredMembers.sort((a, b) => {
-    const dateA = a.joining_date ? new Date(a.joining_date) : new Date('1900-01-01');
-    const dateB = b.joining_date ? new Date(b.joining_date) : new Date('1900-01-01');
-    return dateB - dateA; // Descending order (newest first)
+    const planA = membershipPlans.find(plan => plan.user_id === a.user_id);
+    const planB = membershipPlans.find(plan => plan.user_id === b.user_id);
+    const expA = planA ? toISTDate(getDateOnly(planA.exp_date)) : new Date('1900-01-01');
+    const expB = planB ? toISTDate(getDateOnly(planB.exp_date)) : new Date('1900-01-01');
+    return expA - expB; // Ascending order
   });
 
   return (
@@ -315,7 +335,7 @@ export default function Memberlist_boxes({ members, filters }) {
                           plan.isPlanExpired ? "bg-red-600" : "bg-green-600"
                         }`}
                       >
-                        {plan.plan_name || "Basic Gym"} ({plan.planExpiryDateOnly})
+                        {plan.plan_name || "Basic Gym"} ({formatDateIndian(plan.planExpiryDateOnly)})
                       </p>
                     ))
                 )}

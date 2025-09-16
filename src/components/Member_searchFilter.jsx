@@ -6,6 +6,7 @@ import { IoFilter } from "react-icons/io5";
 import { GrClose } from "react-icons/gr";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { FaArrowUp, FaArrowDown } from "react-icons/fa";
 
 export default function MemberSearchFilter({ setFilters }) {
   const [active, setActive] = useState(false);
@@ -24,6 +25,7 @@ export default function MemberSearchFilter({ setFilters }) {
   const [plan, setPlan] = useState("");
   const [expiryWithin, setExpiryWithin] = useState("");
   const [plans, setPlans] = useState([]);
+  const [sortDirection, setSortDirection] = useState("desc"); // "asc" or "desc"
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -85,8 +87,9 @@ export default function MemberSearchFilter({ setFilters }) {
       expiryEndDate,
       expiryWithinStartDate,
       expiryWithinEndDate,
+      sortDirection,
     });
-  }, [inactive, searchQuery, gender, status, payment, plan, expiryWithin, startDate, endDate, expiryStartDate, expiryEndDate, expiryWithinStartDate, expiryWithinEndDate, setFilters]);
+  }, [inactive, searchQuery, gender, status, payment, plan, expiryWithin, startDate, endDate, expiryStartDate, expiryEndDate, expiryWithinStartDate, expiryWithinEndDate, sortDirection, setFilters]);
 
   const updateQueryParams = (newFilters) => {
     const params = new URLSearchParams();
@@ -203,18 +206,37 @@ export default function MemberSearchFilter({ setFilters }) {
 
   return (
     <div className="p-4 md:p-6 lg:p-10">
-      {/* Search Input */}
-      <div className="relative w-full max-w-2xl mx-auto">
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <FiSearch className="h-5 w-5 text-gray-400" />
+      <div className="flex items-center mb-4">
+        {/* Sort Arrow Buttons - aligned left */}
+        <div className="flex flex-col mr-4">
+          <button
+            onClick={() => setSortDirection("asc")}
+            className={`p-2 rounded ${sortDirection === "asc" ? "bg-[#FFDD4A]" : "bg-[#232024]"}`}
+            aria-label="Sort Ascending"
+          >
+            <FaArrowUp />
+          </button>
+          <button
+            onClick={() => setSortDirection("desc")}
+            className={`p-2 rounded mt-1 ${sortDirection === "desc" ? "bg-[#FFDD4A]" : "bg-[#232024]"}`}
+            aria-label="Sort Descending"
+          >
+            <FaArrowDown />
+          </button>
         </div>
-        <input
-          type="text"
-          placeholder="Search Member"
-          value={searchQuery}
-          onChange={handleSearchChange}
-          className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFDD4A] focus:border-transparent text-gray-900 placeholder-gray-400"
-        />
+        {/* ...existing search input... */}
+        <div className="relative w-full max-w-2xl mx-auto">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <FiSearch className="h-5 w-5 text-gray-400" />
+          </div>
+          <input
+            type="text"
+            placeholder="Search Member"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFDD4A] focus:border-transparent text-gray-900 placeholder-gray-400"
+          />
+        </div>
       </div>
 
       {/* Filter Controls */}

@@ -5,7 +5,7 @@ import Dashboardgreeting from "@/components/Dashboard_greeting";
 export const dynamic = 'force-dynamic'
 
 export default async function Members({ searchParams }) {
-  const params = await searchParams; 
+  const params = await searchParams;
 
   const inactiveFilter = params.inactive === 'true';
   const currentDate = new Date();
