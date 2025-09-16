@@ -30,8 +30,9 @@ export default function DetailedTransactions({ userId }) {
 
         // Fetch data from both APIs concurrently
         const [membershipResponse, transactionsResponse] = await Promise.all([
-          fetch(`/api/fetch_transactions?user_id=${encodeURIComponent(userId)}`),
-          fetch(`/api/fetch_transactions_report?user_id=${encodeURIComponent(userId)}`)
+          fetch(`/api/fetch_membership_plans_usr?user_id=${encodeURIComponent(userId)}`),
+          fetch(`/api/fetch_transactions?user_id=${encodeURIComponent(userId)}`)
+          
         ]);
 
         // Parse both responses

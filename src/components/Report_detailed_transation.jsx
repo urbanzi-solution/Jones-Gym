@@ -34,8 +34,8 @@ export default function DetailedTransactions() {
         const transactionsResponse = await fetch('/api/fetch_transactions_report');
         const transactionsData = await transactionsResponse.json();
 
-        console.log("transactionsData...", transactionsData);
-        console.log("membershipData...", membershipData);
+        console.log("TransactionsData...", transactionsData);
+        console.log("MembershipData...", membershipData);
 
         // Check if both API calls were successful
         if (membershipData.success && transactionsData.success) {
