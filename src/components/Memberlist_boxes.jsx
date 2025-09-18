@@ -217,14 +217,28 @@ export default function Memberlist_boxes({ members, filters }) {
     return passesActiveInactive;
   });
 
-  // Sort filtered members by expiry date in IST
-  const sortedMembers = filteredMembers.sort((a, b) => {
-    const planA = membershipPlans.find(plan => plan.user_id === a.user_id);
-    const planB = membershipPlans.find(plan => plan.user_id === b.user_id);
-    const expA = planA ? toISTDate(getDateOnly(planA.exp_date)) : new Date('1900-01-01');
-    const expB = planB ? toISTDate(getDateOnly(planB.exp_date)) : new Date('1900-01-01');
-    return expA - expB; // Ascending order
-  });
+  // Sorting the Member Data
+  let sortedMembers = filteredMembers.slice();
+
+  // Custom sort for expiryWithinStartDate/expiryWithinEndDate
+  if (filters?.expiryWithinStartDate && filters?.expiryWithinEndDate) {
+    sortedMembers.sort((a, b) => {
+      const aPlan = membershipPlans.find(plan => plan.user_id === a.user_id);
+      const bPlan = membershipPlans.find(plan => plan.user_id === b.user_id);
+      const aExpiry = aPlan ? getDateOnly(aPlan.exp_date) : null;
+      const bExpiry = bPlan ? getDateOnly(bPlan.exp_date) : null;
+      // Sort by expiry date ascending (earliest first)
+      if (!aExpiry && !bExpiry) return 0;
+      if (!aExpiry) return 1;
+      if (!bExpiry) return -1;
+      return new Date(aExpiry) - new Date(bExpiry);
+    });
+  } else if (filters?.sortDirection) {
+    const isAscending = filters.sortDirection === "asc";
+    if (!isAscending) {
+      sortedMembers.reverse();
+    }
+  }
 
   return (
     <div className="p-4">

@@ -1114,14 +1114,27 @@ function Memberlist_boxes({ members, filters }) {
         }
         return passesActiveInactive;
     });
-    // Sort filtered members by expiry date in IST
-    const sortedMembers = filteredMembers.sort((a, b)=>{
-        const planA = membershipPlans.find((plan)=>plan.user_id === a.user_id);
-        const planB = membershipPlans.find((plan)=>plan.user_id === b.user_id);
-        const expA = planA ? toISTDate(getDateOnly(planA.exp_date)) : new Date('1900-01-01');
-        const expB = planB ? toISTDate(getDateOnly(planB.exp_date)) : new Date('1900-01-01');
-        return expA - expB; // Ascending order
-    });
+    // Sorting the Member Data
+    let sortedMembers = filteredMembers.slice();
+    // Custom sort for expiryWithinStartDate/expiryWithinEndDate
+    if (filters?.expiryWithinStartDate && filters?.expiryWithinEndDate) {
+        sortedMembers.sort((a, b)=>{
+            const aPlan = membershipPlans.find((plan)=>plan.user_id === a.user_id);
+            const bPlan = membershipPlans.find((plan)=>plan.user_id === b.user_id);
+            const aExpiry = aPlan ? getDateOnly(aPlan.exp_date) : null;
+            const bExpiry = bPlan ? getDateOnly(bPlan.exp_date) : null;
+            // Sort by expiry date ascending (earliest first)
+            if (!aExpiry && !bExpiry) return 0;
+            if (!aExpiry) return 1;
+            if (!bExpiry) return -1;
+            return new Date(aExpiry) - new Date(bExpiry);
+        });
+    } else if (filters?.sortDirection) {
+        const isAscending = filters.sortDirection === "asc";
+        if (!isAscending) {
+            sortedMembers.reverse();
+        }
+    }
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "p-4",
         children: sortedMembers.length > 0 ? sortedMembers.map((member, index)=>{
@@ -1150,7 +1163,7 @@ function Memberlist_boxes({ members, filters }) {
                                 member: member
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                                lineNumber: 274,
+                                lineNumber: 288,
                                 columnNumber: 17
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1161,14 +1174,14 @@ function Memberlist_boxes({ members, filters }) {
                                         children: member.name || "Member name"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                                        lineNumber: 277,
+                                        lineNumber: 291,
                                         columnNumber: 19
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
                                         children: member.user_id || "member_id"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                                        lineNumber: 278,
+                                        lineNumber: 292,
                                         columnNumber: 19
                                     }, this),
                                     memberRemark !== 'No Remarks' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1179,7 +1192,7 @@ function Memberlist_boxes({ members, filters }) {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                                        lineNumber: 280,
+                                        lineNumber: 294,
                                         columnNumber: 21
                                     }, this),
                                     memberBlacklistStatus === 'Black-listed' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1190,19 +1203,19 @@ function Memberlist_boxes({ members, filters }) {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                                        lineNumber: 285,
+                                        lineNumber: 299,
                                         columnNumber: 21
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                                lineNumber: 276,
+                                lineNumber: 290,
                                 columnNumber: 17
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                        lineNumber: 272,
+                        lineNumber: 286,
                         columnNumber: 15
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1212,7 +1225,7 @@ function Memberlist_boxes({ members, filters }) {
                             children: "This member is Blacklisted"
                         }, void 0, false, {
                             fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                            lineNumber: 293,
+                            lineNumber: 307,
                             columnNumber: 19
                         }, this) : membershipPlans.filter((plan)=>plan.user_id === member.user_id).reduce((uniquePlans, plan)=>{
                             const planExpiryDateOnly = getDateOnly(plan.exp_date) || "01-01-2000";
@@ -1256,18 +1269,18 @@ function Memberlist_boxes({ members, filters }) {
                                 ]
                             }, `${plan.user_id}-${plan.plan_name}-${index}`, true, {
                                 fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                                lineNumber: 332,
+                                lineNumber: 346,
                                 columnNumber: 23
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                        lineNumber: 291,
+                        lineNumber: 305,
                         columnNumber: 15
                     }, this)
                 ]
             }, member.user_id || `member-${index}`, true, {
                 fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                lineNumber: 267,
+                lineNumber: 281,
                 columnNumber: 13
             }, this);
         }) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1275,12 +1288,12 @@ function Memberlist_boxes({ members, filters }) {
             children: "No members found."
         }, void 0, false, {
             fileName: "[project]/src/components/Memberlist_boxes.jsx",
-            lineNumber: 347,
+            lineNumber: 361,
             columnNumber: 9
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/Memberlist_boxes.jsx",
-        lineNumber: 230,
+        lineNumber: 244,
         columnNumber: 5
     }, this);
 }

@@ -13,8 +13,8 @@ export default async function Members({ searchParams }) {
   oneYearAgo.setFullYear(currentDate.getFullYear() - 1);
 
   const queryString = inactiveFilter
-    ? 'SELECT * FROM user_data'
-    : 'SELECT * FROM user_data';
+    ? 'SELECT * FROM user_data ORDER BY ctid DESC'
+    : 'SELECT * FROM user_data ORDER BY ctid DESC';
   const queryParams = inactiveFilter ? [oneYearAgo.toISOString()] : [];
 
   const result = await query(queryString, queryParams);

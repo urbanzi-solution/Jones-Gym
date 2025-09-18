@@ -161,7 +161,7 @@ async function Members({ searchParams }) {
     const currentDate = new Date();
     const oneYearAgo = new Date(currentDate);
     oneYearAgo.setFullYear(currentDate.getFullYear() - 1);
-    const queryString = inactiveFilter ? 'SELECT * FROM user_data' : 'SELECT * FROM user_data';
+    const queryString = inactiveFilter ? 'SELECT * FROM user_data ORDER BY ctid DESC' : 'SELECT * FROM user_data ORDER BY ctid DESC';
     const queryParams = inactiveFilter ? [
         oneYearAgo.toISOString()
     ] : [];
