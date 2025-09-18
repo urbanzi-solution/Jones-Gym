@@ -1,6 +1,7 @@
 (globalThis.TURBOPACK_CHUNK_LISTS = globalThis.TURBOPACK_CHUNK_LISTS || []).push({
     script: typeof document === "object" ? document.currentScript : undefined,
     chunks: [
+  "static/chunks/src_components_b1358028._.js",
   "static/chunks/node_modules_react-icons_fi_index_mjs_9cbf4bb1._.js",
   "static/chunks/node_modules_react-icons_gr_index_mjs_42e3d99f._.js",
   "static/chunks/node_modules_react-icons_fa_index_mjs_d2e2d7f5._.js",
@@ -10,7 +11,6 @@
   "static/chunks/node_modules_@floating-ui_react_dist_c1a64d8e._.js",
   "static/chunks/node_modules_react-datepicker_dist_index_es_28f28dc6.js",
   "static/chunks/node_modules_9ba0eedf._.js",
-  "static/chunks/src_components_b1358028._.js",
   "static/chunks/node_modules_react-datepicker_dist_react-datepicker_a24da800.css"
 ],
     source: "dynamic"

@@ -256,7 +256,7 @@ export default function Memberlist_boxes({ members, filters }) {
   }
 
   return (
-    <div className="p-4">
+    <div className="Memberlist_boxes p-4">
       {sortedMembers.length > 0 ? (
         sortedMembers.map((member, index) => {
           const memberPlan = membershipPlans.find(

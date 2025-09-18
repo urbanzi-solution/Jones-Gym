@@ -90,7 +90,6 @@
     --color-purple-700: oklch(49.6% .265 301.924);
     --color-gray-50: oklch(98.5% .002 247.839);
     --color-gray-100: oklch(96.7% .003 264.542);
-    --color-gray-200: oklch(92.8% .006 264.531);
     --color-gray-300: oklch(87.2% .01 258.338);
     --color-gray-400: oklch(70.7% .022 261.325);
     --color-gray-500: oklch(55.1% .027 264.364);
@@ -516,14 +515,6 @@
 
   .ml-3 {
     margin-left: calc(var(--spacing) * 3);
-  }
-
-  .ml-4 {
-    margin-left: calc(var(--spacing) * 4);
-  }
-
-  .ml-5 {
-    margin-left: calc(var(--spacing) * 5);
   }
 
   .block {
@@ -1090,10 +1081,6 @@
 
   .bg-gray-50 {
     background-color: var(--color-gray-50);
-  }
-
-  .bg-gray-200 {
-    background-color: var(--color-gray-200);
   }
 
   .bg-gray-300 {
@@ -1815,12 +1802,6 @@
   @media (hover: hover) {
     .hover\:bg-blue-700:hover {
       background-color: var(--color-blue-700);
-    }
-  }
-
-  @media (hover: hover) {
-    .hover\:bg-gray-300:hover {
-      background-color: var(--color-gray-300);
     }
   }
 
@@ -2573,6 +2554,38 @@ body {
     margin: 32px;
     padding: 40px;
   }
+}
+
+@media print {
+  body * {
+    visibility: hidden !important;
+  }
+
+  .Memberlist_boxes, .Memberlist_boxes * {
+    visibility: visible !important;
+  }
+
+  .Memberlist_boxes {
+    width: 100% !important;
+    box-shadow: none !important;
+    color: #000 !important;
+    background: #fff !important;
+    margin: 0 !important;
+    display: block !important;
+    position: static !important;
+  }
+
+  .Inpage_header, header, nav, footer, .no-print {
+    display: none !important;
+  }
+}
+
+body.print-memberlist-only * {
+  visibility: hidden !important;
+}
+
+body.print-memberlist-only .Memberlist_boxes, body.print-memberlist-only .Memberlist_boxes * {
+  visibility: visible !important;
 }
 
 @property --tw-space-y-reverse {

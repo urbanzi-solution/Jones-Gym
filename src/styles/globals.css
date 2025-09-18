@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-
-
 @font-face {
   font-family: 'Poppins';
   font-style: normal;
@@ -20,15 +18,11 @@
   font-family: 'Righteous', cursive;
 }
 
-
-
-
 body {
     background: #1E1E1E;
     color: #FFFFFF;
     font-family: 'Poppins', sans-serif;
 }
-
 
 /* Base styles (mobile first) */
 .box {
@@ -61,6 +55,58 @@ body {
     padding: 40px;
   }
 }
+
+
+.Memberlist_boxes {
+  /* normal screen styles here */
+}
+
+/* Print-only rules */
+@media print {
+  /* Hide everything by default */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* Show the member list wrapper and all its descendants */
+  .Memberlist_boxes,
+  .Memberlist_boxes * { 
+    visibility: visible !important;
+  }
+
+  /* Ensure the printed element occupies the page */
+  .Memberlist_boxes {
+    margin-top: 0 !important;
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    background: #fff !important; /* Paper background */
+    color: #000 !important;
+  }
+
+  /* Hide common UI chrome explicitly (optional) */
+  .Inpage_header,
+  header,
+  nav,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Optional: When JS adds print-memberlist-only (fallback for engines not honoring before/afterprint as expected), scope visibility to match */
+body.print-memberlist-only * {
+  visibility: hidden !important;
+}
+body.print-memberlist-only .Memberlist_boxes,
+body.print-memberlist-only .Memberlist_boxes * {
+  visibility: visible !important;
+}
+
+
+
 
 
 
