@@ -2,77 +2,77 @@
 These are the apis :
 -------------------------------------------------------------------
 
-http://localhost:3000/api/members/add_attendance
+http://localhost:3000/api/add_attendance
 
-http://localhost:3000/api/members/add_blacklist
+http://localhost:3000/api/add_blacklist
 
-http://localhost:3000/api/members/add_plans
+http://localhost:3000/api/add_plans
 
-http://localhost:3000/api/members/add_Remark
+http://localhost:3000/api/add_Remark
 
-http://localhost:3000/api/members/add_staff
+http://localhost:3000/api/add_staff
 
-http://localhost:3000/api/members/add_staff_attendance
+http://localhost:3000/api/add_staff_attendance
 
-http://localhost:3000/api/members/add_trainers_plans
+http://localhost:3000/api/add_trainers_plans
 
-http://localhost:3000/api/members/change_plan_status
+http://localhost:3000/api/change_plan_status
 
-http://localhost:3000/api/members/deleteProfilePic
+http://localhost:3000/api/deleteProfilePic
 
-http://localhost:3000/api/members/delete_trans
+http://localhost:3000/api/delete_trans
 
-http://localhost:3000/api/members/delete_user
+http://localhost:3000/api/delete_user
 
-http://localhost:3000/api/members/edit_amount
+http://localhost:3000/api/edit_amount
 
-http://localhost:3000/api/members/edit_plan
+http://localhost:3000/api/edit_plan
 
-http://localhost:3000/api/members/edit_trans
+http://localhost:3000/api/edit_trans
 
-http://localhost:3000/api/members/edit_user_data
+http://localhost:3000/api/edit_user_data
 
-http://localhost:3000/api/members/fetch_attendance
+http://localhost:3000/api/fetch_attendance
 
-http://localhost:3000/api/members/login
+http://localhost:3000/api/login
 
-http://localhost:3000/api/members/members
+http://localhost:3000/api
 
-http://localhost:3000/api/members/notification
+http://localhost:3000/api/notification
 
-http://localhost:3000/api/members/renew-membership
+http://localhost:3000/api/renew-membership
 
-http://localhost:3000/api/members/staff_manager
+http://localhost:3000/api/staff_manager
 
-http://localhost:3000/api/members/fetch_staff_attendance
+http://localhost:3000/api/fetch_staff_attendance
 
-http://localhost:3000/api/members/fetch_remark_blcklist
+http://localhost:3000/api/fetch_remark_blcklist
 
-http://localhost:3000/api/members/fetch_plans
+http://localhost:3000/api/fetch_plans
 
-http://localhost:3000/api/members/fetch_membership_plans
+http://localhost:3000/api/fetch_membership_plans
 
-http://localhost:3000/api/members/fetch_balance
+http://localhost:3000/api/fetch_balance
 
-http://localhost:3000/api/members/fetch_transactions
+http://localhost:3000/api/fetch_transactions
 
-http://localhost:3000/api/members/fetch_transactions_report
+http://localhost:3000/api/fetch_transactions_report
 
-http://localhost:3000/api/members/fetch_user_images
+http://localhost:3000/api/fetch_user_images
 
-http://localhost:3000/api/members/fetch_trainers
+http://localhost:3000/api/fetch_trainers
 
-http://localhost:3000/api/members/fetch_trainers_plans
+http://localhost:3000/api/fetch_trainers_plans
 
-http://localhost:3000/api/members/fetch_trainer_images
+http://localhost:3000/api/fetch_trainer_images
 
-http://localhost:3000/api/members/total_amount_recent_tans
+http://localhost:3000/api/total_amount_recent_tans
 
-http://localhost:3000/api/members/upload_profile_picture
+http://localhost:3000/api/upload_profile_picture
 
-http://localhost:3000/api/members/upload_trainer_pic
+http://localhost:3000/api/upload_trainer_pic
 
-http://localhost:3000/api/members/write0ff
+http://localhost:3000/api/write0ff
 
 -------------------------------------------------------------------
 These are the urls :
@@ -110,7 +110,7 @@ http://localhost:3000/staff-add
 
 http://localhost:3000/unauthorized
 
-http://localhost:3000/members
+http://localhost:3000
 
 http://localhost:3000/report-transations
 

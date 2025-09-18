@@ -15,7 +15,9 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$ico
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$io5$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/react-icons/io5/index.mjs [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$gr$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/react-icons/gr/index.mjs [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$datepicker$2f$dist$2f$index$2e$es$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/react-datepicker/dist/index.es.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/react-icons/fa/index.mjs [app-ssr] (ecmascript)");
 "use client";
+;
 ;
 ;
 ;
@@ -41,6 +43,7 @@ function MemberSearchFilter({ setFilters }) {
     const [plan, setPlan] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
     const [expiryWithin, setExpiryWithin] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
     const [plans, setPlans] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
+    const [sortDirection, setSortDirection] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("desc"); // "asc" or "desc"
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRouter"])();
     const searchParams = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useSearchParams"])();
     // Fetch membership plans
@@ -100,7 +103,8 @@ function MemberSearchFilter({ setFilters }) {
             expiryStartDate,
             expiryEndDate,
             expiryWithinStartDate,
-            expiryWithinEndDate
+            expiryWithinEndDate,
+            sortDirection
         });
     }, [
         inactive,
@@ -116,6 +120,7 @@ function MemberSearchFilter({ setFilters }) {
         expiryEndDate,
         expiryWithinStartDate,
         expiryWithinEndDate,
+        sortDirection,
         setFilters
     ]);
     const updateQueryParams = (newFilters)=>{
@@ -358,37 +363,83 @@ function MemberSearchFilter({ setFilters }) {
         className: "p-4 md:p-6 lg:p-10",
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "relative w-full max-w-2xl mx-auto",
+                className: "flex items-center mb-4",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none",
-                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fi$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FiSearch"], {
-                            className: "h-5 w-5 text-gray-400"
-                        }, void 0, false, {
-                            fileName: "[project]/src/components/Member_searchFilter.jsx",
-                            lineNumber: 209,
-                            columnNumber: 11
-                        }, this)
-                    }, void 0, false, {
-                        fileName: "[project]/src/components/Member_searchFilter.jsx",
-                        lineNumber: 208,
-                        columnNumber: 9
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                        type: "text",
-                        placeholder: "Search Member",
-                        value: searchQuery,
-                        onChange: handleSearchChange,
-                        className: "block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFDD4A] focus:border-transparent text-gray-900 placeholder-gray-400"
-                    }, void 0, false, {
+                        className: "flex flex-col mr-4",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                onClick: ()=>setSortDirection("asc"),
+                                className: `p-2 rounded ${sortDirection === "asc" ? "bg-[#FFDD4A]" : "bg-[#232024]"}`,
+                                "aria-label": "Sort Ascending",
+                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FaArrowUp"], {}, void 0, false, {
+                                    fileName: "[project]/src/components/Member_searchFilter.jsx",
+                                    lineNumber: 217,
+                                    columnNumber: 13
+                                }, this)
+                            }, void 0, false, {
+                                fileName: "[project]/src/components/Member_searchFilter.jsx",
+                                lineNumber: 212,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                onClick: ()=>setSortDirection("desc"),
+                                className: `p-2 rounded mt-1 ${sortDirection === "desc" ? "bg-[#FFDD4A]" : "bg-[#232024]"}`,
+                                "aria-label": "Sort Descending",
+                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FaArrowDown"], {}, void 0, false, {
+                                    fileName: "[project]/src/components/Member_searchFilter.jsx",
+                                    lineNumber: 224,
+                                    columnNumber: 13
+                                }, this)
+                            }, void 0, false, {
+                                fileName: "[project]/src/components/Member_searchFilter.jsx",
+                                lineNumber: 219,
+                                columnNumber: 11
+                            }, this)
+                        ]
+                    }, void 0, true, {
                         fileName: "[project]/src/components/Member_searchFilter.jsx",
                         lineNumber: 211,
+                        columnNumber: 9
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "relative w-full max-w-2xl mx-auto",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none",
+                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fi$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FiSearch"], {
+                                    className: "h-5 w-5 text-gray-400"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/Member_searchFilter.jsx",
+                                    lineNumber: 230,
+                                    columnNumber: 13
+                                }, this)
+                            }, void 0, false, {
+                                fileName: "[project]/src/components/Member_searchFilter.jsx",
+                                lineNumber: 229,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                type: "text",
+                                placeholder: "Search Member",
+                                value: searchQuery,
+                                onChange: handleSearchChange,
+                                className: "block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFDD4A] focus:border-transparent text-gray-900 placeholder-gray-400"
+                            }, void 0, false, {
+                                fileName: "[project]/src/components/Member_searchFilter.jsx",
+                                lineNumber: 232,
+                                columnNumber: 11
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/components/Member_searchFilter.jsx",
+                        lineNumber: 228,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/Member_searchFilter.jsx",
-                lineNumber: 207,
+                lineNumber: 209,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -401,7 +452,7 @@ function MemberSearchFilter({ setFilters }) {
                                 className: "flex gap-2 md:gap-5"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                lineNumber: 223,
+                                lineNumber: 245,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -412,20 +463,20 @@ function MemberSearchFilter({ setFilters }) {
                                         className: "text-[#FFDD4A]"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                        lineNumber: 230,
+                                        lineNumber: 252,
                                         columnNumber: 13
                                     }, this),
                                     "Filters"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                lineNumber: 226,
+                                lineNumber: 248,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Member_searchFilter.jsx",
-                        lineNumber: 222,
+                        lineNumber: 244,
                         columnNumber: 9
                     }, this),
                     showFilters && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -439,7 +490,7 @@ function MemberSearchFilter({ setFilters }) {
                                         children: "Filter Members"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                        lineNumber: 239,
+                                        lineNumber: 261,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$gr$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["GrClose"], {
@@ -448,13 +499,13 @@ function MemberSearchFilter({ setFilters }) {
                                         size: 18
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                        lineNumber: 240,
+                                        lineNumber: 262,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                lineNumber: 238,
+                                lineNumber: 260,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -467,7 +518,7 @@ function MemberSearchFilter({ setFilters }) {
                                                 children: "Joining Date The range"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                                lineNumber: 249,
+                                                lineNumber: 271,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$datepicker$2f$dist$2f$index$2e$es$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -482,13 +533,13 @@ function MemberSearchFilter({ setFilters }) {
                                                 showMonthYearPicker: true
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                                lineNumber: 250,
+                                                lineNumber: 272,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                        lineNumber: 248,
+                                        lineNumber: 270,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -498,7 +549,7 @@ function MemberSearchFilter({ setFilters }) {
                                                 children: "Gender"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                                lineNumber: 263,
+                                                lineNumber: 285,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -513,18 +564,18 @@ function MemberSearchFilter({ setFilters }) {
                                                         children: g
                                                     }, g, false, {
                                                         fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                                        lineNumber: 266,
+                                                        lineNumber: 288,
                                                         columnNumber: 21
                                                     }, this))
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                                lineNumber: 264,
+                                                lineNumber: 286,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                        lineNumber: 262,
+                                        lineNumber: 284,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -534,7 +585,7 @@ function MemberSearchFilter({ setFilters }) {
                                                 children: "Status"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                                lineNumber: 281,
+                                                lineNumber: 303,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -549,18 +600,18 @@ function MemberSearchFilter({ setFilters }) {
                                                         children: s
                                                     }, s, false, {
                                                         fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                                        lineNumber: 284,
+                                                        lineNumber: 306,
                                                         columnNumber: 21
                                                     }, this))
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                                lineNumber: 282,
+                                                lineNumber: 304,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                        lineNumber: 280,
+                                        lineNumber: 302,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -570,7 +621,7 @@ function MemberSearchFilter({ setFilters }) {
                                                 children: "Payment"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                                lineNumber: 299,
+                                                lineNumber: 321,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -584,18 +635,18 @@ function MemberSearchFilter({ setFilters }) {
                                                         children: p
                                                     }, p, false, {
                                                         fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                                        lineNumber: 302,
+                                                        lineNumber: 324,
                                                         columnNumber: 21
                                                     }, this))
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                                lineNumber: 300,
+                                                lineNumber: 322,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                        lineNumber: 298,
+                                        lineNumber: 320,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -605,7 +656,7 @@ function MemberSearchFilter({ setFilters }) {
                                                 children: "Plans"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                                lineNumber: 317,
+                                                lineNumber: 339,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -616,25 +667,25 @@ function MemberSearchFilter({ setFilters }) {
                                                         children: p.name
                                                     }, p.name, false, {
                                                         fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                                        lineNumber: 323,
+                                                        lineNumber: 345,
                                                         columnNumber: 25
                                                     }, this)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                     className: "text-gray-500 text-sm",
                                                     children: "Loading plans..."
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                                    lineNumber: 336,
+                                                    lineNumber: 358,
                                                     columnNumber: 21
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                                lineNumber: 318,
+                                                lineNumber: 340,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                        lineNumber: 316,
+                                        lineNumber: 338,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -644,7 +695,7 @@ function MemberSearchFilter({ setFilters }) {
                                                 children: "Expiry Within"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                                lineNumber: 341,
+                                                lineNumber: 363,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -659,12 +710,12 @@ function MemberSearchFilter({ setFilters }) {
                                                         children: e
                                                     }, e, false, {
                                                         fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                                        lineNumber: 344,
+                                                        lineNumber: 366,
                                                         columnNumber: 21
                                                     }, this))
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                                lineNumber: 342,
+                                                lineNumber: 364,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -672,7 +723,7 @@ function MemberSearchFilter({ setFilters }) {
                                                 children: "Expiry Within The range"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                                lineNumber: 357,
+                                                lineNumber: 379,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -688,24 +739,24 @@ function MemberSearchFilter({ setFilters }) {
                                                     dateFormat: "dd MMM yyyy"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                                    lineNumber: 359,
+                                                    lineNumber: 381,
                                                     columnNumber: 19
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                                lineNumber: 358,
+                                                lineNumber: 380,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                        lineNumber: 340,
+                                        lineNumber: 362,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                lineNumber: 247,
+                                lineNumber: 269,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -717,7 +768,7 @@ function MemberSearchFilter({ setFilters }) {
                                         children: "Reset"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                        lineNumber: 374,
+                                        lineNumber: 396,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -726,38 +777,38 @@ function MemberSearchFilter({ setFilters }) {
                                         children: "Apply Filters"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                        lineNumber: 380,
+                                        lineNumber: 402,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                lineNumber: 373,
+                                lineNumber: 395,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "h-10"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Member_searchFilter.jsx",
-                                lineNumber: 387,
+                                lineNumber: 409,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Member_searchFilter.jsx",
-                        lineNumber: 237,
+                        lineNumber: 259,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/Member_searchFilter.jsx",
-                lineNumber: 221,
+                lineNumber: 243,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/Member_searchFilter.jsx",
-        lineNumber: 205,
+        lineNumber: 208,
         columnNumber: 5
     }, this);
 }
@@ -851,16 +902,30 @@ function Memberlist_boxes({ members, filters }) {
     const currentDateOnly = currentDate.toISOString().split('T')[0];
     console.log("filters", filters);
     console.log("members", members);
-    const getDateOnly = (date)=>{
-        if (!date) return null;
-        try {
-            const parsedDate = new Date(date);
-            if (isNaN(parsedDate)) return null;
-            return parsedDate.toISOString().split('T')[0];
-        } catch (error) {
-            console.error(`Error parsing date ${date}:`, error);
-            return null;
+    // Convert any date string or Date object to IST Date object
+    const toISTDate = (dateInput)=>{
+        if (!dateInput) return null;
+        const date = new Date(dateInput);
+        if (isNaN(date)) return null;
+        // Get UTC time, add IST offset (5.5 hours)
+        return new Date(date.getTime() + 5.5 * 60 * 60 * 1000);
+    };
+    // Extracts only the date part (YYYY-MM-DD) from ISO string
+    const getDateOnly = (dateStr)=>{
+        if (!dateStr) return '';
+        if (typeof dateStr === 'string' && dateStr.includes('T')) {
+            return dateStr.split('T')[0];
         }
+        const date = new Date(dateStr);
+        if (isNaN(date)) return '';
+        return date.toISOString().split('T')[0];
+    };
+    // Formats YYYY-MM-DD as dd/mm/yyyy
+    const formatDateIndian = (dateStr)=>{
+        const dateOnly = getDateOnly(dateStr);
+        if (!dateOnly) return '';
+        const [year, month, day] = dateOnly.split('-');
+        return `${day}/${month}/${year}`;
     };
     // Fetch membership plans data
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
@@ -914,7 +979,6 @@ function Memberlist_boxes({ members, filters }) {
     const filteredMembers = isFiltersEmpty ? members : members.filter((member)=>{
         const memberPlan = membershipPlans.find((plan)=>plan.user_id === member.user_id);
         const expiryDateOnly = memberPlan ? getDateOnly(memberPlan.exp_date) : null;
-        const joiningDate = member.joining_date ? new Date(member.joining_date) : null;
         // Active/Inactive filter
         let passesActiveInactive = true;
         if (filters.active && !filters.inactive) {
@@ -965,11 +1029,12 @@ function Memberlist_boxes({ members, filters }) {
                 return false;
             }
         }
-        // Expiry Within Date Range filter
+        // Expiry Within Date Range filter (in IST)
         if (filters.expiryWithinStartDate && filters.expiryWithinEndDate && expiryDateOnly) {
-            const expiryWithinStartDateOnly = getDateOnly(filters.expiryWithinStartDate);
-            const expiryWithinEndDateOnly = getDateOnly(filters.expiryWithinEndDate);
-            if (expiryDateOnly < expiryWithinStartDateOnly || expiryDateOnly > expiryWithinEndDateOnly) {
+            const expiryWithinStartIST = toISTDate(filters.expiryWithinStartDate);
+            const expiryWithinEndIST = toISTDate(filters.expiryWithinEndDate);
+            const expiryDateIST = toISTDate(expiryDateOnly);
+            if (!expiryDateIST || expiryDateIST < expiryWithinStartIST || expiryDateIST > expiryWithinEndIST) {
                 return false;
             }
         }
@@ -1006,11 +1071,13 @@ function Memberlist_boxes({ members, filters }) {
         }
         return passesActiveInactive;
     });
-    // Sort filtered members by joining date in descending order (newest first)
+    // Sort filtered members by expiry date in IST
     const sortedMembers = filteredMembers.sort((a, b)=>{
-        const dateA = a.joining_date ? new Date(a.joining_date) : new Date('1900-01-01');
-        const dateB = b.joining_date ? new Date(b.joining_date) : new Date('1900-01-01');
-        return dateB - dateA; // Descending order (newest first)
+        const planA = membershipPlans.find((plan)=>plan.user_id === a.user_id);
+        const planB = membershipPlans.find((plan)=>plan.user_id === b.user_id);
+        const expA = planA ? toISTDate(getDateOnly(planA.exp_date)) : new Date('1900-01-01');
+        const expB = planB ? toISTDate(getDateOnly(planB.exp_date)) : new Date('1900-01-01');
+        return expA - expB; // Ascending order
     });
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "p-4",
@@ -1040,7 +1107,7 @@ function Memberlist_boxes({ members, filters }) {
                                 member: member
                             }, void 0, false, {
                                 fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                                lineNumber: 254,
+                                lineNumber: 274,
                                 columnNumber: 17
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1051,14 +1118,14 @@ function Memberlist_boxes({ members, filters }) {
                                         children: member.name || "Member name"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                                        lineNumber: 257,
+                                        lineNumber: 277,
                                         columnNumber: 19
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
                                         children: member.user_id || "member_id"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                                        lineNumber: 258,
+                                        lineNumber: 278,
                                         columnNumber: 19
                                     }, this),
                                     memberRemark !== 'No Remarks' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1069,7 +1136,7 @@ function Memberlist_boxes({ members, filters }) {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                                        lineNumber: 260,
+                                        lineNumber: 280,
                                         columnNumber: 21
                                     }, this),
                                     memberBlacklistStatus === 'Black-listed' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1080,19 +1147,19 @@ function Memberlist_boxes({ members, filters }) {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                                        lineNumber: 265,
+                                        lineNumber: 285,
                                         columnNumber: 21
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                                lineNumber: 256,
+                                lineNumber: 276,
                                 columnNumber: 17
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                        lineNumber: 252,
+                        lineNumber: 272,
                         columnNumber: 15
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1102,7 +1169,7 @@ function Memberlist_boxes({ members, filters }) {
                             children: "This member is Blacklisted"
                         }, void 0, false, {
                             fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                            lineNumber: 273,
+                            lineNumber: 293,
                             columnNumber: 19
                         }, this) : membershipPlans.filter((plan)=>plan.user_id === member.user_id).reduce((uniquePlans, plan)=>{
                             const planExpiryDateOnly = getDateOnly(plan.exp_date) || "01-01-2000";
@@ -1141,23 +1208,23 @@ function Memberlist_boxes({ members, filters }) {
                                 children: [
                                     plan.plan_name || "Basic Gym",
                                     " (",
-                                    plan.planExpiryDateOnly,
+                                    formatDateIndian(plan.planExpiryDateOnly),
                                     ")"
                                 ]
                             }, `${plan.user_id}-${plan.plan_name}-${index}`, true, {
                                 fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                                lineNumber: 312,
+                                lineNumber: 332,
                                 columnNumber: 23
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                        lineNumber: 271,
+                        lineNumber: 291,
                         columnNumber: 15
                     }, this)
                 ]
             }, member.user_id || `member-${index}`, true, {
                 fileName: "[project]/src/components/Memberlist_boxes.jsx",
-                lineNumber: 247,
+                lineNumber: 267,
                 columnNumber: 13
             }, this);
         }) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1165,12 +1232,12 @@ function Memberlist_boxes({ members, filters }) {
             children: "No members found."
         }, void 0, false, {
             fileName: "[project]/src/components/Memberlist_boxes.jsx",
-            lineNumber: 327,
+            lineNumber: 347,
             columnNumber: 9
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/Memberlist_boxes.jsx",
-        lineNumber: 210,
+        lineNumber: 230,
         columnNumber: 5
     }, this);
 }
