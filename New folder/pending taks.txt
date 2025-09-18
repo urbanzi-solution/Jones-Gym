@@ -7,8 +7,6 @@ login and logout
 manager login and page only pt trainers > client attendance
 > pending
 
----------------------------------------------------------
-
 add transactions/payment
 > completed
 
@@ -20,6 +18,21 @@ write off
 
 Delete user with the alert
 > completed
+
+---------------------------------------------------------
+
+ctid sorting by default
+> completed
+
+up and arrow key
+> completed
+
+exp date range from and to sorting
+> completed
+
+Name A to Z filter Sorting
+
+export by modifying/overwrite the css function and design
 
 ---------------------------------------------------------
 
