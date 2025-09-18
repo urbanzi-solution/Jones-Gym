@@ -26,6 +26,7 @@ export default function MemberSearchFilter({ setFilters }) {
   const [expiryWithin, setExpiryWithin] = useState("");
   const [plans, setPlans] = useState([]);
   const [sortDirection, setSortDirection] = useState("desc"); // "asc" or "desc"
+  const [nameSortDirection, setNameSortDirection] = useState(""); // "atoz" or "ztoa"
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -88,8 +89,13 @@ export default function MemberSearchFilter({ setFilters }) {
       expiryWithinStartDate,
       expiryWithinEndDate,
       sortDirection,
+      nameSortDirection, // <-- pass name sort direction
     });
-  }, [inactive, searchQuery, gender, status, payment, plan, expiryWithin, startDate, endDate, expiryStartDate, expiryEndDate, expiryWithinStartDate, expiryWithinEndDate, sortDirection, setFilters]);
+  }, [
+    inactive, searchQuery, gender, status, payment, plan, expiryWithin,
+    startDate, endDate, expiryStartDate, expiryEndDate,
+    expiryWithinStartDate, expiryWithinEndDate, sortDirection, nameSortDirection, setFilters
+  ]);
 
   const updateQueryParams = (newFilters) => {
     const params = new URLSearchParams();
@@ -222,6 +228,23 @@ export default function MemberSearchFilter({ setFilters }) {
             aria-label="Sort Descending"
           >
             <FaArrowDown />
+          </button>
+        </div>
+        {/* Name Sort Arrow Buttons */}
+        <div className="flex flex-col mr-4 ml-3">
+          <button
+            onClick={() => setNameSortDirection("atoz")}
+            className={`p-2 rounded flex items-center gap-1 ${nameSortDirection === "atoz" ? "bg-[#FFDD4A]" : "bg-[#232024]"}`}
+            aria-label="Sort Name Z to A"
+          >
+            <FaArrowUp /><span className="font-bold text-xs">A</span>
+          </button>
+          <button
+            onClick={() => setNameSortDirection("ztoa")}
+            className={`p-2 rounded mt-1 flex items-center gap-1 ${nameSortDirection === "ztoa" ? "bg-[#FFDD4A]" : "bg-[#232024]"}`}
+            aria-label="Sort Name A to Z"
+          >
+            <FaArrowDown /><span className="font-bold text-xs">A</span>
           </button>
         </div>
         {/* ...existing search input... */}
