@@ -25,7 +25,7 @@ export default function MemberSearchFilter({ setFilters }) {
   const [plan, setPlan] = useState("");
   const [expiryWithin, setExpiryWithin] = useState("");
   const [plans, setPlans] = useState([]);
-  const [sortDirection, setSortDirection] = useState("desc"); // "asc" or "desc"
+  const [sortDirection, setSortDirection] = useState("asc"); // "asc" or "desc"
   const [nameSortDirection, setNameSortDirection] = useState(""); // "atoz" or "ztoa"
   const router = useRouter();
   const searchParams = useSearchParams();

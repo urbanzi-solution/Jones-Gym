@@ -227,11 +227,26 @@ export default function Memberlist_boxes({ members, filters }) {
       const bPlan = membershipPlans.find(plan => plan.user_id === b.user_id);
       const aExpiry = aPlan ? getDateOnly(aPlan.exp_date) : null;
       const bExpiry = bPlan ? getDateOnly(bPlan.exp_date) : null;
-      // Sort by expiry date ascending (earliest first)
       if (!aExpiry && !bExpiry) return 0;
       if (!aExpiry) return 1;
       if (!bExpiry) return -1;
       return new Date(aExpiry) - new Date(bExpiry);
+    });
+  } else if (filters?.nameSortDirection === "atoz") {
+    sortedMembers.sort((a, b) => {
+      const nameA = (a.name || "").toLowerCase();
+      const nameB = (b.name || "").toLowerCase();
+      if (nameA < nameB) return -1;
+      if (nameA > nameB) return 1;
+      return 0;
+    });
+  } else if (filters?.nameSortDirection === "ztoa") {
+    sortedMembers.sort((a, b) => {
+      const nameA = (a.name || "").toLowerCase();
+      const nameB = (b.name || "").toLowerCase();
+      if (nameA < nameB) return 1;
+      if (nameA > nameB) return -1;
+      return 0;
     });
   } else if (filters?.sortDirection) {
     const isAscending = filters.sortDirection === "asc";
