@@ -1,0 +1,9 @@
+added the trainer in the membership plasn for the user
+
+debuged the staff attendance page 
+
+and the export revoke to windows.print();
+
+dashboard members and staff  order by ctid desc limit 6;
+
+all ok 

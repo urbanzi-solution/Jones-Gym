@@ -221,7 +221,7 @@ function imageExists(userId) {
     return __TURBOPACK__imported__module__$5b$externals$5d2f$fs__$5b$external$5d$__$28$fs$2c$__cjs$29$__["default"].existsSync(imagePath);
 }
 async function DashboardMembers() {
-    const result = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["query"])('SELECT * FROM user_data LIMIT 6');
+    const result = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["query"])('SELECT * FROM user_data ORDER BY ctid DESC LIMIT 6');
     const members = result.rows;
     // Add image existence check to each member
     const membersWithImages = members.map((member)=>({
@@ -335,7 +335,7 @@ function imageExists(trainerId) {
 async function DashboardStaff() {
     let members = [];
     try {
-        const result = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["query"])('SELECT * FROM trainers LIMIT 6', []);
+        const result = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$db$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["query"])('SELECT * FROM trainers ORDER BY ctid DESC LIMIT 6', []);
         members = result.rows || [];
     } catch (err) {
         console.error('Error fetching staff:', err.message);

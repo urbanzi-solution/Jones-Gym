@@ -75,6 +75,8 @@
     --color-green-600: oklch(62.7% .194 149.214);
     --color-green-700: oklch(52.7% .154 150.069);
     --color-green-800: oklch(44.8% .119 151.328);
+    --color-cyan-600: oklch(60.9% .126 221.723);
+    --color-cyan-700: oklch(52% .105 223.128);
     --color-blue-100: oklch(93.2% .032 255.585);
     --color-blue-200: oklch(88.2% .059 254.128);
     --color-blue-300: oklch(80.9% .105 251.813);
@@ -86,6 +88,8 @@
     --color-indigo-500: oklch(58.5% .233 277.117);
     --color-indigo-600: oklch(51.1% .262 276.966);
     --color-indigo-700: oklch(45.7% .24 277.023);
+    --color-violet-600: oklch(54.1% .281 293.009);
+    --color-violet-700: oklch(49.1% .27 292.581);
     --color-purple-600: oklch(55.8% .288 302.321);
     --color-purple-700: oklch(49.6% .265 301.924);
     --color-gray-50: oklch(98.5% .002 247.839);
@@ -1079,6 +1083,10 @@
     background-color: var(--color-blue-600);
   }
 
+  .bg-cyan-600 {
+    background-color: var(--color-cyan-600);
+  }
+
   .bg-gray-50 {
     background-color: var(--color-gray-50);
   }
@@ -1169,6 +1177,10 @@
 
   .bg-transparent {
     background-color: #0000;
+  }
+
+  .bg-violet-600 {
+    background-color: var(--color-violet-600);
   }
 
   .bg-white {
@@ -1806,6 +1818,12 @@
   }
 
   @media (hover: hover) {
+    .hover\:bg-cyan-700:hover {
+      background-color: var(--color-cyan-700);
+    }
+  }
+
+  @media (hover: hover) {
     .hover\:bg-gray-600:hover {
       background-color: var(--color-gray-600);
     }
@@ -1862,6 +1880,12 @@
   @media (hover: hover) {
     .hover\:bg-red-700:hover {
       background-color: var(--color-red-700);
+    }
+  }
+
+  @media (hover: hover) {
+    .hover\:bg-violet-700:hover {
+      background-color: var(--color-violet-700);
     }
   }
 

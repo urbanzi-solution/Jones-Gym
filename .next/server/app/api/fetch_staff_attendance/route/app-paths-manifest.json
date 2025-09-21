@@ -1,0 +1,3 @@
+{
+  "/api/fetch_staff_attendance/route": "app/api/fetch_staff_attendance/route.js"
+}

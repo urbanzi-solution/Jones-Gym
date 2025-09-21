@@ -280,6 +280,45 @@ export default function Balance_form({ user_id, membershipPlans, onCancel, usern
     }
   };
 
+  const handleEditTrainer = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setMessage({ text: '', type: '' });
+
+    // Find trainer name from trainers array
+    const selectedTrainer = trainers.find(t => t.trainer_id === formData.trainer);
+    const trainerName = selectedTrainer ? selectedTrainer.name : '';
+
+    try {
+      const response = await fetch('/api/edit_user_trainer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id,
+          bill_no: formData.bill_no,
+          trainer_id: formData.trainer,
+          trainer_name: trainerName,
+        }),
+      });
+
+      if (response.ok) {
+        setMessage({ text: 'Trainer updated successfully!', type: 'success' });
+        setTimeout(() => {
+          window.location.href = `/member-profile?member_id=${user_id}`;
+        }, 1000);
+      } else {
+        throw new Error('Failed to update trainer');
+      }
+    } catch (error) {
+      console.error('Error updating trainer:', error);
+      setMessage({ text: 'Failed to update trainer. Please try again.', type: 'error' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   // Validate membershipPlans
   if (!membershipPlans || membershipPlans.length === 0) {
     return <div className="p-4 sm:p-6 text-gray-300">No membership plans available.</div>;
@@ -481,13 +520,23 @@ export default function Balance_form({ user_id, membershipPlans, onCancel, usern
               Cancel
             </button>
             <button
+              type="button"
+              onClick={handleEditTrainer}
+              disabled={isSubmitting}
+              className={`w-full sm:w-auto px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition-colors text-sm sm:text-base ${
+                isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
+            >
+              {isSubmitting ? 'Saving...' : 'Edit Trainer'}
+            </button>
+            <button
               type="submit"
               disabled={isSubmitting}
               className={`w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base ${
                 isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
               }`}
             >
-              {isSubmitting ? 'Saving...' : 'Save Changes'}
+              {isSubmitting ? 'Saving...' : 'Add Payment'}
             </button>
           </div>
         </div>

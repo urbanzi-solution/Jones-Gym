@@ -226,6 +226,7 @@ export default function EditTransactionData({ transaction, onSave, onCancel }) {
         >
           Cancel
         </button>
+        
         <button
           type="submit"
           className="flex-1 bg-[#FFDD4A] text-black font-bold py-2 rounded hover:bg-[#ffd700]"

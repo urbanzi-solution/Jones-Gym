@@ -20,8 +20,11 @@ export async function GET(request) {
 
     // Add date filtering if year and month are provided
     if (year && month) {
-      const startDate = `${year}-${month.toString().padStart(2, '0')}-01`;
-      const endDate = `${year}-${month.toString().padStart(2, '0')}-31`;
+      const paddedMonth = month.toString().padStart(2, '0');
+      const startDate = `${year}-${paddedMonth}-01`;
+      // Calculate last day of the month
+      const lastDay = new Date(year, month, 0).getDate();
+      const endDate = `${year}-${paddedMonth}-${lastDay}`;
       query += ' AND date >= $2 AND date <= $3';
       params.push(startDate, endDate);
     }

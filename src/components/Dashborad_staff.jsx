@@ -13,7 +13,7 @@ function imageExists(trainerId) {
 export default async function DashboardStaff() {
   let members = [];
   try {
-    const result = await query('SELECT * FROM trainers LIMIT 6', []);
+    const result = await query('SELECT * FROM trainers ORDER BY ctid DESC LIMIT 6', []);
     members = result.rows || [];
   } catch (err) {
     console.error('Error fetching staff:', err.message);

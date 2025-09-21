@@ -11,7 +11,7 @@ function imageExists(userId) {
 }
 
 export default async function DashboardMembers() {
-    const result = await query('SELECT * FROM user_data LIMIT 6')
+    const result = await query('SELECT * FROM user_data ORDER BY ctid DESC LIMIT 6')
     const members = result.rows
     
     // Add image existence check to each member

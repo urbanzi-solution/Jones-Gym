@@ -1,0 +1,3 @@
+{
+  "/api/fetch_trainers_plans/route": "app/api/fetch_trainers_plans/route.js"
+}
