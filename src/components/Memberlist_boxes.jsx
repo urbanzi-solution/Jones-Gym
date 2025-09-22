@@ -99,7 +99,8 @@ export default function Memberlist_boxes({ members, filters }) {
     (typeof filters[key] === 'boolean' && !filters[key])
   );
 
-  const filteredMembers = isFiltersEmpty ? members : members.filter((member) => {
+  // Filtering logic
+  let filteredMembers = isFiltersEmpty ? members : members.filter((member) => {
     const memberPlan = membershipPlans.find(
       (plan) => plan.user_id === member.user_id
     );
@@ -177,13 +178,11 @@ export default function Memberlist_boxes({ members, filters }) {
       return false;
     }
 
-    // Search query filter
-    if (filters.searchQuery) {
-      const query = filters.searchQuery.toLowerCase();
-      if (
-        !member.name?.toLowerCase().includes(query) &&
-        !member.user_id?.toLowerCase().includes(query)
-      ) {
+    // Search text in all member fields if filters.searchQuery is set
+    if (filters.searchQuery && filters.searchQuery.trim() !== "") {
+      const searchLower = filters.searchQuery.toLowerCase();
+      const memberValues = Object.values(member).map(v => (v || '').toString().toLowerCase());
+      if (!memberValues.some(val => val.includes(searchLower))) {
         return false;
       }
     }
