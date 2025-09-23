@@ -22,60 +22,70 @@ export default function DetailedTransactions() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
 
+  console.log("allTransactions from detailed transaction report...", allTransactions);
+
   // Fetch transactions from the API
   useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        setLoading(true);
-        const membershipResponse = await fetch('/api/fetch_membership_plans');
-        const membershipData = await membershipResponse.json();
+  const fetchTransactions = async () => {
+    try {
+      setLoading(true);
+      const membershipResponse = await fetch('/api/fetch_membership_plans');
+      const membershipData = await membershipResponse.json();
 
-        // Fetch transactions data
-        const transactionsResponse = await fetch('/api/fetch_transactions_report');
-        const transactionsData = await transactionsResponse.json();
+      // Fetch transactions data
+      const transactionsResponse = await fetch('/api/fetch_transactions_report');
+      const transactionsData = await transactionsResponse.json();
 
-        console.log("TransactionsData...", transactionsData);
-        console.log("MembershipData...", membershipData);
+      console.log("TransactionsData...", transactionsData);
+      console.log("MembershipData from detailed transaction report...", membershipData);
 
-        // Check if both API calls were successful
-        if (membershipData.success && transactionsData.success) {
-          // Combine both datasets
-          const combinedData = [
-            ...(membershipData.data || []),
-            ...(transactionsData.data || [])
-          ];
-          
-          // Remove duplicates based on bill_no (keep the first occurrence)
-          const uniqueTransactions = combinedData.filter((transaction, index, self) =>
-            index === self.findIndex(t => t.bill_no === transaction.bill_no)
-          );
-          
-          // Sort by date (newest first) - adjust the date field name as needed
-          const sortedTransactions = uniqueTransactions.sort((a, b) => {
-            const dateA = new Date(a.created_at || a.date || a.transaction_date);
-            const dateB = new Date(b.created_at || b.date || b.transaction_date);
-            return dateB - dateA; // For descending order (newest first)
-            // return dateA - dateB; // For ascending order (oldest first)
-          });
-          
-          setAllTransactions(sortedTransactions);
-          setTransactions(sortedTransactions); // Show all transactions by default
-        } else {
-          // Handle API errors
-          const error = (!membershipData.success ? membershipData.error : '') + 
-                      (!transactionsData.success ? transactionsData.error : '');
-          setError(error || 'Failed to fetch transactions');
-        }
-      } catch (err) {
-        setError('Error fetching transactions');
-        console.error('Fetch error:', err);
-      } finally {
-        setLoading(false);
+      // Check if both API calls were successful
+      if (membershipData.success && transactionsData.success) {
+        // Combine both datasets
+        const combinedData = [
+          ...(membershipData.data || []),
+          ...(transactionsData.data || [])
+        ];
+
+        console.log("combinedData from detailed transaction report...", combinedData);
+        
+        // Set the combined data immediately (before any processing)
+        setAllTransactions(combinedData);
+        setTransactions(combinedData);
+        
+        // Optional: If you still want to have processed data available for later use,
+        // you can store it in a separate state or process it when filters are applied
+        
+        // Remove duplicates based on bill_no (keep the first occurrence)
+        const uniqueTransactions = combinedData.filter((transaction, index, self) =>
+          index === self.findIndex(t => t.bill_no === transaction.bill_no)
+        );
+        
+        const sortedTransactions = uniqueTransactions.sort((a, b) => {
+          const dateA = new Date(a.created_at || a.date || a.transaction_date);
+          const dateB = new Date(b.created_at || b.date || b.transaction_date);
+          return dateB - dateA;
+        });
+        
+        // You can store processed data in a separate state if needed
+        // setProcessedTransactions(sortedTransactions);
+        
+      } else {
+        // Handle API errors
+        const error = (!membershipData.success ? membershipData.error : '') + 
+                    (!transactionsData.success ? transactionsData.error : '');
+        setError(error || 'Failed to fetch transactions');
       }
-    };
-    
-    fetchTransactions();
-  }, []);
+    } catch (err) {
+      setError('Error fetching transactions');
+      console.error('Fetch error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  fetchTransactions();
+}, []);
 
 
   // Export to Excel function

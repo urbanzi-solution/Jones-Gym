@@ -2,6 +2,7 @@
   "/(pages)/page": "app/(pages)/page.js",
   "/(pages)/report-transations/page": "app/(pages)/report-transations/page.js",
   "/(pages)/reports/page": "app/(pages)/reports/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
   "/api/fetch_membership_plans/route": "app/api/fetch_membership_plans/route.js",
   "/api/fetch_plans/route": "app/api/fetch_plans/route.js",
   "/api/fetch_trainer_images/route": "app/api/fetch_trainer_images/route.js",
