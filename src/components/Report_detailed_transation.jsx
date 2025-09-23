@@ -313,6 +313,14 @@ export default function DetailedTransactions() {
     'This month'
   ];
 
+  const totals = transactions.reduce((acc, transaction) => {
+    return {
+      amount: acc.amount + (parseFloat(transaction.amount) || 0),
+      discount: acc.discount + (parseFloat(transaction.discount) || 0),
+      balance: acc.balance + (parseFloat(transaction.balance) || 0)
+    };
+  }, { amount: 0, discount: 0, balance: 0 });
+
   return (
     <div className="box">
       <Inpage_header title='Transactions' onExport={exportToExcel} />
@@ -449,9 +457,12 @@ export default function DetailedTransactions() {
 
       {/* Debug info - remove in production */}
       <div className="mt-4 text-sm text-gray-400">
-        <p>Total transactions: {allTransactions.length}</p>
-        <p>Filtered transactions: {transactions.length}</p>
-        <p>Current filter: {selectedOption}</p>
+        <p className="text-white">Total transactions : {allTransactions.length}</p>
+        <p className="text-white">Filtered transactions : {transactions.length}</p>
+        <p className="text-white">Current filter : {selectedOption}</p>
+        <p className="text-green-600">Total Amount Received : ${totals.amount.toFixed(2)}</p>
+        <p className="text-yellow-600">Total Discount : ${totals.discount.toFixed(2)}</p>
+        <p className="text-red-600">Total Balance : ${totals.balance.toFixed(2)}</p>
       </div>
 
       {/* Transactions Table */}
@@ -464,6 +475,7 @@ export default function DetailedTransactions() {
         <table className="min-w-full text-center">
           <thead>
             <tr className="text-center font-bold md:text-lg text-sm">
+              <th className="p-3 bg-[#303336] border-r">Sl No</th>
               <th className="p-3 bg-[#303336] border-r">User id</th>
               <th className="p-3 bg-[#303336] border-r">User name</th>
               <th className="p-3 bg-[#303336] border-r">Bill No</th>

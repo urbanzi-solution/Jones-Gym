@@ -7,12 +7,20 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('user_id');
 
+    // const query = `
+    //   SELECT 
+    //     SUM(amount) AS total_amount,
+    //     SUM(discount) AS total_discount,
+    //     SUM(balance) AS total_balance
+    //   FROM membership_plans;
+    // `;
+
     const query = `
       SELECT 
-        SUM(amount) AS total_amount,
-        SUM(discount) AS total_discount,
-        SUM(balance) AS total_balance
-      FROM membership_plans;
+        (SUM(mp.amount) + COALESCE((SELECT SUM(t.amount) FROM transactions t), 0)) AS total_amount,
+        SUM(mp.discount) AS total_discount,
+        SUM(mp.balance) AS total_balance
+      FROM membership_plans mp;
     `;
 
     const result = await client.query(query);
