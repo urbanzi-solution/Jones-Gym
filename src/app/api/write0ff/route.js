@@ -7,13 +7,17 @@ export async function POST(request) {
     const { 
       user_id,
       selectedPlan,
-      username
+      username,
+      balance,
+      bill_no
     } = await request.json();
 
     console.log("✅ Received data from client:", {
       user_id,
       selectedPlan,
-      username
+      username,
+      balance,
+      bill_no
     });
 
     // Validate input data
@@ -28,14 +32,16 @@ export async function POST(request) {
       await client.query('BEGIN');
 
       const insertQueryText = `
-        INSERT INTO transactions (user_id, bill_no, plan_name, amount, balance, date)
-        VALUES ($1, null, $2, 0, 0, CURRENT_DATE)
+        INSERT INTO transactions (user_id, old_bill, bill_no, plan_name, amount, balance, date)
+        VALUES ($1, $4, 'WriteOff', $2, $3, 0, CURRENT_DATE)
         RETURNING *;
       `;
       
       const insertValues = [
-        user_id,
-        selectedPlan
+        user_id, // $1
+        selectedPlan, // $2
+        balance, // $3
+        bill_no // $4
       ];
       
       const insertResult = await client.query(insertQueryText, insertValues);

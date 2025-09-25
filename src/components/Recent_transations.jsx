@@ -126,7 +126,7 @@ export default function Recent_transactions({ userId }) {
       case 'Other':
         return <span className="text-lg md:text-xl">💳</span>;
       default:
-        return <span className="text-lg md:text-xl">💳</span>;
+        return <span className="text-lg md:text-xl">🚫💵</span>;
     }
   };
 

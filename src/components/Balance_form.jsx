@@ -171,7 +171,7 @@ export default function Balance_form({ user_id, membershipPlans, onCancel, usern
           balance, 
           trainer: formData.trainer,
           newAmountReceived,
-          transaction_type: formData.transaction_type, // Added transaction_type to API request
+          transaction_type: formData.transaction_type,
         }),
       });
 
@@ -260,6 +260,8 @@ export default function Balance_form({ user_id, membershipPlans, onCancel, usern
             user_id,
             selectedPlan,
             username: username || '',
+            balance,
+            bill_no: formData.bill_no
           }),
         });
 

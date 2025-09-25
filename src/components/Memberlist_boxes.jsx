@@ -5,11 +5,13 @@ import MemberAvatar  from "@/components/MemberAvatar";
 export default function Memberlist_boxes({ members, filters }) {
   const [membershipPlans, setMembershipPlans] = useState([]);
   const [remarkData, setRemarkData] = useState({});
+  const [transactions, setTransactions] = useState([]);
   const currentDate = new Date();
   const currentDateOnly = currentDate.toISOString().split('T')[0];
 
   console.log("filters",filters)
   console.log("members",members)
+  console.log("membershipPlans",membershipPlans)
 
   // Convert any date string or Date object to IST Date object
   const toISTDate = (dateInput) => {
@@ -39,6 +41,22 @@ export default function Memberlist_boxes({ members, filters }) {
     return `${day}/${month}/${year}`;
   };
 
+  // Fetch transactions data
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const response = await fetch('/api/fetch_all_transactions');
+        if (!response.ok) {
+          throw new Error('Failed to fetch transactions');
+        }
+        const data = await response.json();
+        setTransactions(data.data || []);
+      } catch (error) {
+        console.error('Error fetching transactions:', error);
+      }
+    };
+    fetchTransactions();
+  }, []);
 
   // Fetch membership plans data
   useEffect(() => {
@@ -67,7 +85,6 @@ export default function Memberlist_boxes({ members, filters }) {
         }
         const data = await response.json();
 
-        // console.log("data",data);
         // Create a lookup object for remarks and blacklist status
         const remarkLookup = {};
         data.forEach(item => {
@@ -140,9 +157,6 @@ export default function Memberlist_boxes({ members, filters }) {
       }
     }
     
-    // console.log(`Member ${member.user_id} blacklist status:`, 
-    //   remarkData[member.user_id]?.blacklistStatus || 'Not in remarkData');
-
     // Joining Date Range filter
     if (filters.startDate && filters.endDate && joiningDate) {
       const joiningDateOnly = getDateOnly(joiningDate);
@@ -253,6 +267,48 @@ export default function Memberlist_boxes({ members, filters }) {
       sortedMembers.reverse();
     }
   }
+
+  // Handle "With Balance" payment filter and balance checking
+  // Handle "With Balance" payment filter
+if (filters?.payment === "With Balance") {
+  sortedMembers = sortedMembers.filter(member => {
+    // Get all membership plans for this user
+    const userMembershipPlans = membershipPlans.filter(
+      plan => plan.user_id === member.user_id
+    );
+    
+    // Check if user has at least one plan with non-zero balance that passes all checks
+    let hasValidPlan = false;
+    
+    for (const plan of userMembershipPlans) {
+      // Skip plans with 0 balance
+      if (plan.balance === 0) {
+        continue;
+      }
+      
+      // Check transactions where old_bill matches this plan's bill_no
+      const matchingTransactions = transactions.filter(
+        transaction => transaction.old_bill === plan.bill_no
+      );
+      
+      // Check if any matching transaction has balance 0
+      const hasZeroBalanceTransaction = matchingTransactions.some(
+        transaction => transaction.balance === 0
+      );
+      
+      // If this plan has non-zero balance and no zero-balance transactions, it's valid
+      if (!hasZeroBalanceTransaction) {
+        hasValidPlan = true;
+        break; // Found at least one valid plan, no need to check others
+      }
+    }
+    
+    // Keep the member if they have at least one valid plan
+    return hasValidPlan;
+  });
+}
+
+  console.log("sortedMembers",sortedMembers)
 
   return (
     <div className="Memberlist_boxes p-4">

@@ -17,9 +17,19 @@ export async function GET(request) {
 
     const query = `
       SELECT 
-        (SUM(mp.amount) + COALESCE((SELECT SUM(t.amount) FROM transactions t), 0)) AS total_amount,
-        SUM(mp.discount) AS total_discount,
-        SUM(mp.balance) AS total_balance
+          (SUM(mp.amount)
+          + COALESCE((SELECT SUM(t.amount) FROM transactions t), 0)
+          ) AS total_amount,
+          SUM(mp.discount) AS total_discount,
+          (
+              SUM(mp.balance)
+              - COALESCE(
+                  (SELECT SUM(t.amount)
+                  FROM transactions t
+                  WHERE t.bill_no = 'WriteOff'),
+                  0
+              )
+          ) AS total_balance
       FROM membership_plans mp;
     `;
 
