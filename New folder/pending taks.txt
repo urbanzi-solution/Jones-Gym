@@ -1,84 +1,113 @@
-trainer attentande
-> completed
+---------------------------------------------------------------------------
+Task :
+---------------------------------------------------------------------------
 
-login and logout
-> completed
+modified writeoff
+> Completed
+altering the route.js for insert
+> Completed
+adding the amount in the writeoff data 
+> Completed
+subtracting the sum of writeoff amount in the total balance amount 
+> Completed
+Write off indication in Recent_transations in profile details
+> Completed
+memberlist filtering in the members page
+> Pending
+Detail report edit and delete Membership plans and transactions table manage
+> Pending
+Source code is not pushed to repo
 
-manager login and page only pt trainers > client attendance
-> pending
+---------------------------------------------------------------------------
+Files had changes :
+---------------------------------------------------------------------------
 
-add transactions/payment
-> completed
+src\components\Balance_form.jsx
 
-memberlistbox sort with date in member list page
-> completed
+src\components\Recent_transations.jsx
 
-write off
-> completed
+src\components\Report_Rencent_transation.jsx
 
-Delete user with the alert
-> completed
+src\components\Memberlist_boxes.jsx
 
----------------------------------------------------------
+src\app\api\write0ff\route.js
 
-ctid sorting by default
-> completed
+src\app\api\total_amount_recent_tans\route.js
 
-up and arrow key
-> completed
+add :
 
-exp date range from and to sorting
-> completed
+src\app\api\fetch_all_transactions\route.js
 
-Name A to Z filter Sorting
+---------------------------------------------------------------------------
+Task :
+---------------------------------------------------------------------------
 
-export by modifying/overwrite the css function and design
+all date format change to dd/mm/yyyy
 
----------------------------------------------------------
+exp today
 
-testing url
+balance amount in the memberlist
 
-http://localhost:3000/api/fetch_transactions
+remove the validation in the Renew_form.jsx
 
-http://localhost:3000/member-profile?member_id=SJ30
+---------------------------------------------------------------------------
+Files had changes :
+---------------------------------------------------------------------------
 
----------------------------------------------------------
+src\components\Dashboard_general.jsx
 
-UPDATE membership_plans
-SET amount = '8000', balance = '1000'
-WHERE bill_no='469';
+src\components\Memberlist_boxes.jsx
 
-select * from membership_plans where bill_no='469';
+src\components\Renew_form.jsx
 
-select * from transactions;
+---------------------------------------------------------------------------
+Task :
+---------------------------------------------------------------------------
 
-select * from transactions where user_id='469';
+---------------------------------------------------------------------------
+Files had changes :
+---------------------------------------------------------------------------
 
----------------------------------------------------------
-
-ALTER TABLE transactions
-ADD COLUMN trans_type varchar(15) ;
-
-
-
-SELECT *
-FROM transactions
-WHERE user_id = 'SJ30'
-  AND old_bill = '469'
-ORDER BY ctid DESC
-LIMIT 1;
-
-
-user_id: 'SJ30',
-      old_bill: '469',
-      bill_no: 'ttt',
-      plan_name: '1 M P.T',
-      amount: 1000,
-      balance: 5000,
-      date: 2025-09-13T18:30:00.000Z,
-      created_at: 2025-09-14T13:11:34.349Z
+---------------------------------------------------------------------------
 
 
+delete from transactions where bill_no = '111';
+
+delete from transactions where user_id= 'JK124' and amount = 0;
+
+INSERT INTO membership_plans (user_id, plan_name, bill_no, amount, discount, balance, trans_type, trainer, date, exp_date)
+VALUES ('JK124', '6 M Gym', 'new123', 5000, 0, 9000, 'GPay', 'shuhaib123', CURRENT_DATE, '2026-03-26');
+
+INSERT INTO transactions (user_id, old_bill, bill_no, plan_name, amount, balance, date, trans_type)
+VALUES ('JK124', '479', '111', '1 Y Gym', 3000, 10000, CURRENT_DATE, 'GPay');
+
+INSERT INTO transactions (user_id, old_bill, bill_no, plan_name, amount, balance, date, trans_type)
+VALUES ('JK124', '479', '222', '1 Y Gym', 2000, 8000, CURRENT_DATE, 'GPay');
+
+INSERT INTO transactions (user_id, old_bill, bill_no, plan_name, amount, balance, date, trans_type, writeoff)
+VALUES ('JK124', '479', null, '1 Y Gym', 8000, 0, CURRENT_DATE, 'GPay', 'W');
+
+SELECT 
+(SUM(mp.amount) + COALESCE((SELECT SUM(t.amount) FROM transactions t), 0)) AS total_amount,
+SUM(mp.discount) AS total_discount,
+SUM(mp.balance) AS total_balance
+FROM membership_plans mp;
+
+SELECT 
+    (SUM(mp.amount)
+     + COALESCE((SELECT SUM(t.amount) FROM transactions t), 0)
+    ) AS total_amount,
+    SUM(mp.discount) AS total_discount,
+    (
+        SUM(mp.balance)
+        - COALESCE(
+            (SELECT SUM(t.amount)
+             FROM transactions t
+             WHERE t.writeoff = 'W'),
+            0
+        )
+    ) AS total_balance
+FROM membership_plans mp;
 
 
 

@@ -1,3 +1,4 @@
+// src\components\Memberlist_boxes.jsx
 "use client";
 import { useState, useEffect } from 'react';
 import MemberAvatar  from "@/components/MemberAvatar";
@@ -9,9 +10,9 @@ export default function Memberlist_boxes({ members, filters }) {
   const currentDate = new Date();
   const currentDateOnly = currentDate.toISOString().split('T')[0];
 
-  console.log("filters",filters)
-  console.log("members",members)
-  console.log("membershipPlans",membershipPlans)
+  // console.log("filters",filters)
+  // console.log("members",members)
+  // console.log("membershipPlans",membershipPlans)
 
   // Convert any date string or Date object to IST Date object
   const toISTDate = (dateInput) => {
@@ -230,8 +231,19 @@ export default function Memberlist_boxes({ members, filters }) {
     return passesActiveInactive;
   });
 
+  // console.log("filteredMembers...", filteredMembers)
+
   // Sorting the Member Data
   let sortedMembers = filteredMembers.slice();
+
+  // Sort for expiryWithin: "today"
+  if (filters?.expiryWithin === "today") {
+    sortedMembers = sortedMembers.filter((member) => {
+      const memberPlan = membershipPlans.find(plan => plan.user_id === member.user_id);
+      const expiryDateOnly = memberPlan ? getDateOnly(memberPlan.exp_date) : null;
+      return expiryDateOnly === currentDateOnly;
+    });
+  }
 
   // Custom sort for expiryWithinStartDate/expiryWithinEndDate
   if (filters?.expiryWithinStartDate && filters?.expiryWithinEndDate) {
@@ -308,7 +320,7 @@ if (filters?.payment === "With Balance") {
   });
 }
 
-  console.log("sortedMembers",sortedMembers)
+  // console.log("sortedMembers",sortedMembers)
 
   return (
     <div className="Memberlist_boxes p-4">
@@ -412,16 +424,40 @@ if (filters?.payment === "With Balance") {
                       }
                       return uniquePlans;
                     }, [])
-                    .map((plan, index) => (
-                      <p
-                        key={`${plan.user_id}-${plan.plan_name}-${index}`}
-                        className={`px-2 py-1 rounded-full border border-white text-center ${
-                          plan.isPlanExpired ? "bg-red-600" : "bg-green-600"
-                        }`}
-                      >
-                        {plan.plan_name || "Basic Gym"} ({formatDateIndian(plan.planExpiryDateOnly)})
-                      </p>
-                    ))
+                    .map((plan, index) => {
+                      // Find matching transactions with old_bill === plan.bill_no
+                      const matchingTransactions = transactions.filter(
+                        transaction => transaction.old_bill === plan.bill_no
+                      );
+                      
+                      // Get the latest transaction by date
+                      let displayBalance = plan.balance || 0;
+                      let useTransactionBalance = false;
+                      
+                      if (matchingTransactions.length > 0) {
+                        // Sort by date descending to get the latest transaction
+                        const latestTransaction = matchingTransactions.sort((a, b) => 
+                          new Date(b.date) - new Date(a.date)
+                        )[0];
+                        
+                        displayBalance = latestTransaction.balance || 0;
+                        useTransactionBalance = true;
+                      }
+                      
+                      return (
+                        <p 
+                          key={`${plan.user_id}-${plan.plan_name}-${index}`}
+                          className={`px-2 py-1 rounded-full border border-white text-center ${
+                            plan.isPlanExpired ? "bg-red-600" : "bg-green-600"
+                          }`}
+                        >
+                          {plan.plan_name || "Basic Gym"} ({formatDateIndian(plan.planExpiryDateOnly)})
+                          {displayBalance > 0 && (
+                            <span className="font-bold text-red-600"> - Bal: ₹{displayBalance}</span>
+                          )}
+                        </p>
+                      );
+                    })
                 )}
               </span>
             </a>

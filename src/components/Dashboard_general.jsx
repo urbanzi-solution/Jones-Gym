@@ -43,6 +43,25 @@ export default function DashboardGeneral() {
           <span>Inactive Members</span>
         </a>
 
+        <a
+          className="
+                    border border-[#E6FAF7] 
+                    rounded-lg 
+                    p-4
+                    flex flex-col 
+                    items-center justify-center 
+                    text-center
+                    bg-[#232024]
+                    transition-all
+                    hover:bg-[#E6FAF7]/10
+                    lg:min-h-[100px]
+                    md:p-6
+                "
+          href="/members?expiryWithin=today"
+        >
+          <span>Expiring Today</span>
+        </a>
+
         {/* Expiring Tomorrow */}
         <a
           className="
@@ -102,24 +121,7 @@ export default function DashboardGeneral() {
           <span>Expiry in 3 Days</span>
         </a>
 
-        <a
-          className="
-                    border border-[#E6FAF7] 
-                    rounded-lg 
-                    p-4
-                    flex flex-col 
-                    items-center justify-center 
-                    text-center
-                    bg-[#232024]
-                    transition-all
-                    hover:bg-[#E6FAF7]/10
-                    lg:min-h-[100px]
-                    md:p-6
-                "
-          href=""
-        >
-          <span>Staff Attendance</span>
-        </a>
+        
       </div>
     </div>
   );

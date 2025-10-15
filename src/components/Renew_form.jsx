@@ -118,19 +118,19 @@ export default function RenewalFormSection({ user_id, membershipPlans, onCancel 
         (plan) => plan.plan_name === formData.plan
       );
 
-      if (selectedPlan && selectedPlan.exp_date) {
-        const expiryDate = new Date(selectedPlan.exp_date);
-        if (expiryDate > currentDate) {
-          // Calculate remaining days
-          const timeDifference = expiryDate - currentDate;
-          const remainingDays = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+      // if (selectedPlan && selectedPlan.exp_date) {
+      //   const expiryDate = new Date(selectedPlan.exp_date);
+      //   if (expiryDate > currentDate) {
+      //     // Calculate remaining days
+      //     const timeDifference = expiryDate - currentDate;
+      //     const remainingDays = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
           
-          setError(
-            `Sorry, the plan already exists and will expire on ${expiryDate.toLocaleDateString()} (${remainingDays} days remaining)`
-          );
-          return;
-        }
-      }
+      //     setError(
+      //       `Sorry, the plan already exists and will expire on ${expiryDate.toLocaleDateString()} (${remainingDays} days remaining)`
+      //     );
+      //     return;
+      //   }
+      // }
 
       const dataToSubmit = {
         user_id,
