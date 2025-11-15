@@ -12,7 +12,7 @@ export async function GET(request) {
 
     const result = await client.query(query);
 
-    console.log("result", result);
+    // console.log("result", result);
 
     return new Response(JSON.stringify({
       success: true,

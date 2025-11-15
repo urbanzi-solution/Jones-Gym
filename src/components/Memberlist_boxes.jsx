@@ -10,7 +10,7 @@ export default function Memberlist_boxes({ members, filters }) {
   const currentDate = new Date();
   const currentDateOnly = currentDate.toISOString().split('T')[0];
 
-  // console.log("filters",filters)
+  console.log("filters",filters)
   // console.log("members",members)
   // console.log("membershipPlans",membershipPlans)
 
@@ -218,12 +218,19 @@ export default function Memberlist_boxes({ members, filters }) {
       return false;
     }
 
-    // Expiry Within filter
+    // Expiry Within cumulative filter
     if (filters.expiryWithin && expiryDateOnly) {
       const expiryDateObj = new Date(expiryDateOnly);
-      const daysUntilExpiry = Math.floor((expiryDateObj - new Date(currentDateOnly)) / (1000 * 60 * 60 * 24));
-      const days = parseInt(filters.expiryWithin) || 0;
-      if (daysUntilExpiry !== days) {
+      const daysUntilExpiry = Math.floor(
+        (expiryDateObj - new Date(currentDateOnly)) / (1000 * 60 * 60 * 24)
+      );
+
+      // Extract number of days from filter (e.g., "2 days" → 2)
+      const maxDays = parseInt(filters.expiryWithin) || 0;
+
+      // Today = 0 days
+      // If maxDays=2 => allow 0,1,2 days
+      if (daysUntilExpiry < 0 || daysUntilExpiry > maxDays) {
         return false;
       }
     }
@@ -236,14 +243,35 @@ export default function Memberlist_boxes({ members, filters }) {
   // Sorting the Member Data
   let sortedMembers = filteredMembers.slice();
 
-  // Sort for expiryWithin: "today"
-  if (filters?.expiryWithin === "today") {
+  // Sort for cumulative expiryWithin
+  if (filters?.expiryWithin) {
+    const maxDays = parseInt(filters.expiryWithin) || 0;
+
     sortedMembers = sortedMembers.filter((member) => {
-      const memberPlan = membershipPlans.find(plan => plan.user_id === member.user_id);
+      const memberPlan = membershipPlans.find(p => p.user_id === member.user_id);
       const expiryDateOnly = memberPlan ? getDateOnly(memberPlan.exp_date) : null;
-      return expiryDateOnly === currentDateOnly;
+      if (!expiryDateOnly) return false;
+
+      const diffDays = Math.floor(
+        (new Date(expiryDateOnly) - new Date(currentDateOnly)) /
+        (1000 * 60 * 60 * 24)
+      );
+
+      return diffDays >= 0 && diffDays <= maxDays;
+    });
+
+    // Sort by nearest expiry first
+    sortedMembers.sort((a, b) => {
+      const aPlan = membershipPlans.find(p => p.user_id === a.user_id);
+      const bPlan = membershipPlans.find(p => p.user_id === b.user_id);
+
+      const aExp = aPlan ? getDateOnly(aPlan.exp_date) : null;
+      const bExp = bPlan ? getDateOnly(bPlan.exp_date) : null;
+
+      return new Date(aExp) - new Date(bExp);
     });
   }
+
 
   // Custom sort for expiryWithinStartDate/expiryWithinEndDate
   if (filters?.expiryWithinStartDate && filters?.expiryWithinEndDate) {
