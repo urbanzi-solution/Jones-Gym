@@ -13,13 +13,13 @@ export default function PlanFormSection() {
   const handlePlanChange = (index, field, value) => {
     const updatedPlans = [...plans];
     updatedPlans[index][field] = value;
-    
+
     if (field === 'amount' || field === 'discount') {
       const amount = parseFloat(updatedPlans[index].amount) || 0;
       const discount = parseFloat(updatedPlans[index].discount) || 0;
       updatedPlans[index].balance = Math.max(0, amount - discount);
     }
-    
+
     setPlans(updatedPlans);
   };
 
@@ -42,7 +42,7 @@ export default function PlanFormSection() {
   return (
     <div className="">
       <h3 className="text-lg font-medium mb-4 text-gray-300">Membership Plans</h3>
-      
+
       {plans.map((plan, index) => (
         <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4 items-end">
           {/* Plan Dropdown */}
@@ -143,7 +143,7 @@ export default function PlanFormSection() {
                 Include Days
               </label>
             </div>
-            
+
             {plan.includeDays && (
               <div className="flex-1">
                 <label htmlFor={`days-${index}`} className="block text-sm font-medium mb-1 text-gray-300">

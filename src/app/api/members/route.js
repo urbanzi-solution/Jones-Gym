@@ -27,6 +27,20 @@ export async function POST(request) {
     // Get database client
     client = await getClient();
 
+    // Check if user_id already exists
+    const checkQuery = 'SELECT user_id FROM user_data WHERE user_id = $1';
+    const checkResult = await client.query(checkQuery, [gym_id]);
+
+    if (checkResult.rows.length > 0) {
+      return new Response(JSON.stringify({
+        error: 'User ID already exists',
+        message: 'The entered User ID (Gym ID) is already assigned to another member. Please use a different ID.'
+      }), {
+        status: 409,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     // Begin transaction
     await client.query('BEGIN');
 
@@ -46,7 +60,7 @@ export async function POST(request) {
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       RETURNING *
     `;
-    
+
     const values = [
       gym_id,
       full_name,
@@ -131,7 +145,7 @@ export async function GET(request) {
       plan_name: row.plan_name,
       duration: row.duration,
       amount: row.amount
-      }));
+    }));
 
     // console.log(plans);
 

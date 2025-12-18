@@ -29,9 +29,9 @@ export default function Member_addpage() {
     gym_id: '',
     fullName: '',
     gender: '',
-    weight:'',
+    weight: '',
     dob: '',
-    about:'',
+    about: '',
     location: '',
     phone_no: '',
     whatsapp_no: '',
@@ -59,6 +59,7 @@ export default function Member_addpage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
+    setError('');
     const { id, value, files } = e.target;
     if (files) {
       setFormData((prev) => ({
@@ -161,12 +162,12 @@ export default function Member_addpage() {
         if (selectedPlan) {
           const defaultExpiryDate = calculateExpiryDate(selectedPlan.duration);
           newPlans[index].default_expiry_date = defaultExpiryDate;
-          
+
           // Set expiry date based on includeDays status
           if (!newPlans[index].includeDays) {
             newPlans[index].expiry_date = defaultExpiryDate;
           }
-          
+
           // Recalculate balance with the new plan's amount
           const amount = parseFloat(newPlans[index].amount) || 0;
           const totalamount = parseFloat(newPlans[index].totalamount) || 0;
@@ -318,11 +319,11 @@ export default function Member_addpage() {
       if (!response.ok) {
         const errorText = await response.text();
         console.error('Member submission error response:', errorText);
-        
+
         let errorMessage = 'Failed to submit form';
         try {
           const errorData = JSON.parse(errorText);
-          errorMessage = errorData.error || errorMessage;
+          errorMessage = errorData.message || errorData.error || errorMessage;
         } catch (parseError) {
           console.error('Error parsing member submission response:', parseError);
           errorMessage = `Submission failed: ${errorText.substring(0, 100)}...`;
@@ -444,7 +445,7 @@ export default function Member_addpage() {
                 value={formData.dob}
                 onChange={handleChange}
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                // required
+              // required
               />
             </div>
 
@@ -459,11 +460,11 @@ export default function Member_addpage() {
                 onChange={handleChange}
                 placeholder="Enter the Description"
                 className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                // required
+              // required
               />
             </div>
 
-            
+
           </div>
 
           {/* Right side column */}
@@ -557,7 +558,7 @@ export default function Member_addpage() {
                     onChange={handleChange}
                     className="hidden"
                     accept="image/*"
-                    // required
+                  // required
                   />
                 </label>
               </div>
@@ -581,7 +582,7 @@ export default function Member_addpage() {
         {includeMembership && (
           <div className="mt-8 border-t border-[#6e6e6e] pt-4">
             <h3 className="text-lg font-medium mb-4 text-gray-300">Membership Plans</h3>
-            
+
             {plans.map((plan, index) => (
               <div key={index} className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4 items-end">
                 <div>
@@ -726,7 +727,7 @@ export default function Member_addpage() {
                       Include Days
                     </label>
                   </div>
-                  
+
                   {plan.includeDays && (
                     <div className="flex gap-4 flex-1">
                       <div className="flex-1">
@@ -743,7 +744,7 @@ export default function Member_addpage() {
                           className="p-4 w-full bg-[#232024] rounded-lg border border-[#3E3A3D]"
                         />
                       </div>
-                      
+
                       <div className="flex-1">
                         <label htmlFor={`expiry-date-${index}`} className="block text-sm font-medium mb-1 text-gray-300">
                           Expiry Date
